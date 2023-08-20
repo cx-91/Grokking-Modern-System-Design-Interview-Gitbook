@@ -1,8 +1,7 @@
 # Table of contents
 
-* [Grokking Modern System Design Interview for Engineers & Managers](README.md)
-* [System Design Interviews](system-design-interviews/README.md)
-  * [Page 5](system-design-interviews/page-5.md)
+* [System Design Interviews](README.md)
+  * [What Is a System Design Interview?](system-design-interviews/what-is-a-system-design-interview.md)
   * [Page 7](system-design-interviews/page-7.md)
   * [Page 4](system-design-interviews/page-4.md)
 * [Abstractions](abstractions.md)
@@ -42,5 +41,3 @@
 * [Design Typeahead Suggestion](design-typeahead-suggestion.md)
 * [Design a Collaborative Document Editing Service / Google Docs](design-a-collaborative-document-editing-service-google-docs.md)
 * [Spectacular Failures](spectacular-failures.md)
-* [Page 8](page-8.md)
-* [Page 9](page-9.md)
