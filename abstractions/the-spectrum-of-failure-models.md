@@ -12,7 +12,7 @@ Failure models provide us a framework to reason about the impact of failures and
 
 Here is an illustration that presents a spectrum of different failure models:
 
-This is a spectrum of failure models. The difficulty level when dealing with a failure increases as we move to the right
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-20 at 4.36.05 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Fail-stop <a href="#fail-stop" id="fail-stop"></a>
 
