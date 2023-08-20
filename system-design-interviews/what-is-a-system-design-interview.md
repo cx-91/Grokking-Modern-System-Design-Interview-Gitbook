@@ -33,7 +33,7 @@ We can tell the interviewer that there are many other things that a real WhatsAp
 
 Here are some best practices that we should follow during a system design interview:
 
-Best practices for system design interview
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-20 at 3.48.03 AM.png" alt=""><figcaption></figcaption></figure>
 
 * An applicant should ask the right questions to solidify the requirements.
 * Applicants also need to scope the problem so that they’re able to make a good attempt at solving it within the limited time frame of the interview. SDIs are usually about 35 to 40 minutes long.
@@ -45,7 +45,7 @@ At a high level, components could be frontend, load balancers, caches, data proc
 
 An architectural design often represents components as boxes. The arrows between these boxes represent who talks to whom and how the boxes or components fit together collectively.
 
-A sample design
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-20 at 3.50.12 AM.png" alt=""><figcaption></figcaption></figure>
 
 We can draw a diagram like the one shown above for the given problem and present it to the interviewer.
 
@@ -57,7 +57,7 @@ Designing and operating a bigger system requires careful thinking because design
 
 Another question in an SDI might be related to why we don’t design a system that’s already capable of handling more work than necessary or predicted.
 
-Show the answer
+Show the answer: The dollar cost associated with complex projects is a major reason why we don’t do that.
 
 #### The design evolution of Google <a href="#the-design-evolution-of-google" id="the-design-evolution-of-google"></a>
 
