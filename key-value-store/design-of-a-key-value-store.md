@@ -1,6 +1,6 @@
 # Design of a Key-value Store
 
-### Requirements <a href="#requirements" id="requirements"></a>
+### Requirements[#](https://www.educative.io/courses/grokking-modern-system-design-interview-for-engineers-managers/m2Qkvz6nqYA#Requirements) <a href="#requirements" id="requirements"></a>
 
 Let’s list the requirements of designing a key-value store to overcome the problems of traditional databases.
 
@@ -32,3 +32,68 @@ A single-node-based hash table can fall short due to one or more of the followin
 * Failure of this one mega-server will result in service downtime for everyone.
 
 So, key-value stores should use many servers to store and retrieve data.
+
+### Assumptions <a href="#assumptions" id="assumptions"></a>
+
+We’ll assume the following to keep our design simple:
+
+* The data centers hosting the service are trusted (non-hostile).
+* All the required authentication and authorization are already completed.
+* User requests and responses are relayed over HTTPS.
+
+### API design <a href="#api-design" id="api-design"></a>
+
+Key-value stores, like ordinary hash tables, provide two primary functions, which are `get` and `put`.
+
+Let’s look at the API design.
+
+**The `get` function**
+
+The API call to get a value should look like this:
+
+```txt
+get(key)
+```
+
+We return the associated value on the basis of the parameter `key`. When data is replicated, it locates the object replica associated with a specific key that’s hidden from the end user. It’s done by the system if the store is configured with a weaker data consistency model. For example, in eventual consistency, there might be more than one value returned against a key.
+
+###
+
+| **Parameter** | **Description**                                      |
+| ------------- | ---------------------------------------------------- |
+| `key`         | It’s the `key` against which we want to get `value`. |
+
+**The `put` function**
+
+The API call to put the value into the system should look like this:
+
+```txt
+put(key, value)
+```
+
+It stores the `value` associated with the `key`. The system automatically determines where data should be placed. Additionally, the system often keeps metadata about the stored object. Such metadata can include the version of the object.
+
+###
+
+| **Parameter** | **Description**                                        |
+| ------------- | ------------------------------------------------------ |
+| `key`         | It's the `key` against which we have to store `value`. |
+| `value`       | It's the object to be stored against the `key`.        |
+
+Point to Ponder
+
+**Question**
+
+We often keep hashes of the value (and at times, value + associated key) as metadata for data integrity checks. Should such a hash be taken after any data compression or encryption, or should it be taken before?
+
+The correct answer might depend on the specific application. Still, we can use hashes either before or after any compression or encryption. But we’ll need to do that consistently for `put` and `get` operations.
+
+#### Data type <a href="#data-type" id="data-type"></a>
+
+The key is often a primary key in a key-value store, while the value can be any arbitrary binary data.
+
+> **Note:** Dynamo uses MD5 hashes on the key to generate a 128-bit identifier. These identifiers help the system determine which server node will be responsible for this specific key.
+
+In the next lesson, we’ll learn how to design our key-value store. First, we’ll focus on adding scalability, replication, and versioning of our data to our system. Then, we’ll ensure the functional requirements and make our system fault tolerant. We’ll fulfill a few of our non-functional requirements first because implementing our functional requirements depends on the method chosen for scalability.
+
+> **Note:** This chapter is based on Dynamo, which is an influential work in the domain of key-value stores.
