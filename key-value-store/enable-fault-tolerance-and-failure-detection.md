@@ -10,7 +10,7 @@ In the sloppy quorum, the first �n healthy nodes from the preference list hand
 
 Let’s consider the following configuration with �=3n=3. If node �A is briefly unavailable or unreachable during a write operation, the request is sent to the next healthy node from the preference list, which is node �D in this case. It ensures the desired availability and durability. After processing the request, the node �D includes a hint as to which node was the intended receiver (in this case, �A). Once node �A is up and running again, node �D sends the request information to �A so it can update its data. Upon completion of the transfer, �D removes this item from its local storage without affecting the total number of replicas in the system.
 
-Suppose we have seven nodes in our ring and a preference list of the nodes**1** of 5
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.21.39 AM.png" alt=""><figcaption></figcaption></figure>
 
 This approach is called a **hinted handoff**. Using it, we can ensure that reads and writes are fulfilled if a node faces temporary failure.
 
@@ -22,7 +22,7 @@ Point to Ponder
 
 What are the limitations of using hinted handoff?
 
-Show Answer
+A minimal churn in system membership and transient node failures are ideal for hinted handoff. However, hinted replicas may become unavailable before being restored to the originating replica node in certain circumstances.
 
 ### Handle permanent failures <a href="#handle-permanent-failures" id="handle-permanent-failures"></a>
 
@@ -32,7 +32,27 @@ In a **Merkle tree**, the values of individual keys are hashed and used as the l
 
 The following slides explain how Merkle trees work:
 
-Calculate the hashes for all keys. The hashes will be leaf nodes**1** of 14
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.24.06 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.24.23 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.24.56 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.25.16 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.25.16 AM (1).png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.25.49 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.26.05 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.26.20 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.26.37 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.26.59 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.27.14 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Anti-entropy with Merkle trees <a href="#anti-entropy-with-merkle-trees" id="anti-entropy-with-merkle-trees"></a>
 
@@ -46,7 +66,23 @@ The following slides explain more about how Merkle trees work.
 
 > **Note**: We assume the ranges defined are hypothetical for illustration purposes.
 
-Let’s suppose we have the virtual nodes A and B in the ring**1** of 9
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.35.33 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.35.52 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.36.10 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.36.32 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.37.26 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.37.42 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.38.13 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.38.30 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.38.45 AM.png" alt=""><figcaption></figcaption></figure>
 
 The advantage of using Merkle trees is that each branch of the Merkle tree can be examined independently without requiring nodes to download the tree or the complete dataset. It reduces the quantity of data that must be exchanged for synchronization and the number of disc accesses that are required during the anti-entropy procedure.
 
@@ -60,11 +96,11 @@ The nodes can be offline for short periods, but they may also indefinitely go of
 
 Planned commissioning and decommissioning of nodes results in membership changes. These changes form history. They’re recorded persistently on the storage for each node and reconciled among the ring members using a gossip protocol. A **gossip-based protocol** also maintains an eventually consistent view of membership. When two nodes randomly choose one another as their peer, both nodes can efficiently synchronize their persisted membership histories.
 
-Let’s learn how a gossip-based protocol works by considering the following example. Say node �A starts up for the first time, and it randomly adds nodes �B and �E to its token set. The token set has virtual nodes in the consistent hash space and maps nodes to their respective token sets. This information is stored locally on the disk space of the node.
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-21 at 11.04.04 PM.png" alt=""><figcaption></figcaption></figure>
 
-Now, node �A handles a request that results in a change, so it communicates this to �B and �E. Another node, �D, has �C and �E in its token set. It makes a change and tells �C and �E. The other nodes do the same process. This way, every node eventually knows about every other node’s information. It’s an efficient way to share information asynchronously, and it doesn’t take up a lot of bandwidth.
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-21 at 11.02.53 PM.png" alt=""><figcaption></figcaption></figure>
 
-A set of nodes in a ring**1** of 5
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-21 at 11.03.31 PM.png" alt=""><figcaption></figcaption></figure>
 
 Points to Ponder
 
@@ -72,9 +108,15 @@ Points to Ponder
 
 Keeping in mind our consistent hashing approach, can the gossip-based protocol fail?
 
-Show Answer
+Yes, the gossip-based protocol can fail. For example, the virtual node, N1, of node A wants to be added to the ring. The administrator asks N2, which is also a virtual node of A. In such a case, both nodes consider themselves to be part of the ring and won’t be aware that they’re the same server. If any change is made, it will keep on updating itself, which is wrong. This is called **logical partitioning**.
 
-**1 of 2**
+The gossip-based protocol works when all the nodes in the ring are connected in a single graph (i.e., have one connected component in the graph). That implies that there is a path from any node to any other node (possibly via different intermediaries). Different issues such as high churn (coming and going of nodes), issues with virtual node to physical node mappings, etc. can create a situation that is the same as if the real network had partitioned some nodes from the rest and now updates from one set won’t reach to the other. Therefore just having a gossip protocol in itself is not sufficient for proper information dissemination; keeping the topology in a good, connected state is also necessary.
+
+**Question 2**
+
+How can we prevent logical partitioning?
+
+We can make a few nodes play the role of seeds to avoid logical partitions. We can define a set of nodes as seeds via a configuration service. This set of nodes is known to all the working nodes since they can eventually reconcile their membership with a seed. So, logical partitions are pretty rare.
 
 Decentralized failure detection protocols use a gossip-based protocol that allows each node to learn about the addition or removal of other nodes. The join and leave methods of the explicit node notify the nodes about the permanent node additions and removals. The individual nodes detect temporary node failures when they fail to communicate with another node. If a node fails to communicate to any of the nodes present in its token set for the authorized time, then it communicates to the administrators that the node is dead.
 

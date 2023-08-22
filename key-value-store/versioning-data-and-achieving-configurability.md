@@ -4,7 +4,11 @@
 
 When network partitions and node failures occur during an update, an object’s version history might become fragmented. As a result, it requires a reconciliation effort on the part of the system. It’s necessary to build a way that explicitly accepts the potential of several copies of the same data so that we can avoid the loss of any updates. It’s critical to realize that some failure scenarios can lead to multiple copies of the same data in the system. So, these copies might be the same or divergent. Resolving the conflicts among these divergent histories is essential and critical for consistency purposes.
 
-Two nodes replicating their data while handling requests**1** of 4
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-21 at 10.41.27 PM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-21 at 10.42.00 PM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-21 at 10.40.05 PM.png" alt=""><figcaption></figcaption></figure>
 
 To handle inconsistency, we need to maintain causality between the events. We can do this using the timestamps and update all conflicting values with the value of the latest request. But time isn’t reliable in a distributed system, so we can’t use it as a deciding factor.
 
@@ -50,17 +54,17 @@ To update an object in the key-value store, the client must give the `context`. 
 
 #### Vector clock usage example <a href="#vector-clock-usage-example" id="vector-clock-usage-example"></a>
 
-Let’s consider an example. Say we have a write operation request. Node �A handles the first version of the write request, �1E1; where �E means event. The corresponding vector clock has node information and its counter—that is, \[�,1]\[A,1]. Node �A handles another write for the same object on which the previous write was performed. So, for �2E2, we have \[�,2]\[A,2]. �1E1 is no longer required because �2E2 was updated on the same node. �2E2 reads the changes made by �1E1, and then new changes are made. Suppose a network partition happens. Now, the request is handled by two different nodes, �B and �C. The context with updated versions, which are �3E3, �4E4, and their related clocks, which are (\[�,2],\[�,1])(\[A,2],\[B,1]) and (\[�,2],\[�,1])(\[A,2],\[C,1]), are now in the system.
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-21 at 10.42.55 PM.png" alt=""><figcaption></figcaption></figure>
 
-Suppose the network partition is repaired, and the client requests a write again, but now we have conflicts. The context (\[�,3],\[�,1],\[�,1])(\[A,3],\[B,1],\[C,1]) of the conflicts are returned to the client. After the client does reconciliation and �A coordinates the write, we have �5E5 with the clock (\[�,4])(\[A,4]).
-
-Let’s suppose that we have three nodes. The vector clock counter is set to 1 for all of them**1** of 8
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-21 at 10.52.06 PM.png" alt=""><figcaption></figcaption></figure>
 
 #### Compromise with vector clocks limitations <a href="#compromise-with-vector-clocks-limitations" id="compromise-with-vector-clocks-limitations"></a>
 
 The size of vector clocks may increase if multiple servers write to the same object simultaneously. It’s unlikely to happen in practice because writes are typically handled by one of the top �n nodes in a preference list.
 
-For example, if there are network partitions or multiple server failures, write requests may be processed by nodes not in the top �n nodes in the preference list. As a result we can have a long version like this: (\[�,10],\[�,4],\[�,1],\[�,2],\[�,1],\[�,3],\[�,5],\[�,7],\[�,2],\[�,2],\[�,1],\[�,1])(\[A,10],\[B,4],\[C,1],\[D,2],\[E,1],\[F,3],\[G,5],\[H,7],\[I,2],\[J,2],\[K,1],\[L,1]). It’s a hassle to store and maintain such a long version history.
+For example, if there are network partitions or multiple server failures, write requests may be processed by nodes not in the top �n nodes in the preference list. As a result we can have a long version like this:&#x20;
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-21 at 10.53.45 PM.png" alt=""><figcaption></figcaption></figure>
 
 We can limit the size of the vector clock in these situations. We employ a clock truncation strategy to store a timestamp with each (node, counter) pair to show when the data item was last updated by the node. Vector clock pairs are purged when the number of (node, counter) pairs exceeds a predetermined threshold (let’s say 10). Because the descendant linkages can’t be precisely calculated, this truncation approach can lead to a lack of efficiency in reconciliation.
 
@@ -79,13 +83,13 @@ Both approaches have their benefits. The client isn’t linked to the code in th
 
 Let’s make our service configurable by having an ability where we can control the trade-offs between availability, consistency, cost-effectiveness, and performance. We can use a consistency protocol similar to those used in quorum systems.
 
-Let’s take an example. Say �n in the top �n of the preference list is equal to 33. It means three copies of the data need to be maintained. We assume that nodes are placed in a ring. Say A, B, C, D, and E is the clockwise order of the nodes in that ring. If the write function is performed on node A, then the copies of that data will be placed on B and C. This is because B and C are the next nodes we find while moving in a clockwise direction of the ring.
+Let’s take an example. Say n in the top n of the preference list is equal to 33. It means three copies of the data need to be maintained. We assume that nodes are placed in a ring. Say A, B, C, D, and E is the clockwise order of the nodes in that ring. If the write function is performed on node A, then the copies of that data will be placed on B and C. This is because B and C are the next nodes we find while moving in a clockwise direction of the ring.
 
-### Usage of �r and �w <a href="#usage-of-r-and-w" id="usage-of-r-and-w"></a>
+### Usage of r and w <a href="#usage-of-r-and-w" id="usage-of-r-and-w"></a>
 
-Now, consider two variables, �r and �w. The �r means the minimum number of nodes that need to be part of a successful read operation, while �w is the minimum number of nodes involved in a successful write operation. So if �=2r=2, it means our system will read from two nodes when we have data stored in three nodes. We need to pick values of �r and �w such that at least one node is common between them. This ensures that readers could get the latest-written value. For that, we’ll use a quorum-like system by setting �+�>�r+w>n.
+Now, consider two variables, r and w. The r means the minimum number of nodes that need to be part of a successful read operation, while w is the minimum number of nodes involved in a successful write operation. So if r=2, it means our system will read from two nodes when we have data stored in three nodes. We need to pick values of r and w such that at least one node is common between them. This ensures that readers could get the latest-written value. For that, we’ll use a quorum-like system by setting r+w>n.
 
-The following table gives an overview of how the values of �n, �r, and �w affect the speed of reads and writes:
+The following table gives an overview of how the values of n, r, and w affect the speed of reads and writes:
 
 ### Value Effects on Reads and Writes
 
@@ -96,14 +100,14 @@ The following table gives an overview of how the values of �n, �r, and �w 
 | 3     | 3     | 1     | It will provide speedy writes and slower reads since readers need to go to all _n_ replicas for a value.              |
 | 3     | 1     | 3     | It will provide speedy reads from any node but slow writes since we now need to write to all _n_ nodes synchronously. |
 
-Let’s say �=3n=3, which means we have three nodes where the data is copied to. Now, for �=2w=2, the operation makes sure to write in two nodes to make this request successful. For the third node, the data is updated asynchronously.
+Let’s say n=3, which means we have three nodes where the data is copied to. Now, for w=2, the operation makes sure to write in two nodes to make this request successful. For the third node, the data is updated asynchronously.
 
-We have a replication factor of 3 and w is 2. The key “K” will be replicated to A, B, and C**1** of 3
+<figure><img src="../.gitbook/assets/Screenshot 2023-08-21 at 10.33.40 PM.png" alt=""><figcaption></figcaption></figure>
 
-In this model, the latency of a get operation is decided by the slowest of the �r replicas. The reason is that for the larger value of �r, we focus more on availability and compromise consistency.
+In this model, the latency of a get operation is decided by the slowest of the r replicas. The reason is that for the larger value of r, we focus more on availability and compromise consistency.
 
-The coordinator produces the vector clock for the new version and writes the new version locally upon receiving a `put()` request for a key. The coordinator sends �n highest-ranking nodes with the updated version and a new vector clock. We consider a write successful if at least �−1w−1 nodes respond. Remember that the coordinate writes to itself first, so we get �w writes in total.
+The coordinator produces the vector clock for the new version and writes the new version locally upon receiving a `put()` request for a key. The coordinator sends n highest-ranking nodes with the updated version and a new vector clock. We consider a write successful if at least w−1 nodes respond. Remember that the coordinate writes to itself first, so we get w writes in total.
 
-Requests for a `get()` operation are made to the �n highest-ranked reachable nodes in a preference list for a key. They wait for �r answers before returning the results to the client. Coordinators return all dataset versions that they regard as unrelated if they get several datasets from the same source (divergent histories that need reconciliation). The conflicting versions are then merged, and the resulting key’s value is rewritten to override the previous versions.
+Requests for a `get()` operation are made to the n highest-ranked reachable nodes in a preference list for a key. They wait for r answers before returning the results to the client. Coordinators return all dataset versions that they regard as unrelated if they get several datasets from the same source (divergent histories that need reconciliation). The conflicting versions are then merged, and the resulting key’s value is rewritten to override the previous versions.
 
 By now, we’ve fulfilled the scalability, availability, conflict-resolution, and configurable service requirements. The last requirement is to have a fault-tolerant system. Let’s discuss how we’ll achieve it in the next lesson.
