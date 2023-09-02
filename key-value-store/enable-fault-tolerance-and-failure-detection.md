@@ -8,7 +8,7 @@ We’ll use a sloppy quorum instead of strict quorum membership. Usually, a lead
 
 In the sloppy quorum, the first �n healthy nodes from the preference list handle all read and write operations. The �n healthy nodes may not always be the first �n nodes discovered when moving clockwise in the consistent hash ring.
 
-Let’s consider the following configuration with �=3n=3. If node �A is briefly unavailable or unreachable during a write operation, the request is sent to the next healthy node from the preference list, which is node �D in this case. It ensures the desired availability and durability. After processing the request, the node �D includes a hint as to which node was the intended receiver (in this case, �A). Once node �A is up and running again, node �D sends the request information to �A so it can update its data. Upon completion of the transfer, �D removes this item from its local storage without affecting the total number of replicas in the system.
+Let’s consider the following configuration with n=3. If node �A is briefly unavailable or unreachable during a write operation, the request is sent to the next healthy node from the preference list, which is node �D in this case. It ensures the desired availability and durability. After processing the request, the node �D includes a hint as to which node was the intended receiver (in this case, �A). Once node �A is up and running again, node �D sends the request information to �A so it can update its data. Upon completion of the transfer, �D removes this item from its local storage without affecting the total number of replicas in the system.
 
 <figure><img src="../.gitbook/assets/Screenshot 2023-08-22 at 12.21.39 AM.png" alt=""><figcaption></figcaption></figure>
 

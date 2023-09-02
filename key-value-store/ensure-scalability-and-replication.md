@@ -83,11 +83,11 @@ In the **peer-to-peer** approach, all involved storage areas are primary, and th
 
 <figure><img src="../.gitbook/assets/Screenshot 2023-08-21 at 8.40.42 PM (1).png" alt=""><figcaption></figcaption></figure>
 
-We’ll use a peer-to-peer relationship for replication. We’ll replicate the data on multiple hosts to achieve durability and high availability. Each data item will be replicated at �n hosts, where �n is a parameter configured per instance of the key-value store. For example, if we choose �n to be 55, it means we want our data to be replicated to five nodes.
+We’ll use a peer-to-peer relationship for replication. We’ll replicate the data on multiple hosts to achieve durability and high availability. Each data item will be replicated at n hosts, where n is a parameter configured per instance of the key-value store. For example, if we choose n to be 55, it means we want our data to be replicated to five nodes.
 
-Each node will replicate its data to the other nodes. We’ll call a node coordinator that handles read or write operations. It’s directly responsible for the keys. A coordinator node is assigned the key “K.” It’s also responsible for replicating the keys to �−1n−1 successors on the ring (clockwise). These lists of successor virtual nodes are called preference lists. To avoid putting replicas on the same physical nodes, the preference list can skip those virtual nodes whose physical node is already in the list.
+Each node will replicate its data to the other nodes. We’ll call a node coordinator that handles read or write operations. It’s directly responsible for the keys. A coordinator node is assigned the key “K.” It’s also responsible for replicating the keys to n−1 successors on the ring (clockwise). These lists of successor virtual nodes are called preference lists. To avoid putting replicas on the same physical nodes, the preference list can skip those virtual nodes whose physical node is already in the list.
 
-Let’s consider the illustration given below. We have a replication factor, �n, set to 3. For the key “K,” the replication is done on the next three nodes: B, C, and D. Similarly, for key “L,” the replication is done on nodes C, D, and E.
+Let’s consider the illustration given below. We have a replication factor, n, set to 3. For the key “K,” the replication is done on the next three nodes: B, C, and D. Similarly, for key “L,” the replication is done on nodes C, D, and E.
 
 <figure><img src="../.gitbook/assets/Screenshot 2023-08-21 at 8.41.04 PM.png" alt=""><figcaption></figcaption></figure>
 

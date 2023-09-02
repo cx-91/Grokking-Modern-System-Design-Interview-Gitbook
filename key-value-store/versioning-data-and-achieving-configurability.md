@@ -60,9 +60,9 @@ To update an object in the key-value store, the client must give the `context`. 
 
 #### Compromise with vector clocks limitations <a href="#compromise-with-vector-clocks-limitations" id="compromise-with-vector-clocks-limitations"></a>
 
-The size of vector clocks may increase if multiple servers write to the same object simultaneously. It’s unlikely to happen in practice because writes are typically handled by one of the top �n nodes in a preference list.
+The size of vector clocks may increase if multiple servers write to the same object simultaneously. It’s unlikely to happen in practice because writes are typically handled by one of the top n nodes in a preference list.
 
-For example, if there are network partitions or multiple server failures, write requests may be processed by nodes not in the top �n nodes in the preference list. As a result we can have a long version like this:&#x20;
+For example, if there are network partitions or multiple server failures, write requests may be processed by nodes not in the top n nodes in the preference list. As a result we can have a long version like this:&#x20;
 
 <figure><img src="../.gitbook/assets/Screenshot 2023-08-21 at 10.53.45 PM.png" alt=""><figcaption></figcaption></figure>
 
@@ -72,7 +72,7 @@ We can limit the size of the vector clock in these situations. We employ a clock
 
 One of our functional requirements is that the system should be configurable. We want to control the trade-offs between availability, consistency, cost-effectiveness, and performance. So, let’s achieve configurability by implementing the basic `get` and `put` functions of the key-value store.
 
-Every node can handle the `get` (read) and `put` (write) operations in our system. A node handling a read or write operation is known as a **coordinator**. The coordinator is the first among the top �n nodes in the preference list.
+Every node can handle the `get` (read) and `put` (write) operations in our system. A node handling a read or write operation is known as a **coordinator**. The coordinator is the first among the top n nodes in the preference list.
 
 There can be two ways for a client to select a node:
 
