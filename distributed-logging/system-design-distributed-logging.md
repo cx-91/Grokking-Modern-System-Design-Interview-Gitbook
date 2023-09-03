@@ -6,11 +6,11 @@ A **log file** records details of events occurring in a software application. Th
 
 ### Need for logging <a href="#need-for-logging-0" id="need-for-logging-0"></a>
 
-Logging is essential in understanding the flow of an event in a distributed system. It seems like a tedious task, but upon facing a failure or a security breach, logging helps pinpoint when and how the system failed or was compromised. It can also aid in finding out the root cause of the failure or breach. It decreases the meantime to repair a system.
+Logging is essential in understanding the flow of an event in a distributed system. It seems like a tedious task, but upon facing a failure or a security breach, logging helps pinpoint when and how the system failed or was compromised. It can also aid in finding out the root cause of the failure or breach. It decreases the meantime to repair(Mean time to repair (MTTR) is a basic measure of the maintainability of repairable items. It represents the average time required to repair a failed component or device. (Source: Wikipedia)) a system.
 
 Why don’t we simply print out our statements to understand the application flow? It’s possible but not ideal. Simple print statements have no way of tracking the severity of the message. The output of print functions usually goes to the terminal, while our need could be to persist such data on a local or remote store. Moreover, we can have millions of print statements, so it’s better to structure and store them properly.
 
-Issues with using print statements as an alternative to logging
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.32.19 AM.png" alt=""><figcaption></figcaption></figure>
 
 Concurrent activity by a service running on many nodes might need causality information to stitch together a correct flow of events properly. We must be careful while dealing with causality in a distributed system. We use a logging service to appropriately manage the diagnostic and exploratory data of our distributed software.
 
