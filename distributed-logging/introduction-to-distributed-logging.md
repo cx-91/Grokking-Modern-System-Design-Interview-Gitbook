@@ -8,7 +8,7 @@ Moreover, it is also not necessary that a microservice is deployed on only one n
 
 <figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.33.50 AM.png" alt=""><figcaption></figcaption></figure>
 
-### &#x20;<a href="#restrain-the-log-size-0" id="restrain-the-log-size-0"></a>
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.34.19 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Restrain the log size <a href="#restrain-the-log-size-0" id="restrain-the-log-size-0"></a>
 
@@ -22,13 +22,13 @@ We’ll determine which messages we should log into the system in this approach.
 
 We can also categorize the types of messages and apply a filter that identifies the important messages and only logs them to the system.
 
-Point to Ponder
-
 **Question**
 
 What is a scenario where the sampling approach will not work?
 
-Show Answer
+Let’s consider an application that processes a financial ATM transaction. It runs various services like fraud detection, expiration time checking, card validation, and many more. If we start to miss out logging of any service, we cannot identify an end-to-end flow that affects the debugging in case an error occurs. Using sampling, in this case, is not ideal and results in the loss of useful data.
+
+\-----------
 
 #### Use categorization <a href="#use-categorization-0" id="use-categorization-0"></a>
 
@@ -43,8 +43,6 @@ Let’s look into the logging support provided by various programming languages.
 Usually, the production logs are set to print messages with the severity of `WARNING` and above. But for more detailed flow, the severity levels can be set to `DEBUG` and `INFO` levels too.
 
 Click on the “Run” button to see the execution of an example that uses Python’s logging library to print logs.
-
-1234567891011121314151617import logging as log# set the logging level to DEBUGlog.basicConfig(level=log.DEBUG)for i in range(6):    if i == 0:        log.debug("Debug level")    elif i == 1:        log.info("Info level")    elif i == 2:        log.warning("Warning level")    elif i == 3:        log.error("Error level")    elif i == 4:        log.critical("Critical level")    elif i == 5:        print("Uncomment the following to view a system generated error:")        #print(3/0)RunSaveReset
 
 > The output will be similar to:
 >

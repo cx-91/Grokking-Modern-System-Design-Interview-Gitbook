@@ -16,7 +16,7 @@ The functional requirements of the distributed task scheduler are as follows:
 * **Release resources**: After successfully executing a task, the system should take back the resources assigned to the task.
 * **Show task status**: The system should show the users the current status of the task.
 
-Functional requirements of the distributed task scheduler
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.45.38 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Non-functional requirements <a href="#non-functional-requirements-0" id="non-functional-requirements-0"></a>
 
@@ -27,7 +27,7 @@ The non-functional requirements of the distributed task scheduler are as follows
 * **Scalability:** The system should be able to schedule and execute an ever-increasing number of tasks per day. Fault-tolerance: The system must be fault-tolerant by providing services uninterrupted despite faults in one or more of its components.
 * **Bounded waiting time:** This is how long a task needs to wait before starting execution. We must not execute tasks much later than expected. Users shouldn’t be kept on waiting for an infinite time. If the waiting time for users crosses a certain threshold, they should be notified.
 
-Non-functional requirements of distributed task scheduler
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.46.08 AM.png" alt=""><figcaption></figcaption></figure>
 
 So far in this lesson, we have learned about task schedulers in general and distinguished between centralized and distributed task schedulers. Lastly, we listed the requirements of the distributed task scheduler system.
 
@@ -35,7 +35,7 @@ So far in this lesson, we have learned about task schedulers in general and dist
 
 We’ll utilize the following building blocks in the design of our task scheduling system:
 
-Building blocks of a task scheduler
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.46.35 AM.png" alt=""><figcaption></figcaption></figure>
 
 * [**Rate limiter**](https://www.educative.io/collection/page/10370001/4941429335392256/4770834422169600) is required to limit the number of tasks so that our system is reliable.
 * [**A sequencer**](https://www.educative.io/collection/page/10370001/4941429335392256/6499939719053312) is needed to uniquely identify tasks.

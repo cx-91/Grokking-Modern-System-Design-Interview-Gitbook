@@ -10,7 +10,7 @@ This scheduling mechanism can affect the reliability of the system, availability
 * Tasks that can be delayed.
 * Tasks that need to be executed periodically (for example, every 5 minutes, or every hour, or every day).
 
-Multiple queues based on the task categories
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.52.16 AM.png" alt=""><figcaption></figcaption></figure>
 
 Our system ensures that tasks in non-urgent queues are not starved. As soon as some task’s delay limit is about to be reached, it is moved to the urgent tasks queue so that it gets service. We’ll see how the task scheduler implements priorities later in this lesson.
 
@@ -24,13 +24,13 @@ If clients don’t set the execution cap, the scheduler uses its default upper b
 
 Cloud providers can’t let a task execute for an unlimited time for a basic (free) account, because using their resources costs a certain fee to the providers. To handle such cases, clients are informed about maximum usage limits so that they can handle long task execution. For example, clients may design their task in such a way that they checkpoint after some time and load from that state to resume progress in case resources are taken from the client due to usage limit.
 
-Point to Ponder
-
 **Question**
 
 What if a long task is 90% executed, but before it completes, the machine that was executing this task fails?
 
-Show Answer
+The task scheduler will re-execute the task on some other machine. Tasks need to be either idempotent, which is discussed later in the lesson, or they should be able to restore their state from a previous checkpoint. Once the state is saved, we can resume that task’s execution on any other machine. This makes our system fault tolerant and saves our resources.
+
+\---------------
 
 ### Prioritization <a href="#prioritization-0" id="prioritization-0"></a>
 
@@ -38,13 +38,17 @@ There are tasks that need urgent execution. For example, in a social application
 
 To prioritize the tasks, the task scheduler maintains a **delay tolerance** parameter for each task and executes the task close to its delay tolerance. **Delay tolerance** is the maximum amount of time a task execution could be delayed. The task that has the shortest delay tolerance time is executed first. By using a delay tolerance parameter, we can postpone the tasks with longer delay tolerance values to make room for urgent tasks during peak times.
 
-Point to Ponder
-
 **Question**
 
 How do we determine the value of delay tolerance?
 
-Show Answer
+Since there are different categories of tasks in various applications, the application owners or clients can set or automate the values themselves, depending upon the task category. For example, in a social media application like Facebook, we can generate a newsfeed, suggest friends, allow users to mark themselves safe after a disaster, send notifications about a live stream event, and many more. Out of the listed tasks, the priority tasks should be to mark a person safe during an earthquake and send notifications about live stream events. Clients can tighten the delay tolerance values of these tasks down to milliseconds or a few seconds while tasks like suggesting friends can be delayed for days.
+
+The task scheduling system itself can set the delay tolerance value depending on the task category and its severity.
+
+There are different costs for different priorities (there are usually higher costs for high-priority tasks, for example) so that customers can carefully categorize their tasks.
+
+\-----------------
 
 ### Resource capacity optimization <a href="#resource-capacity-optimization-0" id="resource-capacity-optimization-0"></a>
 
@@ -56,21 +60,29 @@ There are tasks that don’t need urgent execution. For example, in a social app
 
 If the task executes successfully, but for some reason the machine fails to send an acknowledgement, the scheduler will schedule the task again. The task is executed again, and we end up with the wrong result, which means the task was non-idempotent. An example of non-idempotence is shown in the following illustration:
 
-A has 20 dollars. It makes a request to send 10 dollars to B, which has 0 dollars. A is the sender, and B is the receiver**1** of 11
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.57.04 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.57.24 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.57.44 AM.png>)
 
 We don’t want the final result to change when executing the task again. This is critical in financial applications while transferring money. We require that tasks are idempotent. An idempotent task produces the same result, no matter how many times we execute it. The execution of an idempotent task is shown in the following illustration:
 
-A makes a request to send 10 dollars to B with the idempotence key that is added by the application**1** of 10
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.58.30 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.58.48 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.59.04 AM.png>)
 
 Let’s make the task of uploading a video to the database an idempotent operation. We don’t want the video to be duplicated in the database in case the uploader didn’t receive the acknowledgment. Idempotency ensures that the video is not duplicated. This property is added in the implementation by the developers where they identify the video by something (for example, its name) and overwrite the old one. This way, no matter how many times someone uploads it, the final result is the same. Idempotency enables us to simply re-execute a failed task.
-
-Point to Ponder
 
 **Question**
 
 How should we handle task execution that can never be completed because of an infinite loop in the payload of that task?
 
-Show Answer
+We need to mark and kill such tasks. So, for this purpose, we can set **time limits**. If it takes more than the specified execution cap value, we can kill the task. But it’s challenging to differentiate between a buggy task and a long task. We can handle it at the application level where the clients take care of the long tasks by saving the state at different times. Clients can also resume from that state if the task scheduler kills that task, assuming that the task contains an infinite loop.
+
+\----------------
 
 ### Schedule and execute untrusted tasks <a href="#schedule-and-execute-untrusted-tasks-0" id="schedule-and-execute-untrusted-tasks-0"></a>
 
@@ -86,12 +98,12 @@ Programs have latent bugs and might have malicious intent. When using task sched
 * Consider code sandboxing using dockers or virtual machines.
 * Use performance isolation between tasks by monitoring tasks’ resource utilization and capping (or terminating) badly behaving tasks.
 
-Point to Ponder
-
 **Question**
 
 What happens when the same task fails multiple times?
 
-Show Answer
+We can use a dead-letter queue facility to isolate repeatedly failing tasks.
+
+\--------------
 
 Now, let’s evaluate the design of our distributed task scheduler in the next lesson.

@@ -14,7 +14,7 @@ So, in general, the big components of our system are:
 * **Resources:** The task is executed on these components.
 * **Scheduler**: A scheduler performs processes between clients and resources and decides which task should get resources first.
 
-Scheduler putting tasks into a queue for resource allocation
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.48.22 AM.png" alt=""><figcaption></figcaption></figure>
 
 As shown in the above illustration, it is necessary to put the incoming tasks into a **queue**. It is because of the following reasons:
 
@@ -37,15 +37,15 @@ When a task comes for scheduling, it should contain the following information wi
 
 The design of the task scheduler is shown in the following illustration:
 
-The design of task scheduler
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.48.47 AM.png" alt=""><figcaption></figcaption></figure>
 
 * **Clients**: The clients of the cloud providers are individuals or organizations from small to large businesses who want to execute their tasks.
 * **Rate limiter**: The resources available for a client depend on the cost they pay. It is important to limit the number of tasks for the reliability of our service. For instance, �X number of tasks per hour are allowed to enter the system. Others will get a message like “Limit exceeded” instead of accepting the task and responding late. A rate limiter limits the number of tasks the client schedules based on its subscription. If the limit is exceeded, it returns an error message to the client that the rate limit has been exceeded.
 * **Task submitter**: The task submitter admits the task if it successfully passes through the rate limiter. There isn’t a single task submitter. Instead, we have a cluster of nodes that admit the increasing number of tasks.
 * **Unique ID generator**: It assigns unique IDs to the newly admitted tasks.
 * **Database**: All of the tasks taken by the task submitter are stored in a distributed database. For each task, we have some attributes, and all of the attributes except one are stored in the relational database.
-  * **Relational database (RDB)**: A relational database stores task IDs, user IDs, required resources, execution caps, the total number of attempts made by the client, delay tolerance, and so on, as shown in the following table. We can find the details on the RDB [here](https://www.educative.io/collection/page/10370001/4941429335392256/6521598450597888).
-  * **Graph database (GDB)**: This is a non-relational database that uses the graph data structure to store data. We use it to build and store a directed acyclic graph (DAG) of dependent tasks, topologically sorted by the task submitter, so that we can schedule tasks according to that DAG. We can find more details of the graph DB [here](https://www.educative.io/collection/page/10370001/4941429335392256/6521598450597888).
+  * **Relational database (RDB)**: A relational database stores task IDs, user IDs, required resources, execution caps, the total number of attempts made by the client, delay tolerance, and so on, as shown in the following table. We can find the details on the RDB [here](../databases/types-of-databases/).
+  * **Graph database (GDB)**: This is a non-relational database that uses the graph data structure to store data. We use it to build and store a directed acyclic graph (DAG) of dependent tasks, topologically sorted by the task submitter, so that we can schedule tasks according to that DAG. We can find more details of the graph DB [here](../databases/types-of-databases/).
 
 ### Database Schema
 
@@ -63,20 +63,20 @@ The design of task scheduler
 
 > **Note:** If we use geo-replicated data stores, we can run multiple instances of our task scheduling system in different data centers to achieve even larger scale and higher resource utilization.
 
-* **Batching and prioritization**: After we store the tasks in the RDB, the tasks are grouped into batches. Prioritization is based on the attributes of the tasks, such as delay tolerance or the tasks with short execution cap, and so on. The top �K priority tasks are pushed into the distributed queue, where �K limits the number of elements we can push into the queue. The value of �K depends t on many factors, such as currently available resources, the client or task priority, and subscription level.
-
-Point to Ponder
+* **Batching and prioritization**: After we store the tasks in the RDB, the tasks are grouped into batches. Prioritization is based on the attributes of the tasks, such as delay tolerance or the tasks with short execution cap, and so on. The top K priority tasks are pushed into the distributed queue, where K limits the number of elements we can push into the queue. The value of K depends t on many factors, such as currently available resources, the client or task priority, and subscription level.
 
 **Question**
 
 Why do we store tasks in a database? Why should we not push the tasks directly to the queue?
 
-Show Answer
+The queue does not hold data permanently. We pay a cost for the queue service we use. So, we just push those tasks that are ready for execution shortly to the queue. The tasks that are successfully executed need to be removed from the queue. Moreover, there are different scheduling types. A task could be scheduled once, daily, weekly, monthly, or annually. Therefore, we have to save the task somewhere in our storage.
+
+\-----------
 
 * **Distributed queue**: It consists of a queue and a queue manager. The queue manager adds, updates, or deletes tasks in the queue. It keeps track of the types of queues we use. It is also responsible for keeping the task in the queue until it executes successfully. In case a task execution fails, that task is made visible in the queue again. The queue manager knows which queue to run during the peak time and which queue to run during the off-peak time.
 * **Queue manager**: The queue manager deletes a task from the queue if it executes successfully. It also makes the task visible if its previous execution failed. It retries for the allowed number of attempts for a task in case of a failed execution.
 * **Resource manager**: The resource manager knows which of the resources are free. It pulls the tasks from the distributed queue and assigns them resources. The resource manager keeps track of the execution of each task and sends back their statuses to the queue manager. If a task goes beyond its promised or required resource use, that task will be terminated, and the status is sent back to the task submitter, which will notify the client about the termination of the task through an error message.
-* **Monitoring service**: It is responsible for checking the health of the resource manager and the resources. If some resource fails, it alerts the administrators to repair the resource or add new resources if required. If resources are not being used, it alerts the administrators to remove them or power them off. Here’s [a detailed discussion](https://www.educative.io/collection/page/10370001/4941429335392256/6310983387840512) on the design of monitoring services.
+* **Monitoring service**: It is responsible for checking the health of the resource manager and the resources. If some resource fails, it alerts the administrators to repair the resource or add new resources if required. If resources are not being used, it alerts the administrators to remove them or power them off. Here’s [a detailed discussion](../distributed-monitoring/system-design-distributed-monitoring.md) on the design of monitoring services.
 
 ### Task submitter <a href="#task-submitter-0" id="task-submitter-0"></a>
 

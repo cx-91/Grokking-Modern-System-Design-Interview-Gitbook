@@ -27,7 +27,7 @@ A task scheduler is a critical component of a system for getting work done effic
 
 The process of deciding and assigning resources to the tasks in a timely manner is called **task scheduling**. The visual difference between an OS-level task scheduler and a data center-level task scheduler is shown in the following illustration:
 
-An OS-level task scheduler vs. a data center-level task scheduler
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.44.41 AM.png" alt=""><figcaption></figcaption></figure>
 
 The OS task scheduler schedules a node’s local tasks or processes on that node’s computational resources. At the same time, the data center’s task scheduler schedules billions of tasks coming from multiple tenants that use the data center’s resources.
 

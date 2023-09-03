@@ -30,7 +30,7 @@ The design of a distributed logging system will utilize the following building b
 * [**Pub-sub system**](https://www.educative.io/pageeditor/10370001/4941429335392256/4996814243889152): We’ll use a pub-sub- system to handle the huge size of logs.
 * [**Distributed search**](https://www.educative.io/pageeditor/10370001/4941429335392256/5400897294696448): We’ll use distributed search to query the logs efficiently.
 
-Building blocks we will use
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.37.44 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### API design <a href="#api-design-0" id="api-design-0"></a>
 
@@ -43,8 +43,6 @@ The API call to perform writing should look like this:
 ```txt
 write(unique_ID, message_to_be_logged)
 ```
-
-###
 
 | **Parameter**          | **Description**                                                                 |
 | ---------------------- | ------------------------------------------------------------------------------- |
@@ -60,8 +58,6 @@ searching(keyword)
 ```
 
 This call returns a list of logs that contain the keyword.
-
-###
 
 | **Parameter** | **Description**                                           |
 | ------------- | --------------------------------------------------------- |
@@ -80,7 +76,7 @@ In addition to the building blocks, let’s list the major components of our sys
 
 The design for this method looks like this:
 
-Initial design
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.38.44 AM.png" alt=""><figcaption></figcaption></figure>
 
 There are millions of servers in a distributed system, and using a single log accumulator severely affects scalability. Let’s learn how we’ll scale our system.
 
@@ -98,23 +94,27 @@ Each service will push its data to the **log accumulator** service. It is respon
 
 * Receiving the logs.
 * Storing the logs locally.
-* Pushing the logs to a [pub-sub system](https://www.educative.io/collection/page/10370001/4941429335392256/4996814243889152).
+* Pushing the logs to a [pub-sub system](../pub-sub/system-design-the-pub-sub-abstraction.md).
 
 We use the pub-sub system to cater to our scalability issue. Now, each server has its log accumulator (or multiple accumulators) push the data to pub-sub. The pub-sub system is capable of managing a huge amount of logs.
 
 To fulfill another requirement of low latency, we don’t want the logging to affect the performance of other processes, so we send the logs asynchronously via a low-priority thread. By doing this, our system does not interfere with the performance of others and ensures availability.
 
-Multiple applications running on a server, and each application has various microservices**1** of 3
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.38.44 AM (1).png" alt=""><figcaption></figcaption></figure>
 
 We should be mindful that data can be lost in the process of logging huge amounts of messages. There is a trade-off between user-perceived latency and the guarantee that log data persists. For lower latency, log services often keep data in RAM and persist them asynchronously. Additionally, we can minimize data loss by adding redundant log accumulators to handle growing concurrent users.
-
-Point to Ponder
 
 **Question**
 
 How does logging change when we host our service on a multi-tenant cloud (like AWS) versus when an organization has exclusive control of the infrastructure (like Facebook), specifically in terms of logs?
 
-Show Answer
+Security might be one aspect that differs between multi-tenant and single-tenant settings. When we encrypt all logs and secure a logging service end-to-end, it does not come free, and has performance penalties. Additionally, strict separation of logs is required for a multi-tenant setting, while we can improve the storage and processing utilization for a single-tenant setting.
+
+Let’s take the example of Meta’s Facebook. They have millions of machines that generate logs, and the size of the logs can be several petabytes per hour. So, each machine pushes its logs to a pub-sub system named Scribe. Scribe retains data for a few days and various other systems process the information residing in the **Scribe**. They store the logs in distributed storage also. Managing the logs can be application-specific.
+
+On the other hand, for multi-tenancy, we need a separate instance of pub-sub per tenant (or per application) for strict separation of logs.
+
+\-----------
 
 > **Note:** For applications like banking and financial apps, the logs must be very secure so hackers cannot steal the data. The common practice is to encrypt the data and log. In this way, no one can decrypt the encrypted information using the data from logs.
 
@@ -122,7 +122,7 @@ Show Answer
 
 All servers in a data center push the logs to a pub-sub system. Since we use a horizontally-scalable pub-sub system, it is possible to manage huge amounts of logs. We may use multiple instances of the pub-sub per data center. It makes our system scalable, and we can avoid bottlenecks. Then, the pub-sub system pushes the data to the blob storage.
 
-Log accumulator sending data to the pub-sub system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.40.58 AM.png" alt=""><figcaption></figcaption></figure>
 
 The data does not reside in pub-sub forever and gets deleted after a few days before being stored in archival storage. However, we can utilize the data while it is available in the pub-sub system. The following services will work on the pub-sub data:
 
@@ -132,15 +132,15 @@ The data does not reside in pub-sub forever and gets deleted after a few days be
 
 The updated design is given below:
 
-Adding a filterer, error aggregator, and alert aggregator
-
-Point to Ponder
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.41.24 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Question**
 
 Do we store the logs for a lifetime?
 
-Show Answer
+Logs also have an expiration date. We can delete regular logs after a few days or months. Compliance logs are usually stored for up to three to five years. It depends on the requirements of the application.
+
+\----------------
 
 In our design, we have identified another component called the **expiration checker**. It is responsible for these tasks:
 
@@ -148,15 +148,19 @@ In our design, we have identified another component called the **expiration chec
 
 Moreover, our components log indexer and visualizer work on the blob storage to provide a good searching experience to the end user. We can see the final design of the logging service below:
 
-Logging service design
-
-Point to Ponder
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.42.03 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Question**
 
 We learned earlier that a simple user-level API call to a large service might involve hundreds of internal microservices and thousands of nodes. How can we stitch together logs end-to-end for one request with causality intact?
 
-Show Answer
+Most complex services use a front-end server to handle an end user’s request. On reception of a request, the front-end server can get a unique identifier using a sequencer. This unique identifier will be appended to all the fanned-out services. Each log message generated anywhere in the system also emits the unique identifier.
+
+Later, we can filter the log (or preprocess it) based on the unique identifiers. At this step, we are able to collect all the logs across microservices against a unique request. In the [Sequencer](https://www.educative.io/collection/page/10370001/4941429335392256/6499939719053312) building block, we discussed that we can get unique identifiers that maintain happens-before causality. Such an identifier has the property that if ID 1 is less than ID 2, then ID 1 represents a time that occurred before ID 2. Now, each log item can use a time- stamp, and we can sort log entries for a specific request in ascending order.
+
+Correctly ordering the log in a chronological (or causal) order simplifies log analyses.
+
+\-------------
 
 > **Note:** Windows Azure Storage System (WAS) uses an extensive logging infrastructure in its development. It stores the logs in local disks, and given a large number of logs, they do not push the logs to the distributed storage. Instead, they use a grep-like utility that works as a distributed search. This way, they have a unified view of globally distributed logs data.
 
