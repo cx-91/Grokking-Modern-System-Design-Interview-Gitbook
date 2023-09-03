@@ -20,7 +20,7 @@ The simplest way to build a searchable index is to assign a unique ID to each do
 
 The size of the table given above would vary, depending on the number of documents we have and the size of those documents. The table above is just an example, and the content from each document only consists of one or two sentences. With an actual, real-world example, the content of every document in the table could be pages long. This would make our table quite large. Running a search query on the document-level index given above isn’t a fast process. On each search request, we have to traverse all the documents and count the occurrence of the search string in each document.
 
-> **Note:** For a **fuzzy search**, we also have to perform different pattern-matching queries. Many strings in the documents would somehow match the searched string. First, we must find the unique candidate strings by traversing all of the documents. Then, we must single out the most approximate matched string out of these strings. We also have to find the occurrence of the most matched string in each document. This means that each search query takes a long time.
+> **Note:** For a **fuzzy search(**This type of search uses approximate string matching rather than exact matching to match the results against the search term.**)**, we also have to perform different pattern-matching queries. Many strings in the documents would somehow match the searched string. First, we must find the unique candidate strings by traversing all of the documents. Then, we must single out the most approximate matched string out of these strings. We also have to find the occurrence of the most matched string in each document. This means that each search query takes a long time.
 
 The response time to a search query depends on a few factors:
 
@@ -32,7 +32,7 @@ Running search queries on billions of documents that are document-level indexed 
 
 **Inverted index**
 
-An **inverted index** is a HashMap-like data structure that employs a document-term matrix. Instead of storing the complete document as it is, it splits the documents into individual words. After this, the **document-term matrix** identifies unique words and discards frequently occurring words like “to,” “they,” “the,” “is,” and so on. Frequently occurring words like those are called **terms**. The document-term matrix maintains a **term-level index** through this identification of unique words and deletion of unnecessary terms.
+An **inverted index** is a HashMap-like data structure that employs a document-term matrix. Instead of storing the complete document as it is, it splits the documents into individual words. After this, the **document-term matrix(**A document-term matrix is a mathematical matrix that represents the frequency of terms in a list of documents.**)** identifies unique words and discards frequently occurring words like “to,” “they,” “the,” “is,” and so on. Frequently occurring words like those are called **terms**. The document-term matrix maintains a **term-level index** through this identification of unique words and deletion of unnecessary terms.
 
 For each term, the index computes the following information:
 
@@ -65,11 +65,21 @@ In the table above, the “Term” column contains all the unique terms that are
 
 > **Note:** Instead of lists, the mappings could also be in the form of tuples— such as doc, freq, and loc.
 
-**Inverted index** is one of the most popular index mechanisms used in document retrieval. It enables efficient implementation of boolean, extended boolean, proximity, relevance, and many other types of search algorithms.
+**Inverted index** is one of the most popular index mechanisms used in document retrieval. It enables efficient implementation of \
+\
+boolean(Boolean searching is based on a symbolic logic method established by George Boole, an English mathematician. It allows you to limit, broaden, or define your search by combining words and phrases with the words AND, OR, and NOT (also known as Boolean operators). Source: Wikipedia), \
+\
+extended boolean(Extended Boolean search overcomes the disadvantages of the Boolean search. The main disadvantage of the boolean search is that it doesn’t incorporate term weights in boolean queries, producing either too small or too big result set. Extended boolean search makes use of partial matching and term weights. It assigns a score to the similarity between queries and documents. This way, a document may be relevant if it matches part of the searched terms and is returned as a result, whereas it was not in the Boolean search. Source: Wikipedia), \
+\
+proximity(The proximity search finds documents wherein two or more term occurrences that are separately matching are within a certain distance, where distance is the number of intermediate words or characters. Source: Wikipedia), \
+\
+relevance(Relevance search measures the accuracy of the relationship between the search query and the search results. Source: Wikipedia), \
+\
+and many other types of search algorithms.
 
 **Advantages of using an inverted index**
 
-* An inverted index facilitates full-text searches.
+* An inverted index facilitates full-text searches(Full-text search draws attention to searching for text within large amounts of electronically recorded text data and delivers results that include some or all of the words in the query. Traditional search, on the other hand, would provide exact matches.).
 * An inverted index reduces the time of counting the occurrence of a word in each document at the run time because we have mappings against each term.
 
 **Disadvantages of using an inverted index**
@@ -100,7 +110,9 @@ A single term can appear in millions of documents. Thus, the list of documents r
 
 Would this technique work when too many documents are found against a single term?
 
-Show Answer
+It probably wouldn’t work to return all the documents that are found. Instead, we should sort them based on the relevance to the search query. The top results should be returned to the user, instead of returning all the documents.
+
+\------------
 
 #### Factors of index design <a href="#factors-of-index-design-0" id="factors-of-index-design-0"></a>
 
@@ -109,7 +121,7 @@ Here are some of the factors that we should keep in mind while designing an inde
 * **Size of the index**: How much computer memory, and RAM, is required to keep the index. We keep the index in the RAM to support the low latency of the search.
 * **Search speed**: How quickly we can find a word from an inverted index.
 * **Maintenance of the index**: How efficiently the index can be updated if we add or remove a document.
-* **Fault tolerance**: How critical it is for the service to remain reliable. Coping with index corruption, supporting whether invalid data can be treated in isolation, dealing with defective hardware, partitioning, and replication are all issues to consider here.
+* **Fault tolerance**: How critical it is for the service to remain reliable. Coping with index corruption, supporting whether invalid data(The data that makes no sense or doesn’t exist can affect the performance of our search when added to the index. We have to detect such data before adding it to the index.) can be treated in isolation, dealing with defective hardware, partitioning, and replication are all issues to consider here.
 * **Resilience**: How resilient the system is against someone trying to game the system and guard against search engine optimization (SEO) schemes, since we return only a handful of relevant results against a search.
 
 In light of the design factors listed above, let’s look at some problems with building an index on a centralized system.
@@ -118,7 +130,7 @@ In light of the design factors listed above, let’s look at some problems with 
 
 In a **centralized search system**, all the search system components run on a single node, which is computationally quite capable. The architecture of a centralized search system is shown in the following illustration:
 
-The architecture of a centralized search system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.21.56 AM.png" alt=""><figcaption></figcaption></figure>
 
 * The **indexing process** takes the documents as input and converts them into an inverted index, which is stored in the form of a binary file.
 * The **query processing** or **search process** interprets the binary file that contains the inverted index. It also computes the intersection of the inverted lists for a given query to return the search results against the query.

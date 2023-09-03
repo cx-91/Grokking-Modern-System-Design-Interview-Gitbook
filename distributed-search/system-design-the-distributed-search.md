@@ -6,7 +6,7 @@ Nowadays, we see a search bar on almost every website. We use that search bar to
 
 Let’s take another example. There are billions of videos uploaded and stored on YouTube. Imagine if YouTube didn’t provide us with a search bar. How would we find a specific video among the millions of videos that have been posted on YouTube over the years? It would take months to navigate through all of those videos and find the one we need. Users find it challenging to find what they’re looking for simply by scrolling around.
 
-Search bar
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.10.11 AM.png" alt=""><figcaption></figcaption></figure>
 
 Search engines are an even bigger example. We have billions of websites on the Internet. Each website has many web pages and there is plenty of content on each of these web pages. With so much content, the Internet would practically be useless without search engines, and users would end up lost in a sea of irrelevant data. Search engines are, essentially, filters for the massive amount of data available. They let users quickly obtain information that is of true interest without having to sift through too many unnecessary web pages.
 
@@ -20,9 +20,9 @@ A **search system** is a system that takes some text input, a search query, from
 * An **indexer**, which builds a searchable index.
 * A **searcher**, which responds to search queries by running the search query on the _index_ created by the _indexer_.
 
-The three phases of a search system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.10.35 AM.png" alt=""><figcaption></figcaption></figure>
 
-**Note:** We have a separate chapter dedicated to the explanation of the [crawler](https://www.educative.io/collection/page/10370001/4941429335392256/4695113376989184) component. In this chapter, we’ll focus on indexing.
+**Note:** We have a separate chapter dedicated to the explanation of the [crawler](../design-a-web-crawler/system-design-web-crawler.md) component. In this chapter, we’ll focus on indexing.
 
 ### How will we design a distributed search system? <a href="#how-will-we-design-a-distributed-search-system-0" id="how-will-we-design-a-distributed-search-system-0"></a>
 

@@ -13,13 +13,15 @@ Because of these key reasons, we’ll look at an alternative approach for distri
 
 Rather than recomputing the index on each replica, we compute the inverted index on the primary node only. Next, we communicate the inverted index (binary blob/file) to the replicas. The key benefit of this approach is that it avoids using the duplicated amount of CPU and memory for indexing on replicas.
 
-Point to Ponder
-
 **Question**
 
 What are the disadvantages of the above-proposed solution?
 
-Show Answer
+Since the inverted index will be transferred to the replicas, this will introduce a transmission latency to copy the inverted index file because the size of the index file can be very large.
+
+When the primary node receives new indexing operations, the inverted index file changes. Each replica needs to fetch the latest version of the file after a certain amount of indexing operations reaches a defined threshold.
+
+\--------------
 
 ### Separate the indexing and search <a href="#separate-the-indexing-and-search-0" id="separate-the-indexing-and-search-0"></a>
 
@@ -33,9 +35,9 @@ We’ll use these technologies to redesign our distributed indexing and searchin
 
 The illustration below depicts the generation and transfer of an inverted index between an indexer and a searcher node:
 
-The indices produced by the indexing nodes are stored on the distributed storage, and the nodes involved in the search reads indices from the distributed storage to produce a result for the user's query
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.27.38 AM.png" alt=""><figcaption></figcaption></figure>
 
-In the above illustration, a single node is shown for each indexing and searching operation. But, in reality, there would be an �N number of nodes in the indexing phase, one node per partition (set of documents), that produces inverted indices. The inverted index is stored in the form of binary files on the nodes’ local storage. Caching these blob files will result in performance improvement. These binary files are also pushed to a distributed storage. In the case of a hardware failure, a new searcher or indexer machine is added, and a copy of the data is retrieved from the distributed storage.
+In the above illustration, a single node is shown for each indexing and searching operation. But, in reality, there would be an N number of nodes in the indexing phase, one node per partition (set of documents), that produces inverted indices. The inverted index is stored in the form of binary files on the nodes’ local storage. Caching these blob files will result in performance improvement. These binary files are also pushed to a distributed storage. In the case of a hardware failure, a new searcher or indexer machine is added, and a copy of the data is retrieved from the distributed storage.
 
 When the upload is complete, the searcher nodes download the index files. Depending upon user search patterns, the searching nodes will maintain a cache of frequently asked queries and serve data from RAM. A user search query will be extended to all searcher nodes, which will generate responses according to their respective indices. A merger node in the front-end servers will combine all search results and present them to the user.
 
@@ -64,9 +66,9 @@ Note that the Reducers cannot start as long as the Mappers are working. This mea
 
 The slides below depict a simplified setup of how MapReduce can be used to generate an inverted index:
 
-A cluster manager and document partitions**1** of 5
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.28.42 AM (1).png" alt=""><figcaption></figcaption></figure>
 
-To keep it simple, we have just shown two indicators for each term in the above illustration: the list of documents in which the term appears and the list of the frequency of the term in each document (refer to [Indexing](https://www.educative.io/collection/page/10370001/4941429335392256/6595902341120000) for details).
+To keep it simple, we have just shown two indicators for each term in the above illustration: the list of documents in which the term appears and the list of the frequency of the term in each document (refer to [Indexing](indexing-in-a-distributed-search.md) for details).
 
 > **Note:** The above MapReduce setup is a simplified version of what happens in practice. A complex pipeline of the MapReduce framework is required to manage the complexities of a real-world search engine. However, the fundamental principles are the same as we presented here.
 

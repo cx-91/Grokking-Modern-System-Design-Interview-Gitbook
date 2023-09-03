@@ -4,7 +4,7 @@
 
 Let’s shape the overall design of a distributed search system before getting into a detailed discussion. There are two phases of such a system, as shown in the illustration below. The **offline phase** involves data crawling and indexing in which the user has to do nothing. The **online phase** consists of searching for results against the search query by the user.
 
-High-level design of a distributed search system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.23.08 AM.png" alt=""><figcaption></figcaption></figure>
 
 * The **crawler** collects content from the intended resource. For example, if we build a search for a YouTube application, the crawler will crawl through all of the videos on YouTube and extract textual content for each video. The content could be the title of the video, its description, the channel name, or maybe even the video’s annotation to enable an intelligent search based not only on the title and description but also on the content of that video. The crawler formats the extracted content for each video in a JSON document and stores these JSON documents in a distributed storage.
 * The **indexer** fetches the documents from a distributed storage and indexes these documents using **MapReduce**, which runs on a distributed cluster of commodity machines. The indexer uses a **distributed data processing system** like MapReduce for parallel and distributed index construction. The constructed index table is stored in the distributed storage.
@@ -38,6 +38,10 @@ Let’s see how we can develop a distributed indexing and searching system. We u
 
 Tip
 
+For performing distributed indexing, the machines in the cluster typically have dual-processor x86 processors running Linux, with 2–4 GB of memory per machine. It is not necessary that all machines are of the same specification, though they should be somewhat comparable. The MapReduce framework is smart enough to give more work to stronger machines.
+
+\------
+
 We use numerous small nodes for indexing to achieve cost efficiency. This process requires us to partition or split the input data (documents) among these nodes. However, a key question needs to be addressed: How do we perform this partitioning?
 
 The two most common techniques used for data partitioning in distributed indexing are these below:
@@ -45,7 +49,7 @@ The two most common techniques used for data partitioning in distributed indexin
 * **Document partitioning**: In document partitioning, all the documents collected by the web crawler are partitioned into subsets of documents. Each node then performs indexing on a subset of documents that are assigned to it.
 * **Term partitioning**: The dictionary of all terms is partitioned into subsets, with each subset residing at a single node. For example, a subset of documents is processed and indexed by a node containing the term “search.”
 
-Types of data partitioning in a distributed search
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.23.55 AM.png" alt=""><figcaption></figcaption></figure>
 
 In term partitioning, a search query is sent to the nodes that correspond to the query terms. This provides more concurrency because a stream of search queries with different query terms will be served by different nodes. However, term partitioning turns out to be a difficult task in practice. Multiword queries necessitate sending long mapping lists between groups of nodes for merging, which can be more expensive than the benefits from the increased concurrency.
 
@@ -53,7 +57,7 @@ In document partitioning, each query is distributed across all nodes, and the re
 
 Following document partitioning, let’s look into a distributed design for index construction and querying, which is shown in the illustration below. We use a cluster that consists of a number of low-cost nodes and a cluster manager. The cluster manager uses a MapReduce programming model to parallelize the index’s computation on each partition. MapReduce can work on significantly larger datasets that are difficult to be handled by a single large server.
 
-Distributed indexing and searching in a parallel fashion on multiple nodes in a cluster of commodity machines
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.24.29 AM.png" alt=""><figcaption></figcaption></figure>
 
 The system described above works as follows:
 
@@ -91,17 +95,11 @@ Each group of nodes is hosted on different availability zones for better perform
 
 Generally, a replication factor of three is enough. A replication factor of three means three nodes host the same partition and produce the index. One of the three nodes becomes the primary node, while the other two are replicas. Each of these nodes produces indexes in the same order to converge on the same state.
 
-To illustrate, let’s divide the data, a document set, into four partitions. Since the replication factor is three, one partition will be hosted by three nodes. We’ll assume that there are two availability zones (��1AZ1​ and ��2AZ2​). And in each availability zone, we have two nodes. Each node acts as a primary for only one partition (For example, Node 1 in ��1AZ1​ is the primary node for partition �1P1​). The three copies (pink, blue, and purple) for a partition are shared between the two ��AZ instances so that two copies are in one zone and the third copy is in another zone. Three colors represent three replicas of each partition. For example, the following is true for partition �4P4​:
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.26.34 AM.png" alt=""><figcaption></figcaption></figure>
 
-* The first replica, represented by the color pink, is placed in Node 2 of ��2AZ2​
-* The second replica, represented by the color blue, is placed in Node 1 of ��2AZ2​
-* The third replica, represented by the color purple, is placed in Node 2 of ��1AZ1​
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.25.00 AM.png" alt=""><figcaption></figcaption></figure>
 
-Each group in the illustration below consists of one replica from all of the four partitions (�1P1​, �2P2​, �3P3​, �4P4​)
-
-The replica distribution: Each node contains one primary partition and two replicas
-
-In the above illustration, the primary replica for �1P1​ is indicated by the dark purple color, the primary replica for �2P2​ is represented by the dark blue color, and the primary replica for �3P3​ and �4P4​ is represented by the dark pink color.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.25.59 AM.png" alt=""><figcaption></figcaption></figure>
 
 Now that we have completed replication, let’s see how indexing and searching are performed in these replicas.
 
