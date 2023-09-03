@@ -8,15 +8,15 @@ What will happen when a single tweet on Twitter gets a million likes, and the ap
 
 Let’s see the illustration below to understand this problem:
 
-Celebrity vs. common people tweet
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.03.55 AM.png" alt=""><figcaption></figcaption></figure>
 
 A single counter for each tweet posted by a celebrity is not enough to handle millions of users. The solution to this problem is a **sharded counter**, also known as a distributed counter, where each counter has a specified number of shards as needed. These shards run on different computational units in parallel. We can improve performance and reduce contention by balancing the millions of write requests across shards.
 
 First, a write request is forwarded to the specified tweet counter when the user likes that tweet. Then, the system chooses an available shard of the specified tweet counter to increment the like count. Let’s look at the illustration below to understand sharded counters having specified shards:
 
-Counters and their shards working on different computational units
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.04.19 AM.png" alt=""><figcaption></figcaption></figure>
 
-In the above illustration, the total number of shards per counter is (�+1)(N+1). We’ll use an appropriate value for �N according to our needs. Let’s discuss an example to understand how sharded counters handle millions of write and read requests for a single post.
+In the above illustration, the total number of shards per counter is (N+1). We’ll use an appropriate value for N according to our needs. Let’s discuss an example to understand how sharded counters handle millions of write and read requests for a single post.
 
 Let’s assume that a famous YouTube channel with millions of subscribers uploads a new video. The server receives a burst of write requests for video views from worldwide users. First, a new counter initiates for a newly uploaded video. The server forwards the request to the corresponding counter, and our system chooses the shard randomly and updates the shard value, which is initially zero. In contrast, when the server receives read requests, it adds the values of all the shards of a counter to get the current total.
 
@@ -40,8 +40,6 @@ The `\createCounter` API initializes a distributed counter for use. The `\create
 createCounter(counter_id, number_of_shards)
 ```
 
-###
-
 | **Parameter**      | **Description**                                                                                                                                                                  |
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `counter_id`       | It represents the unique ID of the counter. The caller of this API can use a sequencer to get a unique identifier. See the lesson on sequencer building blocks for more details. |
@@ -64,8 +62,6 @@ The `\writeCounter` API is used when we want to increment (or decrement) a count
 writeCounter(counter_id, action_type)
 ```
 
-###
-
 | **Parameter** | **Description**                                                                                                                                            |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `counter_id`  | It is the unique identifier (provided at the time of counter creation).                                                                                    |
@@ -80,8 +76,6 @@ The `\readCounter` API is used when we want to know the current value of the cou
 ```
 readCounter(counter_id)
 ```
-
-###
 
 | **Parameter** | **Description**                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

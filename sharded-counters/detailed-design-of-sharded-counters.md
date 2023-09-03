@@ -25,13 +25,13 @@ Many human-centered activities often have a long-tailed activity pattern, where 
 
 We need to monitor the write load for all the shards to appropriately route requests to specific shards, possibly using load balancers. Such a feedback mechanism can also help us decide when to close down some of the shards for a counter and when to add additional shards. This process does not only provide good performance for the end user but also utilizes our resources at near-optimal levels.
 
-Point to Ponder
-
 **Question**
 
 What happens when a user with just a few followers has a post go viral on Twitter?
 
-Show Answer
+The system needs to detect such cases where a counter unexpectedly starts getting very high write traffic. We’ll dynamically increase the number of shards of the affected counter to mitigate the situation.
+
+\----------------
 
 #### Burst of writes requests <a href="#burst-of-writes-requests-0" id="burst-of-writes-requests-0"></a>
 
@@ -43,7 +43,15 @@ One way to solve the above problem is to use a round-robin selection of shards. 
 
 The following slide show shows shard selection using the round-robin technique. We assume that user requests are first handed out to an appropriate server by the load balancer. Then, each such server uses its own round-robin scheduling to use a shard. We have shown a single server for simplicity, but a shard server can receive requests from many servers at the same time and might be overloaded, causing delays for the specific server’s request, which can be seen in the following slide.
 
-The server assigns a write request to the first free shard, shard\_1, with counter value 12, but shard\_1 has not yet fulfilled the request and incremented its counter**1** of 5
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 3.08.06 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 3.08.47 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 3.09.03 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 3.09.22 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 3.09.39 AM.png>)
 
 **Random selection**
 
@@ -53,7 +61,7 @@ Another simple approach can be to uniformly and randomly select a shard for writ
 
 The third approach is shard selection based on specific metrics. For example, a dedicated node (load balancer) manages the selection of the shards by reading the shards’ status. The below slides go over how sharded counters are created:
 
-The user creates a tweet**1** of 4
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 3.10.01 AM.png>)
 
 #### Manage read requests <a href="#manage-read-requests-0" id="manage-read-requests-0"></a>
 
@@ -61,17 +69,17 @@ When the user sends the read request, the system will aggregate the value of all
 
 The decision of when the system will sum all shards values is also very critical. If there is high write traffic along with reads, it might be virtually impossible to get a real current value because by the time we report a read value to the client, it will have already changed. So, periodically reading all the shards of a counter and caching it should serve most of the use cases. By reducing the accumulation period, we can increase the accuracy of read values.
 
-Point to Ponder
-
 **Question**
 
 Can you think of a use case where sharded counters with the above-mentioned consistency model might not be suitable?
 
-Show Answer
+We might not use shared counters with a relaxed consistency model where we need strong consistency. An example can be read-then-write scenarios where we first need to get the accurate value of something before deciding to modify it (actually, such a scenario will need transaction support).
+
+\--------------
 
 ### Using sharded counters for the Top K problem <a href="#using-sharded-counters-for-the-top-k-problem-0" id="using-sharded-counters-for-the-top-k-problem-0"></a>
 
-This section will discuss how we can use sharded counters to solve a real-world problem known as the **Top K** problem. We’ll continue to use the real-time application Twitter as an example, where calculating trends is one of the Top K problems for Twitter. Here, �K represents the number of top trends. Many users use various hashtags in their tweets. It is a huge challenge to manage millions of hashtags’ counts to show them in individual users’ trends timelines based on their locality.
+This section will discuss how we can use sharded counters to solve a real-world problem known as the **Top K** problem. We’ll continue to use the real-time application Twitter as an example, where calculating trends is one of the Top K problems for Twitter. Here, K represents the number of top trends. Many users use various hashtags in their tweets. It is a huge challenge to manage millions of hashtags’ counts to show them in individual users’ trends timelines based on their locality.
 
 The sharded counter is the key to the above problem. As discussed earlier, on Twitter, the system creates the counters for each hashtag and decides the shard count according to the user’s followers who used the hashtag in the tweet. When users on Twitter use the same hashtag again in their tweet, the count maintains the same counter created initially on the first use of that hashtag.
 
@@ -80,7 +88,7 @@ Twitter shows trends primarily based on the popularity of the specific hashtag i
 * **Region-wise hashtag count** indicates the number of tweets with the same hashtag used within a specific geographical region. For example, thousands of tweets with the same tags from New York City suggest that users in the New York area may see this hashtag in their trends timeline.
 * A **time window** indicates the amount of time during which tweets with specific tags are posted.
 
-The system calculates the 24-hour count of the specified hashtag
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.10.47 AM.png" alt=""><figcaption></figcaption></figure>
 
 Below is more detail on the above illustration:
 
@@ -101,7 +109,11 @@ Quiz
 
 Should we lock all shards of a counter before accumulating their values?
 
-Show Answer
+No. Reads can happen concurrently with writes without the need for an across-shards lock. This lock will decimate the write performance, the original reason we used sharded counters. Under a relaxed consistency model, where the value of a counter might not reflect the exact current value, there is no need for simultaneous read locks across all shards.
+
+However, depending on the specific use case, such a mechanism might be used when reads frequency is very low.
+
+\---------------------
 
 Reads can store counter values in appropriate data stores and rely on the respective data stores for read scalability. The **Cassandra** store can be used to maintain views, likes, comments, and many more counts of the users in the specified region. These counts represent the last computed sum of all shards of a particular counter.
 
@@ -111,7 +123,9 @@ We also need storage for the sharded counters, which store all information about
 
 The job of identifying the relevant counter and mapping all write requests to the appropriate counter in sharded counters can be done in parallel. We map the all-write request to the appropriate counter, and then each counter chooses a shard randomly based on some metrics to do increments and decrements. In contrast, we reduce periodically to aggregate the value of all shards of the particular counter. Then, these counter values can be stored in the Cassandra store. The slides below help illustrate these points:
 
-The users send write requests to the application server**1** of 6
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 3.11.57 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 3.12.15 AM.png>)
 
 ### Evaluation of the sharded counters <a href="#evaluation-of-the-sharded-counters-0" id="evaluation-of-the-sharded-counters-0"></a>
 

@@ -24,4 +24,4 @@ We’ll learn and explore thirteen design problems in the next chapters. We’ll
 
 Each of these designs is an independent chapter, but we recommend that you go through these chapters in the assigned order. Some problems have background material that is helpful in other design problems. For example, working through the Google Maps problem first can be useful for readers interested in learning about the Uber design problem.
 
-At the end of the course, we’ll conclude our course with the “[Spectacular Failures](https://www.educative.io/collection/page/10370001/4941429335392256/6503055815606272)” chapter, where we’ll discuss how a minor bug or mistake led to a significant outage or failure of some of the most successful systems designed.
+At the end of the course, we’ll conclude our course with the “[Spectacular Failures](../spectacular-failures/introduction-to-distributed-system-failures.md)” chapter, where we’ll discuss how a minor bug or mistake led to a significant outage or failure of some of the most successful systems designed.

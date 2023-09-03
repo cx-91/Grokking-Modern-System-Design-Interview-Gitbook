@@ -4,7 +4,7 @@
 
 System design problems are not straightforward. We don’t have a universal formula that we can use for all design problems. However, we can use a high-level common strategy to set the tone for a good solution to any design problem. We call this the **RESHADED** approach. Generally, all our design problems are solved by keeping this strategy in mind. RESHADED is a guideline that we’ll use to resolve different design problems. Although there’s no such thing as a one-size-fits-all solution, using this approach will have its advantages, as we will see.
 
-Distinctive component/featureEvaluationDetailed designAPI designHigh-level designStorage schema (optional)EstimationRequirementsRESHADEDBreakdown of each letter in the RESHADED approach
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.13.00 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Advantages of RESHADED <a href="#advantages-of-reshaded-0" id="advantages-of-reshaded-0"></a>
 
