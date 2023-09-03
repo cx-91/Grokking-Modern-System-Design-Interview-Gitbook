@@ -24,7 +24,7 @@ It’s important that our system also meets the following requirements:
 * **Good performance**: A smooth streaming experience leads to better performance overall.
 * **Reliability**: Content uploaded to the system should not be lost or damaged.
 
-Representation of the functional and non-functional requirements
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.18.02 AM.png" alt=""><figcaption></figcaption></figure>
 
 We don’t require strong consistency for YouTube’s design. Consider an example where a creator uploads a video. Not all users subscribed to the creator’s channel should immediately get the notification for uploaded content.
 
@@ -56,17 +56,7 @@ To find the storage needs of YouTube, we have to estimate the total number of vi
 
 Let’s put this in a formula by assuming the following:
 
-������������Totalstorage​ : Total storage requirement.
-
-�����������/���Totalupload/min​ : Total content uploaded (in minutes) per minute.
-
-* Example: 500 hours worth of video is uploaded in one minute.
-
-����������Storagemin​ : Storage required for each minute of content
-
-Then, the following formula is used to compute the storage:
-
-������������=�����������/���×����������Totalstorage​=Totalupload/min​×Storagemin​
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.18.44 AM.png" alt=""><figcaption></figcaption></figure>
 
 Below is a calculator to help us estimate our required resources. We’ll look first at the storage required to persist 500 hours of content uploaded per minute, where each minute of video costs 6 MBs to store:
 
@@ -78,17 +68,17 @@ Below is a calculator to help us estimate our required resources. We’ll look f
 
 Tip
 
+Try changing the values of **Hours** and **MB per minute** to see their impact on storage space requirements.
+
 The numbers mentioned above correspond to the compressed version of videos. However, we need to transcode videos into various formats for reasons that we will see in the coming lessons. Therefore, we’ll require more storage space than the one estimated above.
 
-Total storage required by YouTube in a year
-
-Quiz
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.19.43 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Question**
 
 Assuming YouTube stores videos in five different qualities and the average size of a one-minute video is 6 MB, what would the estimated storage requirements per minute be?
 
-Show Answer
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.20.19 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Bandwidth estimation <a href="#bandwidth-estimation-0" id="bandwidth-estimation-0"></a>
 
@@ -96,15 +86,7 @@ A lot of data transfer will be performed for streaming and uploading videos to Y
 
 We assume:
 
-�������������ℎTotalbandwidth​: Total bandwidth required.
-
-������������Totalcontent​: Total content (in minutes) uploaded per minute.
-
-����������Sizeminute​: Transmission required (in MBs) for each minute of content.
-
-Then, the following formula is used to do the computation below:
-
-�������������ℎ=������������\_�����������×����������Totalbandwidth​=Totalcontent\_transferred​×Sizeminute​
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.21.01 AM.png" alt=""><figcaption></figcaption></figure>
 
 **The Bandwidth Required for Uploading Videos to YouTube**
 
@@ -114,7 +96,7 @@ Then, the following formula is used to do the computation below:
 
 Show Detailed Calculations
 
-Quiz
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.21.21 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Question**
 
@@ -122,15 +104,9 @@ If 200 Gbps of bandwidth is required for satisfying uploading needs, how much ba
 
 **Hint**: The `upload:view` ratio is provided.
 
-Show AnswerTotal bandwidth required by YouTube
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.22.13 AM.png" alt=""><figcaption></figcaption></figure>
 
-#### Number of servers estimation <a href="#number-of-servers-estimation-0" id="number-of-servers-estimation-0"></a>
-
-We need to handle concurrent requests coming from 500 million daily active users. Let’s assume that a typical YouTube server handles 8,000 requests per second.
-
-������ �� ������ ������������ ℎ������ ��� ������=62,500 �������Queries handled per serverNumber of active users​=62,500 servers
-
-Number of servers required for YouTube
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.23.52 AM.png" alt=""><figcaption></figcaption></figure>
 
 > **Note:** In a real-world scenario, YouTube’s design requires storage for thumbnails, users’ data, video metadata, users’ channel information, and so on. Since the storage requirement for these data sets will not be significant compared to video files, we ignore it for simplicity’s sake.
 
@@ -138,7 +114,7 @@ Number of servers required for YouTube
 
 Now that we have completed the resource estimations, let’s identify the building blocks that will be an integral part of our design for the YouTube system. The key building blocks are given below:
 
-Building blocks in a high-level design
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.24.33 AM.png" alt=""><figcaption></figcaption></figure>
 
 * [**Databases**](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872) are required to store the metadata of videos, thumbnails, comments, and user-related information.
 * [**Blob storage**](https://www.educative.io/collection/page/10370001/4941429335392256/4862646238576640) is important for storing all videos on the platform.

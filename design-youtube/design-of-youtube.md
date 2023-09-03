@@ -4,7 +4,7 @@
 
 The high-level design shows how we’ll interconnect the various components we identified in the previous lesson. We have started developing a solution to support the functional and non-functional requirements with this design.
 
-The high-level design of YouTube
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.25.39 AM.png" alt=""><figcaption></figcaption></figure>
 
 The workflow for the abstract design is provided below:
 
@@ -14,13 +14,17 @@ The workflow for the abstract design is provided below:
 4. Some popular videos may be forwarded to the CDN, which acts as a cache.
 5. The CDN, because of its vicinity to the user, lets the user stream the video with low latency. However, CDN is not the only infrastructure for serving videos to the end user, which we will see in the detailed design.
 
-Quiz
-
 **Question**
 
 Why don’t we upload the video directly to the encoder instead of to the server? Doesn’t the current strategy introduce an additional delay?
 
-Show Answer
+There are several reasons why it’s a good idea to introduce a server in between the encoder and the client:
+
+* The client could be malicious and could abuse the encoder.
+* If the uploaded video is a duplicate, the server could filter it out.
+* Encoders will be available on a private IP address within YouTube’s network and not available for public access.
+
+\------------------
 
 ### API design <a href="#api-design-0" id="api-design-0"></a>
 
@@ -33,7 +37,7 @@ Let’s understand the design of APIs in terms of the functionalities we’re pr
 * Like or dislike videos
 * Comment on videos
 
-API design overview
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.27.41 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Upload video <a href="#upload-video-0" id="upload-video-0"></a>
 
@@ -44,8 +48,6 @@ uploadVideo(user_id, video_file, category_id, title, description, tags, de
 ```
 
 Let’s take a look at the description of the following parameters here.
-
-###
 
 | **Parameter**      | **Description**                                                                                                                 |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
@@ -70,8 +72,6 @@ streamVideo(user_id, video_id, screen_resolution, user_bitrate, device_chips
 
 Some new things introduced in this case are the following parameters:
 
-###
-
 | **Parameter**       | **Description**                                                                                                                                              |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `screen_resolution` | The server can best optimize the video if the user's screen resolution is known.                                                                             |
@@ -88,8 +88,6 @@ The `/searchVideo` API uses the GET method:
 searchVideo(user_id, search_string, length, quality, upload_date)
 ```
 
-###
-
 | **Parameter**            | **Description**                                                                             |
 | ------------------------ | ------------------------------------------------------------------------------------------- |
 | `search_string`          | This is ahe string used for searching videos by their title.                                |
@@ -104,8 +102,6 @@ We can use the GET method to access the `/viewThumbnails` API:
 ```-
 viewThumbnails(user_id, video_id)
 ```
-
-###
 
 | **Parameter** | **Description**                                                           |
 | ------------- | ------------------------------------------------------------------------- |
@@ -131,8 +127,6 @@ Much like the like and dislike API, we only have to provide the comment string t
 commentVideo(user_id, video_id, comment_text)
 ```
 
-###
-
 | **Parameter**  | **Description**                                                            |
 | -------------- | -------------------------------------------------------------------------- |
 | `comment_text` | This refers to the text that is typed by the user on the particular video. |
@@ -141,7 +135,7 @@ commentVideo(user_id, video_id, comment_text)
 
 Each of the above features in the API design requires support from the database—we’ll need to store the details above in our storage schema to provide services to the API gateway.
 
-Storage schema
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.30.53 AM.png" alt=""><figcaption></figcaption></figure>
 
 > **Note:** Much of the underlying details regarding database tables that can be mapped to services provided by YouTube have been omitted for simplicity. For example, one video can have different qualities and that is not mentioned in the “Video” table.
 
@@ -168,7 +162,7 @@ Since we highlighted the requirements of smooth streaming, server-level details,
 * **Encoders**: Each uploaded video requires compression and transcoding into various formats. Thumbnail generation service is also obtained from the encoders.
 * **CDN and colocation sites**: CDNs and colocation sites store popular and moderately popular content that is closer to the user for easy access. Colocation centers are used where it’s not possible to invest in a data center facility due to business reasons.
 
-Detailed design of YouTube’s components
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.31.30 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Design flow and technology usage <a href="#design-flow-and-technology-usage-0" id="design-flow-and-technology-usage-0"></a>
 
@@ -200,6 +194,6 @@ Each new video uploaded to YouTube will be processed for data extraction. We can
 
 Each of the JSON files can be referred to as a document. Next, keywords will be extracted from the documents and stored in a key-value store. The _key_ in the key-value store will hold all the keywords searched by the users, while the _value_ in the key-value store will contain the occurrence of each key, its frequency, and the location of the occurrence in the different documents. When a user searches for a keyword, the videos with the most relevant keywords will be returned.
 
-An abstraction of how YouTube search works
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.32.07 AM.png" alt=""><figcaption></figcaption></figure>
 
 The approach above is simplistic, and the relevance of keywords is not the only factor affecting search in YouTube. In reality, a number of other factors will matter. The processing engine will improve the search results by filtering and ranking videos. It will make use of other factors like view count, the watch time of videos, and the context, along with the history of the user, to improve search results.

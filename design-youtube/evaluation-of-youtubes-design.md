@@ -11,15 +11,17 @@ Our proposed design needs to fulfill the requirements we mentioned in the previo
    * Utilizing content delivery networks (CDNs) that make heavy use of caching and mostly serve videos out of memory. A CDN deploys its services in close vicinity to the end users for low-latency services.
 2. **Scalability**: We’ve taken various steps to ensure scalability in our design as depicted in the table below. The horizontal scalability of web and application servers will not be a problem as the users grow. However, MySQL storage cannot scale beyond a certain point. As we’ll see in the coming sections, that may require some restructuring.
 3. **Availablity**: The system can be made available through redundancy by replicating data to as many servers as possible to avoid a single point of failure. Replicating data across data centers will ensure high availability, even if an entire data center fails because of power or network issues. Furthermore, local load balancers can exclude any dead servers, and global load balancers can steer traffic to a different region if the need arises.
-4. **Reliability**: YouTube’s system can be made reliable by using data partitioning and fault-tolerance techniques. Through data partitioning, the non-availability of one type of data will not affect others. We can use redundant hardware and software components for fault tolerance. Furthermore, we can use the heartbeat protocol to monitor the health of servers and omit servers that are faulty and erroneous. We can use a variant of consistent hashing to add or remove servers seamlessly and reduce the burden on specific servers in case of non-uniform load.
-
-Quiz
+4. **Reliability**: YouTube’s system can be made reliable by using data partitioning and fault-tolerance techniques. Through data partitioning, the non-availability of one type of data will not affect others. We can use redundant hardware and software components for fault tolerance. Furthermore, we can use the heartbeat(_The heartbeat protocol is a way of identifying failures in distributed systems. Using this protocol, every node in a cluster periodically reports its health to a monitoring service._) protocol to monitor the health of servers and omit servers that are faulty and erroneous. We can use a variant(_Mirrokni, Vahab, Mikkel Thorup, and Morteza Zadimoghaddam. “Consistent hashing with bounded loads.” Proceedings of the Twenty-Ninth Annual ACM-SIAM Symposium on Discrete Algorithms. Society for Industrial and Applied Mathematics, 2018._) of consistent hashing to add or remove servers seamlessly and reduce the burden on specific servers in case of non-uniform load.
 
 **Question**
 
 Isn’t the load balancer a single point of failure (SPOF)?
 
-Show AnswerHow YouTube achieves scalability, availability, and good performance
+Just like with servers, we can use multiple load balancers. Users can be randomly forwarded to different load balancers from the Domain Name System (DNS).
+
+\----------
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.36.09 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Trade-offs <a href="#trade-offs-0" id="trade-offs-0"></a>
 
@@ -89,13 +91,13 @@ We already know that we’ll have to scale our existing infrastructure, which in
 
 Any infrastructure mentioned above requires some modifications and adaptation to the application-level logic. For example, if we continue to increase our data in MySQL servers, it can become a choke point. To effectively use a sharded database, we might have to make changes to our database client to achieve a good level of performance and maintain the ACID (atomicity, consistency, isolation, durability) properties. However, even if we continue to change to the database client as we scale, its complexity may reach a point where it is no longer manageable. Also note that we haven’t incorporated a disaster recovery mechanism into our design yet.
 
-To resolve the problems above, YouTube has developed a solution called Vitess.
+To resolve the problems above, YouTube has developed a solution called Vitess(_Sougoumarane, Sugu, and Mike Solomon. “Vitess: Scaling MySQL at YouTube Using Go.” (2012)_).
 
-Vitess system for scalability
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.37.21 AM.png" alt=""><figcaption></figcaption></figure>
 
 The key idea in Vitess is to put an abstraction on top of all the database layers, giving the database client the illusion that it is talking to a single database server. The single database in this case is the Vitess system. Therefore, all the database-client complexity is migrated to and handled by Vitess. This maintains the ACID properties because the internal database in use is MySQL. However, we can enable scaling through partitioning. Consequently, we’ll get a MySQL structured database that gives the performance of a NoSQL storage system. At the same time, we won’t have to live with a rich database client (application logic). The following illustration highlights how Vitess is able to achieve both scalability and structure.
 
-Vitess on the scalability versus structure spectrum
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.38.11 AM.png" alt=""><figcaption></figcaption></figure>
 
 One could imagine using techniques like data denormalization instead of the Vitess system. However, data denormalization won’t work because it comes at the cost of reduced writing performance. Even if our work is read-intensive, as the system scales, writing performance will degrade to an unbearable limit.
 

@@ -18,11 +18,11 @@ Until now, we’ve considered encoding one video with different encoding schemes
 
 Let’s understand how the per-segment encoding will work. For any video with dynamic colors and high depth, we’ll encode it differently from a video with fewer colors. This means that a not-so-dynamic segment will be encoded such that it’s compressed more to save additional storage space. Eventually, we’ll have to transfer smaller file sizes and save bandwidth during the deployment and streaming phases.
 
-Higher quality requiring higher bitrate from left to right
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.44.16 AM.png" alt=""><figcaption></figcaption></figure>
 
 Using the strategy above, we’ll have to encode individual shots of a video in various formats. However, the alternative to this would be storing an entire video (using no segmenting) after encoding it in various formats. If we encode on a per-shot basis, we would be able to optimally reduce the size of the entire video by doing the encoding on a granular level. We can also encode audio in various formats to optimally allow streaming for various clients like TVs, mobile phones, and desktop machines. Specifically, for services like Netflix, audio encoding is more useful because audios are offered in various languages.
 
-A raw video file being encoded into different formats including its audio and subtitles
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.44.43 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Deploy <a href="#deploy-0" id="deploy-0"></a>
 
@@ -34,7 +34,7 @@ As discussed in our design and evaluation sections, we have to bring the content
 
 So, instead of streaming from our data centers directly, we can deploy chunks of popular videos in CDNs and point of presence (PoPs) of ISPs. In places where there is no collaboration possible with the ISPs, our content can be placed in internet exchange point (IXPs). We can put content in IXPs that will not only be closer to users, but can also be helpful in filling the cache of ISP PoPs.
 
-Streaming from data center to users through IXP and ISPs
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.45.05 AM.png" alt=""><figcaption></figcaption></figure>
 
 We should keep in mind that the caching at the ISP or IXP is performed only for the popular content or moderately popular content because of limited storage capacity. Since our per-shot encoding scheme saves storage space, we’ll be able to serve out more content using the cache infrastructure closer to end users.
 
@@ -54,19 +54,36 @@ An approximation of the recommendation engine of YouTube is provided below. YouT
 1. **Candidate generation**: During this phase, millions of YouTube videos are filtered down to hundreds based on the user’s history and current context.
 2. **Ranking**: The ranking phase rates videos based on their features and according to the user’s interests and history. Hundreds of videos are filtered and ranked down to a few dozen videos during this phase.
 
-YouTube employs machine learning technology in both phases to provide recommendations to users.
+YouTube employs machine learning_(Covington, Paul, Jay Adams, and Emre Sargin. “Deep neural networks for youtube recommendations.” Proceedings of the 10th ACM conference on recommender systems. 2016.)_ technology in both phases to provide recommendations to users.
 
-YouTube's recommendation engine using two neural networks to filter videos from millions to dozens
-
-Points to Ponder
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.46.34 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Question 1**
 
 Previously, we said that popular content is sent to ISPs, IXPs, and CDNs. We’ve now discussed YouTube’s feature that recommends content. What is the difference between popular and recommended content on YouTube?
 
-Show Answer
+Recommendations are specific to users’ profiles and interests, whereas popular content is recognized on a regional or global basis. It is possible to present popular content to the general audience.
 
-**1 of 3**
+**Question 2**
+
+Can you provide some formulaic representation of how the YouTube algorithm for popular content would work?
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.48.09 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.48.40 AM.png" alt=""><figcaption></figcaption></figure>
+
+**Question 3**
+
+In reference to Question 2, how often do you think that the approximation calculation for whether content is popular will be made? On each click, like, or comment?
+
+Hide Answer
+
+Calculation per click, like, or comment requires special infrastructure to perform calculations correctly and in real-time. This should be limited to:
+
+* The most popular channels.
+* Alternatively, a particular metric that triggers the computation every time it crosses a certain value. A good trigger could be an increasing number of requests made for a specific video in a shorter period of time.
+
+\------------------------
 
 ### Deliver <a href="#deliver-0" id="deliver-0"></a>
 
@@ -74,7 +91,7 @@ Let’s see how the end user gets the content on their device. Since we have the
 
 However, in the case of non-popular content, the user is served from colocation sites or YouTube’s data center where the content is stored initially. We have already learned how YouTube can reduce latency times by having distributed caches at different design layers.
 
-The user requests for chunk using the ISP**1** of 4
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.49.47 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Adaptive streaming <a href="#adaptive-streaming-0" id="adaptive-streaming-0"></a>
 
@@ -82,7 +99,7 @@ While the content is being served, the bandwidth of the user is also being monit
 
 As shown below, when the bandwidth is high, a higher quality chunk is sent to the client and vice versa.
 
-Chunk size in each time frame provided to the client changes according to the bandwidth
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.50.19 AM.png" alt=""><figcaption></figcaption></figure>
 
 The adaptive bitrate algorithm depends on the following four parameters:
 
@@ -91,7 +108,7 @@ The adaptive bitrate algorithm depends on the following four parameters:
 3. Encoding techniques used.
 4. The buffer space at the client \[source].
 
-Parameters affecting adaptive bitrate algorithm
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.50.51 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Potential follow-up questions <a href="#potential-follow-up-questions-0" id="potential-follow-up-questions-0"></a>
 
@@ -105,7 +122,7 @@ There can be many different aspects of the system design of YouTube as there is 
     A possible answer could be that the above number will likely change over time. Our system design should be horizontally scalable so that with increasing users, the system keeps functioning adequately. Practically, systems might not scale when some aspect of the system increases by an order of magnitude. When some aspects of a system increase by an order of magnitude (for example, 10x), we usually need a new, different design. Cost points of designing 10x and 100x scales are very different.
 3.  **Question**: Why didn’t we discuss and estimate resources for video comments and likes?
 
-    Concurrent users’ comments on videos are roughly at the same complexity as designing a messaging system. We’ll discuss that problem [elsewhere](https://www.educative.io/collection/page/10370001/4941429335392256/6538438514049024) in the course.
+    Concurrent users’ comments on videos are roughly at the same complexity as designing a messaging system. We’ll discuss that problem [elsewhere](../design-whatsapp/system-design-whatsapp.md) in the course.
 4.  **Question**: How to manage unexpected spikes in system load?
 
     A possible answer is that because our design is horizontally scalable, we can shed some load on the public cloud due to its elasticity features. However, public clouds are not infinitely scalable. They often need a priori business contracts that might put a limit on maximum, concurrently allowed resource use at different data centers.
@@ -117,7 +134,7 @@ There can be many different aspects of the system design of YouTube as there is 
     There are many audio/video encoding choices, many publicly known and some proprietary. Due to excessive redundancy in multimedia content, encoding is often able to reduce a huge raw format content to a much smaller size (for example, from 600 MB to 30 MB). We have left the details of such encoding algorithms to you if you’re interested in further exploration.
 7.  **Question**: Cant we use specialized hardware (or accelerators like GPUs) to speed up some aspects of the YouTube computation?
 
-    When we estimated the number of servers, we assumed that any server could fulfill any required functionality. In reality, with the slowing of Moore’s law, we have special-purpose hardware available (for example, hardware encoders/decoders, machine-learning accelerators like Tensor Processing Units, and many more). All such platforms need their own courses to do justice to the content. So, we avoided that discussion in this design problem.
+    When we estimated the number of servers, we assumed that any server could fulfill any required functionality. In reality, with the slowing of Moore’s law(_Moore’s law was presented by Gordon Moore in 1965, who stated that the number of transistors in an integrated circuit (IC) doubles every year._), we have special-purpose hardware available (for example, hardware encoders/decoders, machine-learning accelerators like Tensor Processing Units, and many more). All such platforms need their own courses to do justice to the content. So, we avoided that discussion in this design problem.
 8.  **Question**: Should compression be performed at the client-side or the server-side during the content uploading stage?
 
     We might use some lossless but fast compression (for example, Google Snappy) on the client end to reduce data that needs to be uploaded. This might mean that we’ll need a rich client, or we would have to fall back to plain data if the compressor was unavailable. Both of those options add complexity to the system.

@@ -4,7 +4,7 @@
 
 YouTube is a popular video streaming service where users upload, stream, search, comment, share, and like or dislike videos. Large businesses as well as individuals maintain channels where they host their videos. YouTube allows free hosting of video content to be shared with users globally. YouTube is considered a primary source of entertainment, especially among young people, and as of 2022, it is listed as the second-most viewed website after Google by Wikipedia.
 
-A depiction of a content creator uploading a video to YouTube that is streamed by many viewers
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.16.22 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### YouTube’s popularity <a href="#youtubes-popularity-0" id="youtubes-popularity-0"></a>
 
@@ -23,7 +23,7 @@ Let’s look at some interesting statistics about YouTube and its popularity.
 
 Since its inception in February 2005, the number of YouTube users has multiplied. As of now, there are more than 2.5 billion monthly active users of YouTube. Let’s take a look at the chart below to see how YouTube users have increased in the last decade.
 
-Increase in monthly active users of YouTube per year
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.16.52 AM.png" alt=""><figcaption></figcaption></figure>
 
 YouTube is the second most-streamed website after Netflix. A total of 694,000 hours of video content is streamed on YouTube per minute!
 
