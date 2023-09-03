@@ -27,5 +27,5 @@ Log analysis helps us with the following scenarios:
 
 We have divided the distributed logging system design into the following two lessons:
 
-1. [**Introduction**](https://www.educative.io/collection/page/10370001/4941429335392256/5621964999229440): We’ll discuss how logging works at a distributed level. We’ll also show how we can restrict the huge size of a log file, and structure them. This lesson will guide us about the requirements we should consider while logging information about a system.
-2. [**Design**](https://www.educative.io/collection/page/10370001/4941429335392256/4835612456124416): In this lesson, we’ll define the requirements, API design, and detailed design of our distributed logging system.
+1. [**Introduction**](introduction-to-distributed-logging.md): We’ll discuss how logging works at a distributed level. We’ll also show how we can restrict the huge size of a log file, and structure them. This lesson will guide us about the requirements we should consider while logging information about a system.
+2. [**Design**](design-of-a-distributed-logging-service.md): In this lesson, we’ll define the requirements, API design, and detailed design of our distributed logging system.

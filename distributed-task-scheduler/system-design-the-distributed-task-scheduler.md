@@ -42,9 +42,9 @@ The above two requirements make the task scheduling problem challenging. We’ll
 
 We have divided the design of the task scheduler into four lessons:
 
-1. [**Requirements:**](https://www.educative.io/collection/page/10370001/4941429335392256/6681764793942016) We’ll identify the functional and non-functional requirements of a task scheduling system in this lesson.
-2. [**Design:**](https://www.educative.io/collection/page/10370001/4941429335392256/4969977353863168) This lesson will discuss the system design of our task scheduling system and explores the components of the system and database schema.
-3. [**Design considerations:**](https://www.educative.io/collection/page/10370001/4941429335392256/4856850956156928) In this lesson, we’ll highlight some design factors, such as task prioritization, resource optimization, and so on.
-4. [**Evaluation:**](https://www.educative.io/collection/page/10370001/4941429335392256/5231625754902528) We’ll evaluate our design of task scheduler based on our requirements.
+1. [**Requirements:**](requirements-of-a-distributed-task-schedulers-design.md) We’ll identify the functional and non-functional requirements of a task scheduling system in this lesson.
+2. [**Design:**](design-of-a-distributed-task-scheduler.md) This lesson will discuss the system design of our task scheduling system and explores the components of the system and database schema.
+3. [**Design considerations:**](design-considerations-of-a-distributed-task-scheduler.md) In this lesson, we’ll highlight some design factors, such as task prioritization, resource optimization, and so on.
+4. [**Evaluation:**](evaluation-of-a-distributed-task-schedulers-design.md) We’ll evaluate our design of task scheduler based on our requirements.
 
 Let’s start by understanding the requirements of a task scheduling system.

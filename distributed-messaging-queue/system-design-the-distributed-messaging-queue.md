@@ -31,10 +31,10 @@ A messaging queue has many use cases, both in single-server and distributed envi
 
 We divide the design of a distributed messaging queue into the following five lessons:
 
-1. [**Requirements:**](https://www.educative.io/collection/page/10370001/4941429335392256/5806944861814784) Here, we focus on the functional and non-functional requirements of designing a distributed messaging queue. We also discuss a single server messaging queue and its drawbacks in this lesson.
-2. [**Design consideration:**](https://www.educative.io/collection/page/10370001/4941429335392256/6191662786674688) In this lesson, we discuss some important factors that may affect the design of a distributed messaging queue—for example, the order of placing messages in a queue, their extraction, their visibility in the queue, and the concurrency of incoming messages.
-3. [**Design:**](https://www.educative.io/collection/page/10370001/4941429335392256/6330012742975488) In this lesson, we discuss the design of a distributed messaging queue in detail. We also describe the process of replication of queues and the interaction between various building blocks involved in the design.
-4. [**Evaluation:**](https://www.educative.io/collection/page/10370001/4941429335392256/4654974423793664) In this lesson, we evaluate the design of a distributed messaging queue based on its functional and non-functional requirements.
-5. [**Quiz:**](https://www.educative.io/collection/page/10370001/4941429335392256/5261732032806912) At the end of the chapter, we evaluate understanding of the design of a distributed messages queue via a quiz.
+1. [**Requirements:**](requirements-of-a-distributed-messaging-queues-design.md) Here, we focus on the functional and non-functional requirements of designing a distributed messaging queue. We also discuss a single server messaging queue and its drawbacks in this lesson.
+2. [**Design consideration:**](considerations-of-a-distributed-messaging-queues-design.md) In this lesson, we discuss some important factors that may affect the design of a distributed messaging queue—for example, the order of placing messages in a queue, their extraction, their visibility in the queue, and the concurrency of incoming messages.
+3. [**Design:**](design-of-a-distributed-messaging-queue-part-1.md) In this lesson, we discuss the design of a distributed messaging queue in detail. We also describe the process of replication of queues and the interaction between various building blocks involved in the design.
+4. [**Evaluation:**](evaluation-of-a-distributed-messaging-queues-design.md) In this lesson, we evaluate the design of a distributed messaging queue based on its functional and non-functional requirements.
+5. [**Quiz:**](quiz-on-the-distributed-messaging-queues-design.md) At the end of the chapter, we evaluate understanding of the design of a distributed messages queue via a quiz.
 
 Let’s start by understanding the requirements of designing a distributed messaging queue.

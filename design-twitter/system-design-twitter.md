@@ -14,9 +14,9 @@ Country wise userbase on Twitter
 
 We’ll divide Twitter’s design into four sections:
 
-1. [**Requirements**](https://www.educative.io/collection/page/10370001/4941429335392256/5920537112477696): This lesson describes the functional and non-functional requirements of Twitter. We’ll also estimate multiple aspects of Twitter, such as storage, bandwidth, and computational resources.
-2. [**Design**](https://www.educative.io/collection/page/10370001/4941429335392256/6194554750894080): We’ll discuss the high-level design of Twitter in this lesson. We also briefly explain the API design and identify the significant components of the Twitter architecture. Moreover, we will discuss how to manage the Top-k problem, such as Tweets liked or viewed by millions of users on Twitter.
-3. [**Client-side load balancers**](https://www.educative.io/collection/page/10370001/4941429335392256/5379128533975040): This lesson discusses how Twitter performs load balancing for its microservices system to manage billions of requests between various services’ instances. Furthermore, we also see why Twitter uses a customized load-balancing technique instead of other commonly used approaches.
-4. [**Quiz**](https://www.educative.io/collection/page/10370001/4941429335392256/6740284133605376): Finally, we’ll reinforce major concepts of Twitter design with a quiz.
+1. [**Requirements**](requirements-of-twitters-design.md): This lesson describes the functional and non-functional requirements of Twitter. We’ll also estimate multiple aspects of Twitter, such as storage, bandwidth, and computational resources.
+2. [**Design**](high-level-design-of-twitter.md): We’ll discuss the high-level design of Twitter in this lesson. We also briefly explain the API design and identify the significant components of the Twitter architecture. Moreover, we will discuss how to manage the Top-k problem, such as Tweets liked or viewed by millions of users on Twitter.
+3. [**Client-side load balancers**](client-side-load-balancer-for-twitter.md): This lesson discusses how Twitter performs load balancing for its microservices system to manage billions of requests between various services’ instances. Furthermore, we also see why Twitter uses a customized load-balancing technique instead of other commonly used approaches.
+4. [**Quiz**](quiz-on-twitters-design.md): Finally, we’ll reinforce major concepts of Twitter design with a quiz.
 
 Let’s begin with defining Twitter’s requirements.

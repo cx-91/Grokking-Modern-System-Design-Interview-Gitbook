@@ -26,10 +26,10 @@ Blob store is an important component of many data-intensive applications, such a
 
 We have divided the design of the blob store into five lessons and a quiz.
 
-1. [**Requirements:**](https://www.educative.io/collection/page/10370001/4941429335392256/5129194917068800) In this lesson, we identify the functional and non-functional requirements of a blob store. We also estimate the resources required by our blob store system.
-2. [**Design:**](https://www.educative.io/collection/page/10370001/4941429335392256/4910790825476096) This lesson presents us with a high-level design, the API design, and a detailed design of the blob store, while explaining the details of all the components and the workflow.
-3. [**Design considerations:**](https://www.educative.io/collection/page/10370001/4941429335392256/4856850956156928) In this lesson, we discuss some important aspects of design. For example, we learn about the database schema, partitioning strategy, blob indexing, pagination, and replication.
-4. [**Evaluation:**](https://www.educative.io/collection/page/10370001/4941429335392256/5348783000387584) In this lesson, we evaluate our blob store based on our requirements.
-5. [**Quiz:**](https://www.educative.io/collection/page/10370001/4941429335392256/6060039001604096) In this lesson, we assess understanding of the blob store design.
+1. [**Requirements:**](requirements-of-a-blob-stores-design.md) In this lesson, we identify the functional and non-functional requirements of a blob store. We also estimate the resources required by our blob store system.
+2. [**Design:**](design-of-a-blob-store.md) This lesson presents us with a high-level design, the API design, and a detailed design of the blob store, while explaining the details of all the components and the workflow.
+3. [**Design considerations:**](../distributed-task-scheduler/design-considerations-of-a-distributed-task-scheduler.md) In this lesson, we discuss some important aspects of design. For example, we learn about the database schema, partitioning strategy, blob indexing, pagination, and replication.
+4. [**Evaluation:**](evaluation-of-a-blob-stores-design.md) In this lesson, we evaluate our blob store based on our requirements.
+5. [**Quiz:**](quiz-on-the-blob-stores-design.md) In this lesson, we assess understanding of the blob store design.
 
 Let’s start with the requirements of a blob store system.

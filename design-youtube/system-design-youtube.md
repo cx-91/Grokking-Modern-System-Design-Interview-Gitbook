@@ -33,10 +33,10 @@ Now that we realize how successful YouTube is, let’s understand how we can des
 
 We’ve divided the design of YouTube into five lessons:
 
-1. [**Requirements**:](https://www.educative.io/collection/page/10370001/4941429335392256/5574324458618880) This is where we identify the functional and non-functional requirements. We also estimate the resources required to serve millions of users each day. This lesson answers questions like how much storage space YouTube will need to store 500 hours of video content uploaded to YouTube per day.
-2. [**Design**:](https://www.educative.io/collection/page/10370001/4941429335392256/5334361548783616) In this lesson, we explain how we’ll design the YouTube service. We also briefly explain the API design and database schemas. Lastly, we will also briefly go over how YouTube’s search works.
-3. [**Evaluation**:](https://www.educative.io/collection/page/10370001/4941429335392256/4932171382390784) This lesson explains how YouTube is able to fulfill all the requirements through the proposed design. It also looks at how scaling in the future can affect the system and what solutions are required to deal with scaling problems.
-4. [**Reality is more complicated**:](https://www.educative.io/collection/page/10370001/4941429335392256/5471711817891840) During this lesson, we’ll explore different techniques that YouTube employs to deliver content effectively to the client and avoid network congestions.
-5.  [**Quiz**:](https://www.educative.io/collection/page/10370001/4941429335392256/6669179066777600) We reinforce major concepts we learned designing YouTube by considering how we could design Netflix’s system.
+1. [**Requirements**:](requirements-of-youtubes-design.md) This is where we identify the functional and non-functional requirements. We also estimate the resources required to serve millions of users each day. This lesson answers questions like how much storage space YouTube will need to store 500 hours of video content uploaded to YouTube per day.
+2. [**Design**:](design-of-youtube.md) In this lesson, we explain how we’ll design the YouTube service. We also briefly explain the API design and database schemas. Lastly, we will also briefly go over how YouTube’s search works.
+3. [**Evaluation**:](evaluation-of-youtubes-design.md) This lesson explains how YouTube is able to fulfill all the requirements through the proposed design. It also looks at how scaling in the future can affect the system and what solutions are required to deal with scaling problems.
+4. [**Reality is more complicated**:](the-reality-is-more-complicated.md) During this lesson, we’ll explore different techniques that YouTube employs to deliver content effectively to the client and avoid network congestions.
+5.  [**Quiz**:](quiz-on-youtubes-design.md) We reinforce major concepts we learned designing YouTube by considering how we could design Netflix’s system.
 
     Our discussion on the usage of various building blocks in the design will be limited since we’ve already explored them in detail in the [building blocks](https://www.educative.io/collection/page/10370001/4941429335392256/6061247618875392) chapter.

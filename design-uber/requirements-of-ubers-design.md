@@ -146,10 +146,10 @@ The design of Uber utilizes the following building blocks:
 
 Building blocks in high-level design of Uber
 
-* [**Databases**](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872) store the metadata of riders, drivers, and trips.
-* [**A cache**](https://www.educative.io/collection/page/10370001/4941429335392256/5053577315221504) stores the most requested data for quick responses.
-* [**CDNs**](https://www.educative.io/collection/page/10370001/4941429335392256/6624266925899776) are used to effectively deliver content to end users, reducing delay and the burden on end-servers.
-* [**A load balancer**](https://www.educative.io/collection/page/10370001/4941429335392256/4521972679049216) distributes the read/write requests among the respective services.
+* [**Databases**](../databases/introduction-to-databases.md) store the metadata of riders, drivers, and trips.
+* [**A cache**](../content-delivery-network-cdn/introduction-to-a-cdn.md) stores the most requested data for quick responses.
+* [**CDNs**](../content-delivery-network-cdn/introduction-to-a-cdn.md) are used to effectively deliver content to end users, reducing delay and the burden on end-servers.
+* [**A load balancer**](../load-balancers/introduction-to-load-balancers.md) distributes the read/write requests among the respective services.
 
 Riders’ and drivers’ devices should have sufficient bandwidth and GPS equipment for smooth navigation with maps.
 

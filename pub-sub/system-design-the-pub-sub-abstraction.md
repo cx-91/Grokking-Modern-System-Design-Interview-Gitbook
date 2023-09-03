@@ -16,5 +16,5 @@ The hardware infrastructure of distributed systems consists of millions of machi
 
 We have divided the pub-sub system design into the following lessons:
 
-1. [**Introduction**](https://www.educative.io/collection/page/10370001/4941429335392256/5155663642099712): In this lesson, we learn about the use cases of the pub-sub system, define its requirements, and design the API for it.
-2. [**Design**](https://www.educative.io/collection/page/10370001/4941429335392256/5367894619193344): In this lesson, we discuss two designs of the pub-sub system, one with messaging queues and the other with a broker.
+1. [**Introduction**:](introduction-to-pub-sub.md) In this lesson, we learn about the use cases of the pub-sub system, define its requirements, and design the API for it.
+2. [**Design**:](design-of-a-pub-sub-system.md) In this lesson, we discuss two designs of the pub-sub system, one with messaging queues and the other with a broker.

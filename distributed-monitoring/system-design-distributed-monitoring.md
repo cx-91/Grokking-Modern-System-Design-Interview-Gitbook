@@ -17,14 +17,14 @@ Monitoring helps in analyzing such complex infrastructure where something is con
 We’ve divided the distributed monitoring system design into the following chapters and lessons:
 
 1. **Distributed Monitoring**
-   1. [**Introduction to Distributed Monitoring**](https://www.educative.io/collection/page/10370001/4941429335392256/4721220683038720): Learn why monitoring in a distributed system is crucial, how costly downtime is, and the types of monitoring.
-   2. [**Prerequisites for a Monitoring System**](https://www.educative.io/collection/page/10370001/4941429335392256/6071737539624960): Explore a few essential concepts about metrics and alerting in a monitoring system.
+   1. [**Introduction to Distributed Monitoring**](introduction-to-distributed-monitoring.md): Learn why monitoring in a distributed system is crucial, how costly downtime is, and the types of monitoring.
+   2. [**Prerequisites for a Monitoring System**](prerequisites-of-a-monitoring-system.md): Explore a few essential concepts about metrics and alerting in a monitoring system.
 2. **Monitoring Server-side Errors**
-   1. [**Designing a Monitoring System**](https://www.educative.io/collection/page/10370001/4941429335392256/5485445638520832): Define the requirements and high-level design of the monitoring system.
-   2. [**A Detailed Design of the Monitoring System**](https://www.educative.io/collection/page/10370001/4941429335392256/6718061809238016): Go into the details of designing a monitoring system, and explore the components involved.
-   3. [**Visualize Data in a Monitoring System**](https://www.educative.io/collection/page/10370001/4941429335392256/5232629720285184): Learn a unique way to visualize an enormous amount of monitoring data.
+   1. [**Designing a Monitoring System**:](introduction-to-distributed-monitoring.md) Define the requirements and high-level design of the monitoring system.
+   2. [**A Detailed Design of the Monitoring System**:](../monitor-server-side-errors/detailed-design-of-a-monitoring-system.md) Go into the details of designing a monitoring system, and explore the components involved.
+   3. [**Visualize Data in a Monitoring System**:](../monitor-server-side-errors/visualize-data-in-a-monitoring-system.md) Learn a unique way to visualize an enormous amount of monitoring data.
 3. **Monitor Client-side Errors**
-   1. [**Focus on Client-side Errors**](https://www.educative.io/collection/page/10370001/4941429335392256/4768611427680256): Get introduced to client-side errors and why it’s important to monitor them.
-   2. [**Design a Client-side Monitoring System**](https://www.educative.io/collection/page/10370001/4941429335392256/4769741293486080): Learn to design a system that monitors the client-side errors.
+   1. [**Focus on Client-side Errors**: ](../monitor-client-side-errors/focus-on-client-side-errors-in-a-monitoring-system.md)Get introduced to client-side errors and why it’s important to monitor them.
+   2. [**Design a Client-side Monitoring System**:](../monitor-client-side-errors/design-of-a-client-side-monitoring-system.md) Learn to design a system that monitors the client-side errors.
 
 In the next lesson, we’ll look at why monitoring is essential in a distributed system through an example. We’ll also look at the downtime cost of failures and monitoring types.

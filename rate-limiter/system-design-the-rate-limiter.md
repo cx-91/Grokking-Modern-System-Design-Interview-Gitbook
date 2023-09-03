@@ -22,9 +22,9 @@ Throttling the number of requests to API servers via a rate limiter
 In the following lessons, we will learn about the following:
 
 1. [**Requirements:**](https://www.educative.io/collection/page/10370001/4941429335392256/5887506125422592) This is where we discuss the functional and non-functional requirements of the rate limiter. We also describe the types of throttling and locations where a rate limiter can be placed to perform its functions efficiently.
-2. [**High-level design:**](https://www.educative.io/collection/page/10370001/4941429335392256/5287353329647616#High-level-design) In this section, we look at the high-level design to provide an overview of a rate limiter.
-3. [**Detailed design:**](https://www.educative.io/collection/page/10370001/4941429335392256/5287353329647616#Detailed-design) In this section, we discuss the detailed design of a rate limiter and explain various building blocks involved in the detailed design.
-4. [**Rate limiter algorithms:**](https://www.educative.io/collection/page/10370001/4941429335392256/5447913559293952) In this lesson, we explain different algorithms that play a vital role in the operations of a rate limiter.
-5. [**Quiz**](https://www.educative.io/collection/page/10370001/4941429335392256/6564352194248704)**:** To assess your understanding of rate limiters, we’ve provided a quiz at the end of this chapter.
+2. [**High-level design:**](design-of-a-rate-limiter.md) In this section, we look at the high-level design to provide an overview of a rate limiter.
+3. [**Detailed design:**](design-of-a-rate-limiter.md) In this section, we discuss the detailed design of a rate limiter and explain various building blocks involved in the detailed design.
+4. [**Rate limiter algorithms:**](rate-limiter-algorithms.md) In this lesson, we explain different algorithms that play a vital role in the operations of a rate limiter.
+5. [**Quiz:**](quiz-on-the-rate-limiters-design.md) To assess your understanding of rate limiters, we’ve provided a quiz at the end of this chapter.
 
 In the next lesson, let’s start by understanding the requirements and design of a rate limiter.

@@ -8,9 +8,9 @@ Since we’ve already covered the building blocks, we can focus on solving bigge
 
 We’ll learn and explore thirteen design problems in the next chapters. We’ll study the following system designs:
 
-1. [YouTube](https://www.educative.io/collection/page/10370001/4941429335392256/5360542734090240)
-2. [Quora](https://www.educative.io/collection/page/10370001/4941429335392256/5132399700869120)
-3. [Google Maps](https://www.educative.io/collection/page/10370001/4941429335392256/5138720050642944)
+1. [YouTube](../design-youtube/system-design-youtube.md)
+2. [Quora](../design-quora.md)
+3. [Google Maps](../design-google-maps.md)
 4. [Yelp](https://www.educative.io/collection/page/10370001/4941429335392256/5264443638546432)
 5. [Uber](https://www.educative.io/collection/page/10370001/4941429335392256/6344806557286400)
 6. [Twitter](https://www.educative.io/collection/page/10370001/4941429335392256/4687773419700224)

@@ -14,9 +14,9 @@ The user can search for a specific place near them**1** of 6
 
 Here is the breakdown of Yelp’s design:
 
-1. [**Requirements**](https://www.educative.io/collection/page/10370001/4941429335392256/4552284171665408): In this lesson, we define the requirements and estimate the required servers, storage, and bandwidth of our system.
-2. [**Design**](https://www.educative.io/collection/page/10370001/4941429335392256/5027439944400896):In this lesson, we define the API design, the database schema, the components of our system, and the workflow of Yelp.
-3. [**Design considerations**](https://www.educative.io/collection/page/10370001/4941429335392256/5518783229198336): In this lesson, we dive deep into the design of the Yelp system.
-4. [**Quiz**](https://www.educative.io/collection/page/10370001/4941429335392256/6678825089368064): In this lesson, we take a quiz to test our knowledge of Yelp design.
+1. [**Requirements**](requirements-of-yelps-design.md): In this lesson, we define the requirements and estimate the required servers, storage, and bandwidth of our system.
+2. [**Design**](design-of-yelp.md):In this lesson, we define the API design, the database schema, the components of our system, and the workflow of Yelp.
+3. [**Design considerations**](design-considerations-of-yelp.md): In this lesson, we dive deep into the design of the Yelp system.
+4. [**Quiz**](quiz-on-yelps-design.md): In this lesson, we take a quiz to test our knowledge of Yelp design.
 
 Let’s start our design by defining its requirements.

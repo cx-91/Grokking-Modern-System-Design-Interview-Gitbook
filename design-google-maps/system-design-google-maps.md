@@ -29,10 +29,10 @@ In 2022, more than five million businesses are using Google Maps. It provides an
 
 We divide the design of Google Maps into five lessons:
 
-1. [**Requirements**](https://www.educative.io/collection/page/10370001/4941429335392256/5704949308850176): In this lesson, we’ll list the functional and non-functional requirements of a Google Maps system. We will also identify the challenges involved in designing such a system. Lastly, we’ll estimate the resources like servers and bandwidth needed to serve queries by millions of users.
-2. [**Design**](https://www.educative.io/collection/page/10370001/4941429335392256/6659265711833088): This lesson consists of the high-level and API design of a system like Google maps. We’ll describe the services and the workflow of the system.
-3. [**Meeting the challenges**](https://www.educative.io/collection/page/10370001/4941429335392256/4659727862071296): We will discuss how we overcome the challenges that we highlighted in the requirements lesson.
-4. [**Detailed design**](https://www.educative.io/collection/page/10370001/4941429335392256/6026783136940032): Based on the solution to the challenges, we will improve our earlier design and also elaborate on different aspects of it. We will describe the detailed design, including storage schema.
-5. [**Evaluation**](https://www.educative.io/collection/page/10370001/4941429335392256/6335210467098624): This lesson explains how our designed Google Maps system fulfills all the requirements.
+1. [**Requirements**](requirements-of-google-maps-design.md): In this lesson, we’ll list the functional and non-functional requirements of a Google Maps system. We will also identify the challenges involved in designing such a system. Lastly, we’ll estimate the resources like servers and bandwidth needed to serve queries by millions of users.
+2. [**Design**](design-of-google-maps.md): This lesson consists of the high-level and API design of a system like Google maps. We’ll describe the services and the workflow of the system.
+3. [**Meeting the challenges**](challenges-of-google-maps-design.md): We will discuss how we overcome the challenges that we highlighted in the requirements lesson.
+4. [**Detailed design**](detailed-design-of-google-maps.md): Based on the solution to the challenges, we will improve our earlier design and also elaborate on different aspects of it. We will describe the detailed design, including storage schema.
+5. [**Evaluation**](evaluation-of-google-maps-design.md): This lesson explains how our designed Google Maps system fulfills all the requirements.
 
 Let’s start by understanding the requirements for designing a system like Google Maps.

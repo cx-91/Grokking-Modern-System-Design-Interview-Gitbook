@@ -27,7 +27,7 @@ We want automated monitoring that identifies an anomaly in the system and inform
 
 The design of distributed monitoring will consist of the following building block:
 
-[**Blob storage**](https://www.educative.io/collection/page/10370001/4941429335392256/4862646238576640): We’ll use blob storage to store our information about metrics.
+[**Blob storage**](../blob-store/system-design-a-blob-store.md): We’ll use blob storage to store our information about metrics.
 
 ### High-level design <a href="#high-level-design-0" id="high-level-design-0"></a>
 

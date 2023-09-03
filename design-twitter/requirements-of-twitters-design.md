@@ -35,16 +35,16 @@ Twitter’s design utilizes the following building blocks that we discussed in t
 
 ![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTM2IiBoZWlnaHQ9IjE2OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Building blocks used in Twitter design
 
-* [**DNS**](https://www.educative.io/collection/page/10370001/4941429335392256/5728619204182016) is the service that maps human-friendly Twitter domain names to machine-readable IP addresses.
-* [**Load balancers**](https://www.educative.io/collection/page/10370001/4941429335392256/4521972679049216) distribute the read/write requests among the respective services.
-* [**Sequencers**](https://www.educative.io/collection/page/10370001/4941429335392256/6499939719053312) generate the unique IDs for the Tweets.
-* [**Databases**](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872) store the metadata of Tweets and users.
-* [**Blob stores**](https://www.educative.io/collection/page/10370001/4941429335392256/4862646238576640) store the images and video clips attached with the Tweets.
-* [**Key-value stores**](https://www.educative.io/collection/page/10370001/4941429335392256/4747701493432320) are used for multiple purposes such as indexing, identifying the specified counter to update its value, identifying the Tweets of a particular user and many more.
-* [**Pub-sub**](https://www.educative.io/collection/page/10370001/4941429335392256/4996814243889152) is used for real-time processing such as elimination of redundant data, organizing data, and much more.
-* [**Sharded counters**](https://www.educative.io/collection/page/10370001/4941429335392256/6071347163955200) help to handle the count of multiple features such as viewing, liking, Retweeting, and so on,. of the accounts with millions of followers.
-* A [**cache**](https://www.educative.io/collection/page/10370001/4941429335392256/5053577315221504) is used to store the most requested and recent data in RAM to give users a quick response.
-* [**CDN**](https://www.educative.io/collection/page/10370001/4941429335392256/6624266925899776) helps end users to access the data with low latency.
-* [**Monitoring**](https://www.educative.io/collection/page/10370001/4941429335392256/6310983387840512) analyses all outgoing and incoming traffic, identifies the redundancy in the storage system, figures out the failed node, and so on.
+* [**DNS**](../domain-name-system/introduction-to-domain-name-system-dns.md) is the service that maps human-friendly Twitter domain names to machine-readable IP addresses.
+* [**Load balancers**](../load-balancers/introduction-to-load-balancers.md) distribute the read/write requests among the respective services.
+* [**Sequencers**](../sequencer/system-design-sequencer.md) generate the unique IDs for the Tweets.
+* [**Databases**](../databases/introduction-to-databases.md) store the metadata of Tweets and users.
+* [**Blob stores**](../blob-store/system-design-a-blob-store.md) store the images and video clips attached with the Tweets.
+* [**Key-value stores**](../key-value-store/system-design-the-key-value-store.md) are used for multiple purposes such as indexing, identifying the specified counter to update its value, identifying the Tweets of a particular user and many more.
+* [**Pub-sub**](../pub-sub/system-design-the-pub-sub-abstraction.md) is used for real-time processing such as elimination of redundant data, organizing data, and much more.
+* [**Sharded counters**](../sharded-counters/system-design-the-sharded-counters.md) help to handle the count of multiple features such as viewing, liking, Retweeting, and so on,. of the accounts with millions of followers.
+* A [**cache**](../distributed-cache/system-design-the-distributed-cache.md) is used to store the most requested and recent data in RAM to give users a quick response.
+* [**CDN**](../content-delivery-network-cdn/system-design-the-content-delivery-network-cdn.md) helps end users to access the data with low latency.
+* [**Monitoring**](../distributed-monitoring/system-design-distributed-monitoring.md) analyses all outgoing and incoming traffic, identifies the redundancy in the storage system, figures out the failed node, and so on.
 
 In the next lesson, we’ll discuss the design of the Twitter system.

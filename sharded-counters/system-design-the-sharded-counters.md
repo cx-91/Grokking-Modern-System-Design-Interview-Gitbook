@@ -18,8 +18,8 @@ How will we handle millions of write requests coming against the likes on thousa
 
 We have divided the design of sharded counters into three lessons:
 
-1. [**High-level Design**](https://www.educative.io/collection/page/10370001/4941429335392256/6126387596886016): We’ll discuss the high-level design of sharded counters in this lesson. In addition, we’ll also briefly explain the API design.
-2. [**Detailed Design**](https://www.educative.io/collection/page/10370001/4941429335392256/5076411916484608): This lesson will dive deeply into the design of sharded counters. Moreover, we’ll also evaluate our proposed design.
-3. [**Quiz**](https://www.educative.io/collection/page/10370001/4941429335392256/5659634509021184): We’ll review major concepts of sharded counters design with a quiz.
+1. [**High-level Design**](high-level-design-of-sharded-counters.md): We’ll discuss the high-level design of sharded counters in this lesson. In addition, we’ll also briefly explain the API design.
+2. [**Detailed Design**](detailed-design-of-sharded-counters.md): This lesson will dive deeply into the design of sharded counters. Moreover, we’ll also evaluate our proposed design.
+3. [**Quiz**](quiz-on-the-sharded-counters-design.md): We’ll review major concepts of sharded counters design with a quiz.
 
 Let’s begin with the high-level solution sketch of sharded counters.
