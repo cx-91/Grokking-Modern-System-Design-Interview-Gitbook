@@ -11,17 +11,23 @@ A few use cases of pub-sub are listed below:
 * **Real-time monitoring**: Raw or processed messages of an application or system can be provided to multiple applications to monitor a system in real time.
 * **Replicating data**: The pub-sub system can be used to distribute changes. For example, in a leader-follower protocol, the leader sends the changes to its followers via a pub-sub system. It allows followers to update their data asynchronously. The distributed caches can also refresh themselves by receiving the modifications asynchronously. Along the same lines, applications like WhatsApp that allow multiple views of the same conversation—for example, on a mobile phone and a computer’s browser—can elegantly work using a pub-sub, where multiple views can act either as a publisher or a subscriber.
 
-Motivation and use cases of the pub-sub system
-
-Points to Ponder
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.00.01 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Question 1**
 
 What are the similarities and differences between a pub-sub system and queues?
 
-Show Answer
+The pub-sub system and queues are similar because they deliver information that’s produced by the producer to the consumer. The difference is that only one consumer consumes a message in the queue, while there can be multiple consumers of the same message in a pub-sub system.
 
-**1 of 2**
+**Question 2**
+
+How are producers and consumers decoupled from one another in a pub-sub system?
+
+Hide Answer
+
+Producers don’t know who’ll end up reading their information. They just send it to the system, and it is read by the consumer. The system acts as a decoupling layer between the producers and consumers. Producers are not affected by slow consumers, the count of consumers, or the failure of consumers. We can scale them independently.
+
+**-------------**
 
 ### Requirements <a href="#requirements-0" id="requirements-0"></a>
 
@@ -62,8 +68,6 @@ create(topic_ID, topic_name)
 
 This function returns an acknowledgment if it successfully creates a topic, or an error if it fails to do so.
 
-###
-
 | **Parameter** | **Description**                    |
 | ------------- | ---------------------------------- |
 | `topic_ID`    | It uniquely identifies the topic.  |
@@ -79,8 +83,6 @@ write(topic_ID, message)
 
 The API call will write a `message` into a topic with an ID of `topic_ID`. Each message can have a maximum size of 1 MB. This function will return an acknowledgment if it successfully places the data in the systems, or an appropriate error if it fails.
 
-###
-
 | **Parameter** | **Description**                          |
 | ------------- | ---------------------------------------- |
 | `message`     | The message to be written in the system. |
@@ -94,8 +96,6 @@ read(topic_ID)
 ```
 
 The topic is found using `topic_ID`, and the call will return an object containing the message to the caller.
-
-###
 
 | **Parameter** | **Description**                                                   |
 | ------------- | ----------------------------------------------------------------- |
@@ -111,8 +111,6 @@ subscribe(topic_ID)
 
 The function adds the consumer as a subscriber to the topic that has the `topic_ID`.
 
-###
-
 | **Parameter** | **Description**                                               |
 | ------------- | ------------------------------------------------------------- |
 | `topic_ID`    | The ID of the topic to which the consumer will be subscribed. |
@@ -126,8 +124,6 @@ unsubscribe(topic_ID)
 ```
 
 The function removes the consumer as a subscriber from the topic that has the `topic_ID`.
-
-###
 
 | **Parameter** | **Description**                                                       |
 | ------------- | --------------------------------------------------------------------- |
@@ -143,8 +139,6 @@ delete_topic(topic_ID)
 
 The function deletes the topic on the basis of the `topic_ID`.
 
-###
-
 | **Parameter** | **Description**                             |
 | ------------- | ------------------------------------------- |
 | `topic_ID`    | The ID of the topic which is to be deleted. |
@@ -155,8 +149,8 @@ The design of pub-sub utilizes many building blocks that have been discussed in 
 
 The building blocks we’ll use
 
-* [**Database**](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872): We’ll use databases to store information like subscription details.
-* [**Distributed messaging queue**](https://www.educative.io/collection/page/10370001/4941429335392256/5148400467312640): We’ll use use a messaging queue to store messages sent by the producer.
-* [**Key-value**](https://www.educative.io/collection/page/10370001/4941429335392256/4747701493432320): We’ll use a key-value store to hold information about consumers.
+* [**Database**](../databases/introduction-to-databases.md): We’ll use databases to store information like subscription details.
+* [**Distributed messaging queue**](../distributed-messaging-queue/system-design-the-distributed-messaging-queue.md): We’ll use use a messaging queue to store messages sent by the producer.
+* [**Key-value**](../key-value-store/system-design-the-key-value-store.md): We’ll use a key-value store to hold information about consumers.
 
 In the next lesson, we’ll focus on designing a pub-sub system.

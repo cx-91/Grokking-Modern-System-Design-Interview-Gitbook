@@ -8,13 +8,19 @@ We completed the process of designing a distributed messaging queue. Now, let’
 
     Similarly, the queue is deleted when the client doesn’t need it anymore. The responsible cluster manager deallocates the space occupied by the queue and, consequently, deletes the data from all the metadata stores and caches.
 
-Point to Ponder
-
 **Question**
 
 How do we handle messages that can’t be processed—here meaning consumed—after maximum processing attempts by the consumer?
 
-Show Answer
+A special type of queue, called a **dead-letter queue**, can be provided to handle messages that aren’t consumed after the maximum number of processing attempts have been made by the consumer. This type of queue is also used for keeping messages that can’t be processed successfully due to the following factors:
+
+* The messages intended for a queue that doesn’t exist anymore.
+* The queue length limit is exceeded, although this would rarely occur with our current design.
+* The message expires due to per-message time to live (TTL).
+
+A dead-letter queue is also important for determining the cause of failure and for identifying faults in the system.
+
+\------------
 
 * **Send and receive messages:** Producers can deliver messages to specific queues once they are created. At the back-end, receiving messages are sorted based on time stamps to preserve their order and are placed in the queue. Similarly, a consumer can retrieve messages from a specified queue.
 
@@ -35,7 +41,9 @@ Point to Ponder
 
 What happens when the visibility timeout of a specific message expires and the consumer is still busy processing the message?
 
-Show Answer
+The message becomes visible, and another worker can receive the message, thereby duplicating the processing. To avoid such a situation, we ensure that the application sets a safe threshold for visibility timeout.
+
+\--------------
 
 ### Non-functional requirements <a href="#non-functional-requirements-0" id="non-functional-requirements-0"></a>
 

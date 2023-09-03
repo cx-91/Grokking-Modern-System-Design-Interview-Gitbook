@@ -12,12 +12,12 @@ The following sections focus on the scalability, availability, and durability is
 
 Before diving deep into the design, let’s assume the following points to make the discussion more simple and easy to understand. In the upcoming material, we discuss how the following assumptions enable us to eliminate the problems in a single-server solution to the messaging queue.
 
-1. Queue data is replicated using either a primary-secondary or quorum-like system inside a cluster (read through the [Data Replication](https://www.educative.io/collection/page/10370001/4941429335392256/5241733675220992) lesson for more details). Our service can use data partitioning if the queue gets too long to fit on a server. We can use a consistent hashing-like scheme for this purpose, or we may use a key-value store where the key might be the sequence numbers of the messages. In that case, each shard is appropriately replicated (refer to the [Partition](https://www.educative.io/collection/page/10370001/4941429335392256/6254160546103296) lesson for more details on this).
+1. Queue data is replicated using either a primary-secondary or quorum-like system inside a cluster (read through the [Data Replication](../databases/data-replication/) lesson for more details). Our service can use data partitioning if the queue gets too long to fit on a server. We can use a consistent hashing-like scheme for this purpose, or we may use a key-value store where the key might be the sequence numbers of the messages. In that case, each shard is appropriately replicated (refer to the [Partition](../databases/data-partitioning.md) lesson for more details on this).
 2. We also assume that our system can auto-expand and auto-shrink the resources as per the need to optimally utilize resources.
 
 The following figure demonstrates a high-level design of a distributed messaging queue that’s composed of several components.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzUzIiBoZWlnaHQ9IjMyMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)High-level architecture of distributed messaging queue
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.52.41 AM.png" alt=""><figcaption></figcaption></figure>
 
 The essential components of our design are described in detail below.
 
@@ -44,17 +44,17 @@ There are two different approaches to organizing the metadata cache clusters:
 
 1. If the metadata that needs to be stored is small and can reside on a single machine, then it’s replicated on each cluster server. Subsequently, the request can be served from any random server. In this approach, a load balancer can also be introduced between the front-end servers and metadata services.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjYwIiBoZWlnaHQ9IjM5MSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)A load balancer is introduced between the front-end servers and metadata services
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.53.12 AM.png" alt=""><figcaption></figcaption></figure>
 
 2. If the metadata that needs to be stored is too large, then one of the following modes can be followed:
 
-* The first strategy is to use the sharding approach to divide data into different shards. **Sharding** can be performed based on some partition key or hashing techniques, as was discussed in the lesson on [database partitioning](https://www.educative.io/collection/page/10370001/4941429335392256/6254160546103296). Each shard is stored on a different host in the cluster. Moreover, each shard is also replicated on different hosts to enhance availability. In this cluster-organization approach, the front-end server has a mapping table between shards and the hosts. Therefore, the front-end server is responsible for redirecting requests to the host where the data is stored.
+* The first strategy is to use the sharding approach to divide data into different shards. **Sharding** can be performed based on some partition key or hashing techniques, as was discussed in the lesson on [database partitioning](../databases/data-partitioning.md). Each shard is stored on a different host in the cluster. Moreover, each shard is also replicated on different hosts to enhance availability. In this cluster-organization approach, the front-end server has a mapping table between shards and the hosts. Therefore, the front-end server is responsible for redirecting requests to the host where the data is stored.
 
-Mapping table resides on the front-end servers
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.53.50 AM.png" alt=""><figcaption></figcaption></figure>
 
 * The second approach is similar to the first one. However, the mapping table in this approach is stored on each host instead of just on the front-end servers. Because of this, any random host can receive a request and forward it to the host where the data resides. This technique is suitable for read-intensive applications.
 
-Mapping table resides on each metadata server
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.54.26 AM.png" alt=""><figcaption></figcaption></figure>
 
 In our discussion on distributed messaging queues, we focused on the high-level design of this type of queue. Furthermore, we explored each component in the high-level design, including the following:
 

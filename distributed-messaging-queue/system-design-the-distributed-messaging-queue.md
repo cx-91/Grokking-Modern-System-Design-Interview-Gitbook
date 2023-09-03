@@ -6,7 +6,7 @@ A **messaging queue** is an intermediate component between the interacting entit
 
 Here is an illustration of two applications interacting via a single messaging queue:
 
-An example of two applications interacting via a single messaging queue
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.44.01 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Motivation <a href="#motivation-0" id="motivation-0"></a>
 

@@ -29,7 +29,7 @@ For example, suppose we have two queues with the identities 101 and 102 residing
 
 As shown in the following illustration, the internal cluster manager is a component that’s responsible for mapping between the primary host, secondary hosts, and queues. Moreover, it also helps in the primary host selection. Therefore, it needs to be reliable, scalable, and performant.
 
-Primary-secondary model of distributed queue: A request is received for a queue with ID 101, which is served accordingly
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.55.01 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### A cluster of independent hosts <a href="#a-cluster-of-independent-hosts-0" id="a-cluster-of-independent-hosts-0"></a>
 
@@ -41,7 +41,7 @@ Point to Ponder
 
 How does a random host within a cluster replicate data—that is, messages—in the queues on other hosts within the same cluster?
 
-Show Answer
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.55.22 AM.png" alt=""><figcaption></figcaption></figure>
 
 The same process is applied to receive message requests from the consumer. Similar to the first approach, the randomly selected host is responsible for message delivery and cleanup upon a successful processing of the message.
 
@@ -49,15 +49,24 @@ Furthermore, another component called an **external cluster manager** is introdu
 
 The following figure illustrates the cluster of independent hosts. There are two clusters, A and B, which consist of several nodes. The external cluster manager has the mapping table between queues and their corresponding cluster. Whenever a front-end receives a request for a queue, it determines the corresponding cluster for the queue and forwards the request to the cluster where the queue resides. The nodes within that cluster are responsible for storing and sending messages accordingly.
 
-A cluster of independent hosts that consist of distributed queues
-
-Point to Ponder
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.56.00 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Question**
 
 What kind of anomalies can arise while replicating messages on other hosts?
 
-Show Answer
+There are two ways to replicate messages in a queue residing on multiple hosts.
+
+1. Synchrounous replication
+2. Asynchrounous replication
+
+In synchronous replication, the primary host is responsible for replicating the message in all the relevant queues on other hosts. After acknowledgment from secondary hosts, the primary host then notifies the client regarding the reception of messages. In this approach, messages remain consistent in all queues replicas; however, it costs extra delay in communication and causes partial to no availability while an election is in progress to promote a secondary as a primary.
+
+In asynchronous replication, once the primary host receives the messages, it acknowledges the client, and in the next step, it starts replicating the message in other hosts. This approach comes with other problems such as replication lag and consistency issues.
+
+Based on the needs of an application, we can pick one or the other.
+
+\------
 
 We have completed the design of a distributed messaging queue and discussed the two models for organizing the back-end server. We also described the management process of queues and how messages are processed at the back-end. Furthermore, we discussed how back-end servers are managed through different cluster managers.
 

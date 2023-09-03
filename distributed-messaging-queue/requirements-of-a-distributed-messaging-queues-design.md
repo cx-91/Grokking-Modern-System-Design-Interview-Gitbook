@@ -29,21 +29,26 @@ Before we embark on our journey to map out the design of a distributed messaging
 
 However, several aspects restrain us from using the single-server messaging queue in today’s distributed systems paradigm. For example, it becomes unavailable to cooperating processes, producers and consumers, in the event of hardware or network failures. Moreover, performance takes a major hit as contention on the lock increases. Furthermore, it is neither scalable nor durable.
 
-Multiple producers and consumers interact via a single messaging queue
-
-Point to Ponder
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.44.59 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Question**
 
 Can we extend the design of a single-server messaging queue to a distributed messaging queue?
 
-Show Answer
+A single-server messaging queue has the following drawbacks:
+
+1. **High latency:** As in the case of a single-server messaging queue, a producer or consumer acquires a lock to access the queue. Therefore, this mechanism becomes a bottleneck when many processes try to access the queue. This increases the latency of the service.
+2. **Low availability:** Due to the lack of replication of the messaging queue, the producer and consumer process might be unable to access the queue in events of failure. This reduces the system’s availability and reliability.
+3. **Lack of durability:** Due to the absence of replication, the data in the queue might be lost in the event of a system failure.
+4. **Scalability:** A single-server messaging queue can handle a limited number of messages, producers, and consumers. Therefore, it is not scalable.
+
+To extend the design of a single-server messaging queue to a distributed messaging queue, we need to make extensive efforts to eliminate the drawbacks outlined above.
 
 ### Building blocks we will use <a href="#building-blocks-we-will-use-0" id="building-blocks-we-will-use-0"></a>
 
 The design of a distributed messaging queue utilizes the following building blocks:
 
-The building blocks used to design a distributed messaging queue
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.45.17 AM.png" alt=""><figcaption></figcaption></figure>
 
 * [**Database(s)**](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872) will be required to store the metadata of queues and users.
 * [**Caches**](https://www.educative.io/collection/page/10370001/4941429335392256/5053577315221504) are important to keep frequently accessed data, whether it be data pertaining to users or queues metadata.

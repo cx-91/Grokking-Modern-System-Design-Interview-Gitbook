@@ -6,7 +6,7 @@
 
 For example, when Cristiano Ronaldo, a famous athlete, posts on Instagram or shares a tweet, all of his followers are updated. Here, Cristiano Ronaldo is the publisher, his post or tweet is the message, and all of his followers are subscribers.
 
-The pub-sub system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.59.11 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Motivation <a href="#motivation-0" id="motivation-0"></a>
 
