@@ -26,6 +26,17 @@ A rate limiter can perform three types of throttling.
 
 Throttling at the Operating System (OS) level
 
+Linux operating systems provide a kernel feature known as `cgroups` (control groups) that limits, accounts for, and isolates the resources—CPU time, system memory, disk storage, I/O, and network bandwidth—of a collection of processes. By using `cgroups`, the system administrator can monitor, deny access to specific resources, and reconfigure the `cgroups` dynamically on a running system. The `cgroups` feature provides the following benefits through which the system administrator gains a fine-grain control of the system resources:
+
+* **Resource limiting:** Using this feature, a restriction can be imposed on groups not to exceed a configured memory limit and file system cache.
+* **Prioritization:** Through this feature, some groups can be prioritized to use a larger share of CPU cycles or disk I/O throughput.
+* **Accounting:** This feature is used to measure a group’s resource usage, which could also be used for billing purposes.
+* **Control:** The system administrator can control groups of processes, their checkpoints, and restart via this feature.
+
+Providing such rich features, `cgroup` can be used at a system (single server) level to limit resource usage not only for a single user but also for groups of users or processes.
+
+We can extend the above concepts by designing a service that takes input from the rate-limiting service and enforces the limits on local nodes of a cluster.
+
 ### Where to place the rate limiter <a href="#where-to-place-the-rate-limiter-0" id="where-to-place-the-rate-limiter-0"></a>
 
 There are three different ways to place the rate limiter.
@@ -33,11 +44,11 @@ There are three different ways to place the rate limiter.
 1. **On the client side:** It is easy to place the rate limiter on the client side. However, this strategy is not safe because it can easily be tampered with by malicious activity. Moreover, the configuration on the client side is also difficult to apply in this approach.
 2. **On the server side:** As shown in the following figure, the rate limiter is placed on the server-side. In this approach, a server receives a request that is passed through the rate limiter that resides on the server.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTM2IiBoZWlnaHQ9IjE3MiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Rate limiter placed at the server side
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.18.00 AM.png" alt=""><figcaption></figcaption></figure>
 
 3. **As middleware:** In this strategy, the rate limiter acts as middleware, throttling requests to API servers as shown in the following figure.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTQzIiBoZWlnaHQ9IjE0MSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Rate limiter as middleware
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.18.21 AM.png" alt=""><figcaption></figcaption></figure>
 
 Placing a rate limiter is dependent on a number of factors and is a subjective decision, based on the organization’s technology stack, engineering resources, priorities, plan, goals, and so on.
 
@@ -50,7 +61,7 @@ One rate limiter might not be enough to handle enormous traffic to support milli
 1. **A rate limiter with a centralized database:** In this approach, rate limiters interact with a centralized database, preferably Redis or Cassandra. The advantage of this model is that the counters are stored in centralized databases. Therefore, a client can’t exceed the predefined limit. However, there are a few drawbacks to this approach. It causes an increase in latency if an enormous number of requests hit the centralized database. Another extensive problem is the potential for race conditions in highly concurrent requests (or associated lock contention).
 2. **A rate limiter with a distributed database:** Using an independent cluster of nodes is another approach where the rate-limiting state is in a distributed database. In this approach, each node has to track the rate limit. The problem with this approach is that a client could exceed a rate limit—at least momentarily, while the state is being collected from everyone—when sending requests to different nodes (rate-limiters). To enforce the limit, we must set up sticky sessions in the load balancer to send each consumer to exactly one node. However, this approach lacks fault tolerance and poses scaling problems when the nodes get overloaded.
 
-Aside from the above two concepts, another problem is whether to use a global counter shared by all the incoming requests or individual counters per user. For example, the [token bucket algorithm](https://www.educative.io/collection/page/10370001/4941429335392256/5447913559293952#Token-bucket-algorithm) can be implemented in two ways. In the first method, all requests can share the total number of tokens in a single bucket, while in the second method, individual buckets are assigned to users. The choice of using shared or separate counters (or buckets) depends on the use case and the rate-limiting rules.
+Aside from the above two concepts, another problem is whether to use a global counter shared by all the incoming requests or individual counters per user. For example, the [token bucket algorithm](rate-limiter-algorithms.md) can be implemented in two ways. In the first method, all requests can share the total number of tokens in a single bucket, while in the second method, individual buckets are assigned to users. The choice of using shared or separate counters (or buckets) depends on the use case and the rate-limiting rules.
 
 Points to Ponder
 
@@ -58,15 +69,26 @@ Points to Ponder
 
 Can a rate limiter be used as a load balancer?
 
-Show Answer
+Load balancers prevent too many requests from being forwarded to an application server. They either reject the request based on a limit or send the request to a queue for later processing. However, the load balancer is unbiased towards incoming requests by treating them equally. For example, let’s assume that our web service exposes several operations. Some of these operations are fast, and some are slow. A request for slow operations takes more time and processing power than fast operations. The load balancer doesn’t know the cost of such operations. Therefore, if we aim to limit the number of requests for a particular operation, we should do it on the application server rather than load balancer level.
 
-**1 of 2**
+**Question 2**
+
+Assume a scenario in which a client intends to send requests for a particular service using two virtual machines (VMs), where one is using a VPN to a different region. Suppose that the throttling identifier works based on user credentials. Therefore, the user ID would be the same for both sessions. Moreover, let’s assume that requests from different VMs can hit different data centers. How would the throttling work to prevent the user from exceeding the rate limit in this scenario?
+
+Hide Answer
+
+To rate limit the incoming requests, we have two different choices to place the rate limiter.
+
+1. **Rate limiter per data center:** One way to throttle the incoming requests from the user is to use rate limiting per data centers. Each datac enter will have its own rate-limiter, which limits the incoming requests. In this approach, the rate (count or rate limit) is relatively lower. Therefore, a limited number of requests are allowed per unit time. Moreover, this approach provides lower latency since the requests are normally directed to the nearest data centers located geographically. Often, latency within a data center is less than one millisecond and multiple redundant paths are available in case of some link failure.
+2. **A shared rate limiter across data centers:** Another approach is to use a shared rate limiter across multiple data centers. This way, requests received from both VMs will be throttled by the single rate limiter. The number of requests allowed in this case is higher. However, this approach is relatively slower, as prior to directing a request to any nearest data center, it will pass through the shared rate limiter. Latency is often high and variable across geographically distributed data centers and not a lot of redundant paths are available.
+
+\------------
 
 ### Building blocks we will use <a href="#building-blocks-we-will-use-0" id="building-blocks-we-will-use-0"></a>
 
 The design of the rate limiter utilizes the following building blocks that we discussed in the initial chapters.
 
-Building blocks in the design of a rate limiter
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.19.30 AM.png" alt=""><figcaption></figcaption></figure>
 
 * [**Databases**](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872) are used to store rules defined by a service provider and metadata of users using the service.
 * [**Caches**](https://www.educative.io/collection/page/10370001/4941429335392256/5053577315221504) are used to cache the rules and users’ data for frequent access.

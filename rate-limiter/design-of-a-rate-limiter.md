@@ -4,11 +4,15 @@
 
 A rate limiter can be deployed as a separate service that will interact with a web server, as shown in the figure below. When a request is received, the rate limiter suggests whether the request should be forwarded to the server or not. The rate limiter consists of rules that should be followed by each incoming request. These rules define the throttling limit for each operation. Let’s go through a rate limiter rule from [Lyft](https://github.com/envoyproxy/ratelimit), which has open-sourced its rate limiting component.
 
-1234567domain: messagingdescriptors:   -key: message\_type    value: marketing    rate\_limit:               unit: day               request\_per\_unit: 5Rate-limiting rules from Lyft
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.20.45 AM.png" alt=""><figcaption></figcaption></figure>
 
 In the above rate-limiting rule, the `unit` is set to `day` and the `request_per_unit` is set to `5`. These parameters define that the system can allow five marketing messages per day.
 
-A request with ID 101, received by one of the web servers**1** of 6
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.21.53 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.22.27 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.22.54 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Detailed design <a href="#detailed-design-0" id="detailed-design-0"></a>
 
@@ -19,7 +23,7 @@ The high-level design given above does not answer the following questions:
 
 In this section, we’ll first expand the high-level architecture into several other essential components. We’ll also explain each component in detail, as shown in the following figure.
 
-The rate limiter accepts or rejects requests based on throttle rules
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.23.32 AM.png" alt=""><figcaption></figcaption></figure>
 
 Let’s discuss each component that is present in the detailed design of a rate limiter.
 
@@ -44,13 +48,11 @@ When a request is received, the _client identifier builder_ identifies the reque
 
 The decision-maker takes decisions based on the throttling algorithms. The throttling can be hard, soft, or elastic. Based on **soft or elastic throttling**, requests are allowed more than the defined limit. These requests are either served or kept in the queue and served later, upon the availability of resources. Similarly, if **hard throttling** is used, requests are rejected, and a response error is sent back to the client.
 
-Point to Ponder
-
 **Question**
 
 In the event of a failure, a rate limiter is unable to perform the task of throttling. In these scenarios, should the request be accepted or rejected?
 
-Show Answer
+In such a scenario, the proposed system should adhere to the non-functional requirements, including availability and fault tolerance. So, in case of failure, the rate limiter will be unable to perform. However, the default decision would be not to throttle any request. The reason for this is that we would have many rate limiters at a different service level. Even if there is no other rate limiter, the load balancer performs this task at a certain level, as explained earlier.
 
 #### Race condition <a href="#race-condition-0" id="race-condition-0"></a>
 
@@ -77,7 +79,13 @@ Let’s understand the online and offline updates approach with an example. In t
 
 If the condition is true, the rate limiter will first respond back to the front-end server with an `Allowed` signal. The corresponding `count` and other relevant information are updated offline in the next steps. The rate limiter writes back the updated data in the cache. Following this approach reduces latency and avoids the contention that incoming requests could have caused.
 
-A request with ID:101 is received. The count for this is 3**1** of 4
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.26.02 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.26.14 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.26.26 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.26.39 AM.png>)
 
 > **Note:** We’ve seen a form of rate limiting in TCP network protocol, where the recipient can throttle the sender by advertising the size of the window (the outstanding data a recipient is willing to receive). The sender sends the minimum value of either the congestion window or the advertised window. Many network traffic shapers use similar mechanisms to provide preferential treatment to different network flows.
 

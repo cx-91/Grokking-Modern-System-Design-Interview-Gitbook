@@ -16,29 +16,32 @@ This algorithm uses the analogy of a bucket with a predefined capacity of tokens
 
 The flow of the token bucket algorithm is as follows:
 
-Assume that we have a predefined rate limit of �R and the total capacity of the bucket is �C.
+Assume that we have a predefined rate limit of R and the total capacity of the bucket is C.
 
-1. The algorithm adds a new token to the bucket after every 1�R1​ seconds.
-2. The algorithm discards the new incoming tokens when the number of tokens in the bucket is equal to the total capacity �C of the bucket.
-3. If there are �N incoming requests and the bucket has at least �N tokens, the tokens are consumed, and requests are forwarded for further processing.
-4. If there are �N incoming requests and the bucket has a lower number of tokens, then the number of requests accepted equals the number of available tokens in the bucket.
+1. The algorithm adds a new token to the bucket after every 1R1​ seconds.
+2. The algorithm discards the new incoming tokens when the number of tokens in the bucket is equal to the total capacity C of the bucket.
+3. If there are N incoming requests and the bucket has at least N tokens, the tokens are consumed, and requests are forwarded for further processing.
+4. If there are N incoming requests and the bucket has a lower number of tokens, then the number of requests accepted equals the number of available tokens in the bucket.
 
 The following illustration represents the working of the token bucket algorithm.
 
-How the token bucket algorithm works
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.28.09 AM.png" alt=""><figcaption></figcaption></figure>
 
 The following illustration demonstrates how token consumption and rate-limiting logic work. In this example, the capacity of the bucket is three, and it is refilled at a rate of three tokens per minute.
 
-Initially, there are three tokens in the bucket. A request arrives within a minute and consumes a token from the bucket**1** of 4
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.28.56 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.29.12 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.29.24 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.29.35 AM.png>)
 
 **Essential parameters**
 
 We require the following essential parameters to implement the token bucket algorithm:
 
-* **Bucket capacity (�)(C):** The maximum number of tokens that can reside in the bucket.
-* **Rate limit (�)(R):** The number of requests we want to limit per unit time.
-* **Refill rate (1�)(R1​):** The number of tokens put into the bucket per unit time.
-* **Requests count (�)(N):** This parameter tracks the number of incoming requests and compares them with the bucket’s capacity.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.29.50 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Advantages**
 
@@ -55,7 +58,19 @@ Point to Ponder
 
 Apart from permitting bursts, can the token bucket algorithm surpass the limit at the edges?
 
-Show Answer
+Yes, the token bucket algorithm can sometimes suffer from overrunning the limit at the edges, as demonstrated by the following example:
+
+Consider a scenario with a bucket capacity equal to 33, and the number of requests allowed per minute is also 33. This yields a refill rate of 0.330.33 minutes, which means that a new token will come every 0.330.33 minute.
+
+In the illustration below, three tokens have been accumulated at the end of the first minute. At the same time, a burst of requests arrives and consumes all three tokens, leaving the bucket empty. At the end of 1.331.33 minutes (at a refill rate of 0.330.33), a new token is added to the bucket. Simultaneously, a new request arrives and consumes the token.
+
+However, if we consider the duration from 0.660.66 to 1.331.33 minutes, we’ll see that a total of four tokens have been consumed.
+
+This example shows that the token bucket can surpass the limit at the edges.
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.30.33 AM.png>)
+
+\-----------
 
 #### The leaking bucket algorithm <a href="#the-leaking-bucket-algorithm-0" id="the-leaking-bucket-algorithm-0"></a>
 
@@ -63,21 +78,17 @@ The **leaking bucket algorithm** is a variant of the token bucket algorithm with
 
 Let’s look at how the leaking bucket algorithm works in the illustration below:
 
-How the leaking bucket algorithm works
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.30.53 AM.png>)
 
 **Essential parameters**
 
 The leaking bucket algorithm requires the following parameters.
 
-* **Bucket capacity (�)(C):** This determines the maximum capacity of the bucket. The algorithm will discard the incoming requests when the bucket reached its maximum limit of �C.
-* **Inflow rate (���)(Rin​):** This parameter shows the inflow rate of requests. This is a varying quantity that depends on the application and nature of requests. We use this parameter to find the initial capacity of the bucket.
-* **Outflow rate (����)(Rout​):** This determines the number of requests processed per unit time.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.29.50 AM (2).png" alt=""><figcaption></figcaption></figure>
 
 **Advantages**
 
-* Due to a constant outflow rate (����Rout​), it avoids the burst of requests, unlike the token bucket algorithm.
-* This algorithm is also space efficient since it requires just three states: inflow rate (���Rin​), outflow rate (����Rout​), and bucket capacity (�C).
-* Since requests are processed at a fixed rate, it is suitable for applications with a stable outflow rate.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.31.44 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Disadvantages**
 
@@ -90,19 +101,17 @@ This algorithm divides the time into fixed intervals called **windows** and assi
 
 As shown in the below figure, a dotted line represents the limit in each window. If the counter is lower than the limit, forward the request; otherwise, discard the request.
 
-Fixed window counter algorithm: Discard the request exceeding the limit
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.32.11 AM.png" alt=""><figcaption></figcaption></figure>
 
 There is a significant problem with this algorithm. A burst of traffic greater than the allowed requests can occur at the edges of the window. In the below figure, the system allows a maximum of ten requests per minute. However, the number of requests in the one-minute window from 01:30 to 02:30 is 20, which is greater than the allowed number of requests.
 
-Edge case problem in the fixed window counter algorithm. The number of requests in one minute from 01:30 to 02:30 exceeds the predefined limit of 10 requests per minute
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.32.32 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Essential parameters**
 
 The fixed window counter algorithm requires the following parameters:
 
-* **Window size (�)(W):** It represents the size of the time window. It can be a minute, an hour, or any other suitable time slice.
-* **Rate limit (�)(R):** It shows the number of requests allowed per time window.
-* **Requests count (�)(N):** This parameter shows the number of incoming requests per window. The incoming requests are allowed if �N is less than or equal to �R.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.32.53 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Advantages**
 
@@ -121,15 +130,19 @@ The main advantage of this algorithm is that it doesn’t suffer from the edge c
 
 Let’s understand how the sliding window log algorithm works in the illustration below. Assume that we have a maximum rate limit of two requests in a minute.
 
-A new request arrives at 01:00. Its arrival time is added to the log and the request is accepted. The time window is marked from 01:00 to 02:00**1** of 4
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.33.55 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.34.08 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.34.22 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.34.36 AM.png>)
 
 **Essential parameters**
 
 The following parameters are required to implement the sliding window log algorithm:
 
-* **Log size (�)(L):** This parameter is similar to the rate limit (�R) as it determines the number of requests allowed in a specific time frame.
-* **Arrival time (�)(T):** This parameter tracks incoming requests’ time stamps and determines their count.
-* **Time range (��)(Tr​):** This parameter determines the time frame. The time stamps of the old requests are deleted if they do not fall in this range. The start time of the window is defined based on the first incoming request and expires after one minute. Similarly, when another request after the expiry time arrives the window ranges are updated accordingly.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.34.52 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Advantages**
 
@@ -143,29 +156,17 @@ The following parameters are required to implement the sliding window log algori
 
 Unlike the previously fixed window algorithm, the **sliding window counter algorithm** doesn’t limit the requests based on fixed time units. This algorithm takes into account both the fixed window counter and sliding window log algorithms to make the flow of requests more smooth. Let’s look at the flow of the algorithm in the below figure.
 
-A sliding window counter algorithm, where the green shaded area shows the rolling window of 1 minute
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.35.14 AM.png" alt=""><figcaption></figcaption></figure>
 
 In the above figure, we’ve 88 requests in the previous window while 12 in the current window. We’ve set the rate limit to 100 requests per minute. Further, the rolling window overlaps 15 seconds with the current window. Now assume that a new request arrives at 02:15. We’ll decide which request to accept or reject using the mathematical formulation:
 
-����=��×���� �����−������� �������� �����+��Rate=Rp​×time frametime frame−overlap time​+Rc​
-
-Here, ��Rp​ is the number of requests in the previous window, which is 88. ��Rc​ is the number of requests in the current window, which is 12. The ���� �����time frame is 60 seconds in our case, and ������� ����overlap time is 15 seconds.
-
-����=88×60−1560+12Rate=88×6060−15​+12
-
-����=78<100Rate=78<100
-
-As 78 is less than 100, so the incoming request is allowed.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.35.57 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Essential parameters**
 
 This algorithm is relatively more complex than the other algorithms described above. It requires the following parameters:
 
-* **Rate limit (�)(R)** It determines the number of maximum requests allowed per window.
-* **Size of the window (�)(W):** This parameter represents the size of a time window that can be a minute, an hour, or any time slice.
-* **The number of requests in the previous window (��)(Rp​):** It determines the total number of requests that have been received in the previous time window.
-* **The number of requests in the current window (��)(Rc​):** It represents the number of requests received in the current window.
-* **Overlap time (��)(Ot​):** This parameter shows the overlapping time of the rolling window with the current window.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.36.32 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Advantages**
 

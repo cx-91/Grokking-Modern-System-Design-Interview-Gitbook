@@ -4,6 +4,8 @@
 
 A **rate limiter**, as the name suggests, puts a limit on the number of requests a service fulfills. It throttles requests that cross the predefined limit. For example, a client using a particular service’s API that is configured to allow 500 requests per minute would block further incoming requests for the client if the number of requests the client makes exceeds that limit.
 
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.16.02 AM.png" alt=""><figcaption></figcaption></figure>
+
 ### Why do we need a rate limiter? <a href="#why-do-we-need-a-rate-limiter-0" id="why-do-we-need-a-rate-limiter-0"></a>
 
 A rate limiter is generally used as a defensive layer for services to avoid their excessive usage, whether intended or unintended. It also protects services against abusive behaviors that target the application layer, such as denial-of-service (DOS) attacks and brute-force password attempts.
@@ -15,7 +17,7 @@ Below, we have a list of scenarios where rate limiters can be used to make the s
 * **Controlling data flow:** Rate limiters could also be used in systems where there is a need to process a large amount of data. Rate limiters control the flow of data to distribute the work evenly among different machines, avoiding the burden on a single machine.
 * **Avoiding excess costs:** Rate limiting can also be used to control the cost of operations. For example, organizations can use rate limiting to prevent experiments from running out of control and avoid large bills. Some cloud service providers also use this concept by providing freemium services to certain limits, which can be increased on request by charging from users.
 
-Throttling the number of requests to API servers via a rate limiter
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.16.37 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### How will we design a rate limiter? <a href="#how-will-we-design-a-rate-limiter-0" id="how-will-we-design-a-rate-limiter-0"></a>
 
