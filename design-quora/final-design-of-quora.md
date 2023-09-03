@@ -11,7 +11,7 @@ The proposed design serves all the functional requirements. However, it has a nu
 
 The issues highlighted above require changes to the earlier proposed design. Therefore, we’ll make the following adjustments and update our design:
 
-Detailed design of Quora
+
 
 ### Detailed design of Quora <a href="#detailed-design-of-quora-0" id="detailed-design-of-quora-0"></a>
 
@@ -21,7 +21,7 @@ Let’s understand the improvements in our design:
 
 We combine the web and application servers within a single powerful machine that can handle all the processes at once. This technique eliminates the network I/O and the latency introduced due to the network hops required between the manager, worker, and routing library processes. The illustration below provides an abstract view of the updated web server architecture:
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzgxIiBoZWlnaHQ9IjQ3NCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)The updated design, where web and application servers are combined in the service host
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.17.58 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Vertical sharding of MySQL <a href="#vertical-sharding-of-mysql-0" id="vertical-sharding-of-mysql-0"></a>
 
@@ -34,7 +34,7 @@ The goal is to improve performance and reduce the load due to an increasing numb
 
 Therefore, we are able to co-locate related data and reduce traffic on hot data. The illustration below depicts vertical sharding at Quora.
 
-The architecture of vertical sharding at Quora
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.18.26 AM.png" alt=""><figcaption></figcaption></figure>
 
 After we complete the partitioning, we require two types of mappings or metadata to complete our scaling process:
 
@@ -58,7 +58,7 @@ The new design embeds MyRocks as the key-value store instead of HBase. We use th
 
 #### Kafka <a href="#kafka-1" id="kafka-1"></a>
 
-Our updated design reduces the request load on service hosts by separating not-so-urgent tasks from the regular API calls. For this purpose, we use Kafka, which can disseminate jobs among various queues for tasks such as the view counter (see [Sharded Counters](https://www.educative.io/collection/page/10370001/4941429335392256/6071347163955200)), notification system, analytics, and highlight topics to the user. Each of these jobs is executed through cron jobs.
+Our updated design reduces the request load on service hosts by separating not-so-urgent tasks from the regular API calls. For this purpose, we use Kafka, which can disseminate jobs among various queues for tasks such as the view counter (see [Sharded Counters](../sharded-counters/system-design-the-sharded-counters.md)), notification system, analytics, and highlight topics to the user. Each of these jobs is executed through cron jobs.
 
 #### Technology usage <a href="#technology-usage-2" id="technology-usage-2"></a>
 
@@ -68,20 +68,44 @@ It is desirable to use a faster programming language like C++ to develop the fea
 
 Features like comments, upvotes, and downvotes require frequent page updates from the client side. **Polling** is a technique where the client (browser) frequently requests the server for new updates. The server may or may not have any updates but still responds to the client. Therefore, the server may get uselessly overburdened. To resolve this issue, Quora uses a technique called **long polling**, where if a client requests for an update, the server may not respond for as long as 60 seconds if there are no updates. However, if there is an update, the server will reply immediately and allow the client to make new requests.
 
-Polling vs. long polling
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.19.06 AM.png" alt=""><figcaption></figcaption></figure>
 
 Lastly, Memcached can employ `multiget()` to obtain multiple keys from the cache shards to reduce the retrieval latency of multiple keys.
 
-> **Note:** Quora has employed AWS to set up a good number of its infrastructure elements, including S3 (see the [Blob Storage chapter](https://www.educative.io/collection/page/10370001/4941429335392256/4862646238576640)) and Redshift storage.
-
-Quiz
+> **Note:** Quora has employed AWS to set up a good number of its infrastructure elements, including S3 (see the [Blob Storage chapter](../blob-store/system-design-a-blob-store.md)) and Redshift storage.
 
 **Question 1**
 
 What would be considered a good approach for communication between different manager and worker processes within the service hosts?
 
-Show Answer
+Two approaches are feasible for communication:
 
-**1 of 3**
+1. UNIX sockets
+2. TCP connections
 
-\
+Sockets (Unix or TCP) allow data streaming between sender and receiver with appropriate flow control (and congestion control in the case of TCP). That means the sender and receiver can send variable-size data in a decoupled fashion.
+
+Other interprocess communication techniques like shared memory may not be feasible because they require estimating the size of the required memory segment, which makes the participants more coupled. Also, it will not work across physical servers.
+
+So, we prefer sockets due to their high decoupling, flow control, and ability to work for both single servers or over the network.
+
+**Question 2**
+
+In our detailed design, we have employed Kafka to handle our view counter of answers. Why do you think we made this decision?
+
+Depending on the topic label, many users can view the response to a question at once. This can choke the servers. Instantaneous update of the view counter is also not an important product feature. Therefore, Kafka is suitable for handling these tasks.
+
+Quora handles these tasks in two minutes or less.
+
+Nonetheless, we can use sharded counters as an effective solution to the view counter problem.
+
+**Question 3**
+
+What is the main advantage of using long polling instead of polling?
+
+Long polling transfers the control to the server side instead of the client, which has no information about the updates in content. If the server is in control, it can reply as soon as there is fresh content. As a result, it reduces the request load on itself. However, long polling is a resource-intensive solution because it keeps the connection persistent or alive for a longer period of time.
+
+WebSockets are another low-latency solution with low overhead. However, WebSockets might be an overkill for the features offered by Quora.
+
+\------------------
+

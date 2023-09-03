@@ -21,7 +21,7 @@ A user should be able to perform the following functionalities:
 * **Availability**: The system should have high availability. This applies to cases where servers receive a large number of concurrent requests.
 * **Performance**: The system should provide a smooth experience to the user without a noticeable delay.
 
-Functional and non-functional requirements of Quora
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.06.15 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Resource estimation <a href="#resource-estimation-0" id="resource-estimation-0"></a>
 
@@ -37,9 +37,7 @@ In this section, we’ll make an estimate about the resource requirements for Qu
 
 Let’s estimate our requests per second (RPS) for our design. If there are an average of 300 million daily active users and each user can generate 20 requests per day, then the total number of requests in a day will be:
 
-300×106×20=6×109300×106×20=6×109
-
-Therefore, the RPS = 6×10986400≈69500864006×109​≈69500 approximately requests per second.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.06.49 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Estimating RPS**
 
@@ -48,11 +46,9 @@ Therefore, the RPS = 6×10986400≈69500864006×109​≈69500 approximately req
 | Requests per day per user | 20     |         |
 | Requests Per Second (RPS) | f69444 |         |
 
-We already established in the [back-of-the-envelope calculations](https://www.educative.io/collection/page/10370001/4941429335392256/5711642666467328) chapter that we’ll use the following formula to estimate a pragmatic number of servers:
+We already established in the [back-of-the-envelope calculations](../back-of-the-envelope-calculations/put-back-of-the-envelope-numbers-in-perspective.md) chapter that we’ll use the following formula to estimate a pragmatic number of servers:
 
-������ �� ����� ������ �������� �� � ������=300×1068000=37500RPS of a serverNumber of daily active users​=8000300×106​=37500
-
-The estimated number of servers required for Quora
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.07.37 AM.png" alt=""><figcaption></figcaption></figure>
 
 > Therefore, the total number of servers required to facilitate 300 million users generating an average of 69,500 requests per second will be 37,500.
 
@@ -77,18 +73,15 @@ Let’s keep in mind our assumption that 15% of questions have images and 5% hav
 | Storage for image content            | f11.25 | TB       |
 | Storage for video content            | f75    | TB       |
 
-See Detailed Calculations![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzEyIiBoZWlnaHQ9IjE0MSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Summarizing storage requirements of Quora
+See Detailed Calculations
 
-> Total storage required for one day = 30 ��+11.25 ��+75 �� =116.25 ��30 TB+11.25 TB+75 TB =116.25 TB per day
-
-The daily storage requirements of Quora seem very high. But for service with 300 million DAU, a yearly requirement of 116.25 ��×365=42.43 ��116.25 TB×365=42.43 PB is feasible. The practical requirement will be much higher because we have disregarded the storage required for a number of things. For example, non-active (out of 1 �1 B) users’ data will require storage.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.09.28 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Bandwidth estimation <a href="#bandwidth-estimation-0" id="bandwidth-estimation-0"></a>
 
 The bandwidth estimate requires the calculation of incoming and outgoing data through the network.
 
-* **Incoming traffic**: The incoming traffic bandwidth required per day will be equal to 116.25 ��86400×8=10.9 ����≈11 ����86400116.25 TB​×8=10.9 Gbps≈11 Gbps
-* **Outgoing traffic**: We have assumed that 300 million active users views 20 questions per day, so the total bandwidth requirements can be found in the below calculator:
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.10.16 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Bandwidth Requirements Estimation Calculator**
 
@@ -102,19 +95,13 @@ The bandwidth estimate requires the calculation of incoming and outgoing data th
 | Bandwidth for 5% of video content   | f138.89 | Gbps       |
 | Outgoing traffic bandwidth          | f215.3  | Gbps       |
 
-Detailed Calculations![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTQxIiBoZWlnaHQ9IjE4NCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Summarizing the bandwidth requirements of Quora
+Detailed Calculations
 
-Total bandwidth requirement of Quora is equal to:
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.11.13 AM.png" alt=""><figcaption></figcaption></figure>
 
-> Incoming + outgoing traffic bandwidth =11 ����+215.3 ����=226.3 ����=11 Gbps+215.3 Gbps=226.3 Gbps
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.11.57 AM.png" alt=""><figcaption></figcaption></figure>
 
-### Building blocks we will use <a href="#building-blocks-we-will-use-0" id="building-blocks-we-will-use-0"></a>
-
-We’ll use the following building blocks for the initial design of Quora:
-
-Building blocks required for our design
-
-* [**Load balancers**](https://www.educative.io/collection/page/10370001/4941429335392256/4521972679049216) will be used to divide the traffic load among the service hosts.
-* [**Databases**](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872) are essential for storing all sorts of data, such as user questions and answers, comments, and likes and dislikes. Also, user data will be stored in the databases. We may use different types of databases to store different data.
-* [**A distributed caching system**](https://www.educative.io/collection/page/10370001/4941429335392256/5053577315221504) will be used to store frequently accessed data. We can also use caching to store our view counters for different questions.
-* [**The blob store**](https://www.educative.io/collection/page/10370001/4941429335392256/4862646238576640) will keep images and video files.
+* [**Load balancers**](../load-balancers/introduction-to-load-balancers.md) will be used to divide the traffic load among the service hosts.
+* [**Databases**](../databases/introduction-to-databases.md) are essential for storing all sorts of data, such as user questions and answers, comments, and likes and dislikes. Also, user data will be stored in the databases. We may use different types of databases to store different data.
+* [**A distributed caching system**](../distributed-cache/system-design-the-distributed-cache.md) will be used to store frequently accessed data. We can also use caching to store our view counters for different questions.
+* [**The blob store**](../blob-store/system-design-a-blob-store.md) will keep images and video files.

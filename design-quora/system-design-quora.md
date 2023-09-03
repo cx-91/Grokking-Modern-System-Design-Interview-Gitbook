@@ -14,7 +14,7 @@ The illustration above depicts that information-seeking through other people can
 
 The following plot shows global user search trends for the term “Quora” using Google:
 
-<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.53.08 AM.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 3.53.08 AM (1).png" alt=""><figcaption></figcaption></figure>
 
 More than 300 million monthly active users post thousands of questions daily related to more than 400,000 topics on Quora.
 
