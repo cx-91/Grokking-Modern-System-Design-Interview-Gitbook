@@ -14,7 +14,7 @@ To keep the manager node available, we keep a backup of its state. In the case o
 
 The replication and monitoring services ensure the durability of the data. The data, once uploaded, is synchronously replicated within a storage cluster. If data loss occurs at one node, we can recover the data from the other nodes. The monitoring service monitors the storage disks. If any disk fails, the monitoring service alerts the administrators to change the disk and sends messages to the manager node to copy the content on that disk on to the other available disk or the newly added disk. The manager node then updates the mapping accordingly.
 
-Guarantees provided by the blob store
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.07.30 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Scalability <a href="#scalability-0" id="scalability-0"></a>
 
@@ -28,7 +28,11 @@ Point to Ponder
 
 How can we further scale when our manager server hits its limits and we can’t improve its computational abilities by vertical scaling?
 
-Show Answer
+We can make two independent instances of our system. Each instance will have its own manager node and a set of data nodes. Deployment of a system similar to ours has been shown to scale up to a few petabytes. Therefore, making additional instances can help us scale further.
+
+For further scaling inside a single instance, we need a new, more complicated design("Windows Azure Storage: A Highly Available Cloud Storage Service with Strong Consistency".).
+
+\----------
 
 ### Throughput <a href="#throughput-0" id="throughput-0"></a>
 

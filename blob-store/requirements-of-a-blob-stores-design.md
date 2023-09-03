@@ -10,7 +10,7 @@ Here are the functional requirements of the design of a blob store:
 
 * **Create a container**: The users should be able to create containers in order to group blobs. For example, if an application wants to store user-specific data, it should be able to store blobs for different user accounts in different containers. Additionally, a user may want to group video blobs and separate them from a group of image blobs. A single blob store user can create many containers, and each container can have many blobs, as shown in the following illustration. For the sake of simplicity, we assume that we can’t create a container inside a container.
 
-Multiple containers associated with a single storage account, and multiple blobs inside a single container
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.44.05 AM.png" alt=""><figcaption></figcaption></figure>
 
 * **Put data:** The blob store should allow users to upload blobs to the created containers.
 * **Get data:** The system should generate a URL for the uploaded blob, so that the user can access that blob later through this URL.
@@ -19,7 +19,7 @@ Multiple containers associated with a single storage account, and multiple blobs
 * **Delete a container:** The users should be able to delete a container and all the blobs inside it.
 * **List containers:** The system should allow the users to list all the containers under a specific account.
 
-Functional requirements of a blob store
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.44.26 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Non-functional requirements <a href="#non-functional-requirements-0" id="non-functional-requirements-0"></a>
 
@@ -32,7 +32,7 @@ Here are the non-functional requirements of a blob store system:
 * **Reliability:** Since failures are a norm in distributed systems, our design should detect and recover from failures promptly.
 * **Consistency:** The system should be strongly consistent. Different users should see the same view of a blob.
 
-The non-functional requirements of a blob store
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.44.52 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Resource estimation <a href="#resource-estimation-0" id="resource-estimation-0"></a>
 
@@ -51,17 +51,13 @@ Let’s estimate the total number of servers, storage, and bandwidth required by
 
 From our assumptions, we use the number of daily active users (DAUs) and queries a blob store server can handle per second. The number of servers that we require is calculated using the formula given below:
 
-������ �� ������ ������������ ℎ������ ��� ������=10� �������Queries handled per serverNumber of active users​=10K servers
-
-Number of servers required by a blob store system dedicated to storing YouTube data
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.45.22 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Storage estimation <a href="#storage-estimation-0" id="storage-estimation-0"></a>
 
 Considering the assumptions written above, we use the formula given below to compute the total storage required by YouTube in one day:
 
-> ������������/���=��. �� ������/���×(�������/�����+�������/�ℎ�������)Totalstorage/day​=No. of videos/day​×(Storage/video​+Storage/thumbnail​)
-
-Putting the numbers from above into the formula gives us 12.51 ��/���12.51 TB/day​, which is the approximate storage required by YouTube per day for keeping a single copy of the uploaded video in a single resolution.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.46.13 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Total Storage Required to Store Videos and Thumbnails Uploaded Per Day on YouTube**
 
@@ -75,7 +71,7 @@ Let’s estimate the bandwidth required for uploading data to and retrieving dat
 
 **Incoming traffic**: To estimate the bandwidth required for incoming traffic, we consider the total data uploaded per day, which indirectly means the total storage needed per day that we calculated above. The amount of data transferred to the servers per second can be computed using the following formula:
 
-> �������������ℎ=������������\_���24×60×60Totalbandwidth​=24×60×60Totalstorage\_day​​
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.46.37 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Bandwidth Required for Uploading Videos on YouTube**
 
@@ -85,7 +81,7 @@ Let’s estimate the bandwidth required for uploading data to and retrieving dat
 
 **Outgoing traffic**: Since the blob store is a read-intensive store, most of the bandwidth is required for outgoing traffic. Considering the aforementioned assumptions, we calculate the bandwidth required for outgoing traffic using the following formula:
 
-> �������������ℎ=��. �� ������ �����/���×��. �� ��������/����/���×���������\_����������� �� � ���Totalbandwidth​=Seconds in a dayNo. of active users/day​×No. of requests/user/day​×Totaldata\_size​​
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.46.53 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Bandwidth Required for Downloading Videos on YouTube**
 
@@ -93,13 +89,13 @@ Let’s estimate the bandwidth required for uploading data to and retrieving dat
 | --------------------------- | ------------------------ | -------------- | ------------------------- |
 | 5000000                     | 20                       | 50             | f462.96                   |
 
-Summarizing the bandwidth requirements of a blob store system for YouTube videos only
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.47.24 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Building blocks we will use <a href="#building-blocks-we-will-use-0" id="building-blocks-we-will-use-0"></a>
 
 We use the following building blocks in the design of our blob store system:
 
-Building blocks for the design of a task scheduler
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.47.45 AM.png" alt=""><figcaption></figcaption></figure>
 
 * [**Rate Limiter:**](https://www.educative.io/collection/page/10370001/4941429335392256/4770834422169600) A rate limiter is required to control the users’ interaction with the system.
 * [**Load balancer:**](https://www.educative.io/collection/page/10370001/4941429335392256/4521972679049216) A load balancer is needed to distribute the request load onto different servers.

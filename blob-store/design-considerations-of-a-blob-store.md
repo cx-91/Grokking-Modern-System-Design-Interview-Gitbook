@@ -37,7 +37,7 @@ We can take routing, storage, and sharding decisions on the basis of these layer
 | Container                 | `container_ID`             | List of `blob_ID` values                        | `container_ID` | Container -> list of blobs    |
 | Blob                      | `blob_ID`                  | {list of chunks, chunkInfo: data node ID's,.. } | `blob_ID`      | Blob -> list of chunks        |
 
-> **Note:** We generate unique IDs for user accounts, containers, and blobs using a [unique ID generator](https://www.educative.io/collection/page/10370001/4941429335392256/5216880444309504).
+> **Note:** We generate unique IDs for user accounts, containers, and blobs using a [unique ID generator](../sequencer/design-of-a-unique-id-generator.md).
 
 Besides storing the actual blob data, we have to maintain some metadata for managing the blob storage. Let’s see what that data is.
 
@@ -62,19 +62,23 @@ We maintain three replicas for each block. When writing a blob, the manager node
 
 In the example above, the blob size is a multiple of the chunk size, so the manager node can determine how many Bytes to read for each chunk.
 
-Point to Ponder
-
 **Question**
 
 What if the blob size isn’t a multiple of our configured chunk size? How does the manager node know how many Bytes to read for the last chunk?
 
-Show Answer
+If the blob size isn’t a multiple of the chunk size, the last chunk won’t be full.
+
+The manager node also keeps the size of each blob to determine the number of Bytes to read for the last chunk.
+
+\------------
 
 ### Partition data <a href="#partition-data" id="partition-data"></a>
 
 We talked about the different levels of abstraction in a blob store—the account layer, the container layer, and the blob layer. There are billions of blobs that are stored and read. There is a large number of data nodes on which we store these blobs. If we look for the data nodes that contain specific blobs out of all of the data nodes, it would be a very slow process. Instead, we can group data nodes and call each group a **partition**. We maintain a partition map table that contains a list of all the blobs in each partition. If we distribute the blobs on different partitions independent of their container IDs and account IDs, we encounter a problem, as shown in the following illustration:
 
-Billions of blobsRange partitioning based on blob IDs
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.53.53 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.54.07 AM.png>)
 
 Partitioning based on the blob IDs causes certain problems. For example, the blobs under a specific container or account may reside in different partitions that add overhead while reading or listing the blobs linked to a particular account or a particular container.
 
@@ -90,7 +94,7 @@ To populate the blob index, we define key-value tag attributes on the blobs whil
 
 As shown in the following illustration, a blob indexing engine reads the new tags, indexes them, and exposes them to a searchable blob index:
 
-Indexing and searching blobs
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.54.25 AM.png" alt=""><figcaption></figcaption></figure>
 
 We can categorize blobs as well as sort blobs using indexing. Let’s see how we utilize indexing in pagination.
 
@@ -101,6 +105,8 @@ We can categorize blobs as well as sort blobs using indexing. Let’s see how we
 Users may want to list all the blobs associated with a specific account, all the blobs present inside a specific container, or they may want to list some public blobs based on a prefix. The problem is that this list could be very long. We can’t return the whole list to the user in one go. So, we have to return the list of the blobs in parts.
 
 Let’s say a user wants a list of blobs associated with their account and there are a total of 2,000 blobs associated with that account. Searching, returning, and loading too many blobs at once affects performance. This is where paging becomes important. We can return the first five results and give users a `next` button. On each click of the `next` button, it returns the next five results. This is called **pagination**.
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 1.55.06 AM.png>)
 
 The application owners set the number of results to return depending on these factors:
 
@@ -113,7 +119,9 @@ Point to Ponder
 
 How do we decide which five blobs to return first out of the 2,000 blobs totalt?
 
-Show Answer
+Here, we utilize indexing to **sort** and **categorize** the blobs. We should do this beforehand, while we store the blobs. Otherwise, it becomes challenging at the time of returning the list to the user. There could be millions or billions of blobs and we can’t sort them quickly when the list request is received.
+
+\----------
 
 For pagination, we need a **continuation token** as a starting point for the part of the list that’s returned next. A continuation token is a string token that’s included in the response of a query if the total number of queried results exceeds the maximum number of results that we can return at once. As a result, it serves as a pointer, allowing the re-query to pick up where we left off.
 
@@ -128,7 +136,7 @@ These are the two levels of replication:
 
 #### Synchronous replication within a storage cluster <a href="#synchronous-replication-within-a-storage-cluster-1" id="synchronous-replication-within-a-storage-cluster-1"></a>
 
-A **storage cluster** is made up of �N racks of storage nodes, each of which is configured as a fault domain with redundant networking and power.
+A **storage cluster** is made up of N racks of storage nodes, each of which is configured as a fault domain with redundant networking and power.
 
 We ensure that every data written into a storage cluster is kept durable within that storage cluster. The manager node maintains enough data replicas across the nodes in distinct fault domains to ensure data durability inside the cluster in the event of a disk, node, or rack failure.
 
@@ -147,7 +155,7 @@ The blob store’s data centers are present in different regions—for example, 
 
 The number of copies of a blob is called the **replication factor**. Most of the time, a replication factor of **three** is sufficient.
 
-These are the regions and availability zones. Dark yellow is the primary data and light yellow are the replicas
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.56.20 AM.png" alt=""><figcaption></figcaption></figure>
 
 We keep four copies of a blob. One is the local copy within the data center in the primary region to protect against server rack and drive failures. The second copy of the blob is placed in the other data center within the same region to protect against fire or flooding in the data center. The third copy is placed in the data center of a different region to protect against regional disasters.
 
@@ -159,19 +167,37 @@ Marking the blob as deleted, but not actually deleting it at the moment, causes 
 
 The whole deletion process is shown in the following illustration:
 
-Three blobs are uploaded to the blob store. Disk 1 is holding all three blobs**1** of 10
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.03.46 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.04.03 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.04.22 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.04.37 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.04.53 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.05.07 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.05.21 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.05.35 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.05.49 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 2.06.01 AM.png>)
 
 ### Stream a file <a href="#stream-a-file-0" id="stream-a-file-0"></a>
 
-To stream a file, we need to define how many Bytes are allowed to be read at one time. Let’s say we read �X number of Bytes each time. The first time we read the first �X Bytes starting from the 0th Byte (00 to �−1X−1) and the next time, we read the next �X Bytes (�X to 2�−12X−1).
-
-Point to Ponder
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 2.06.21 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Question**
 
 How do we know which Bytes we have read first and which Bytes we have to read next?
 
-Show Answer
+We can use an **offset** value to keep track of the Byte from which we need to start reading again.
+
+\-------------
 
 ### Cache the blob store <a href="#cache-the-blob-store-0" id="cache-the-blob-store-0"></a>
 

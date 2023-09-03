@@ -4,7 +4,7 @@
 
 Let’s identify and connect the components of a blob store system. At a high level, the components are clients, front-end servers, and storage disks.
 
-The high-level design of a blob store
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.49.11 AM.png" alt=""><figcaption></figcaption></figure>
 
 The client’s requests are received at the front-end servers that process the request. The front-end servers store the client’s blob onto the storage disks attached to them.
 
@@ -141,7 +141,7 @@ Here is a list of components that we use in the blob store design:
 
 The architecture of how these components interconnect is shown in the diagram below:
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODcxIiBoZWlnaHQ9IjQwMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)The detailed design of a blob store
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 1.49.35 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Workflow <a href="#workflow-0" id="workflow-0"></a>
 
@@ -150,19 +150,19 @@ We describe the workflow based on the basic operations we can perform on a blob 
 **Write a blob**
 
 1. The client generates the upload blob request. If the client’s request successfully passes through the rate limiter, the load balancer forwards the client’s request to one of the front-end servers. The front-end server then requests the manager node for the data nodes it should contact to store the blob.
-2. The manager node assigns the blob a unique ID using a [unique ID generator system](https://www.educative.io/collection/page/10370001/4941429335392256/5216880444309504). It then splits the large-size blob into smaller, fixed-size chunks and assigns each chunk a data node where that chunk is eventually stored. The manager node determines the amount of storage space that’s available on the data nodes using a **free-space management system**.
+2. The manager node assigns the blob a unique ID using a [unique ID generator system](../sequencer/design-of-a-unique-id-generator.md). It then splits the large-size blob into smaller, fixed-size chunks and assigns each chunk a data node where that chunk is eventually stored. The manager node determines the amount of storage space that’s available on the data nodes using a **free-space management system**.
 3. After determining the mapping of chunks to data nodes, the front-end servers write the chunks to the assigned data nodes.
 4. We replicate each chunk for redundancy purposes. All choices regarding chunk replication are made at the manager node. Hence, the manager node also allocates the storage and data nodes for storing replicas.
 5. The manager node stores the blob metadata in the metadata storage. We discuss the blob’s metadata schema in detail in the next lesson.
 6. After writing the blob, a fully qualified path of the blob is returned to the client. The path consists of the user ID, container ID where the user has added the blob, the blob ID, and the access level of the blob.
 
-Point to Ponder
-
 **Question**
 
 What does the manager node do if a user concurrently writes two blobs with the same name inside the same container?
 
-Show Answer
+The manager node serializes such operations and assigns a version number to the blob that’s uploaded later.
+
+\--------------
 
 **Reading a blob**
 
@@ -173,22 +173,24 @@ Show Answer
 
 > **Note:** The metadata information for reading the blob is cached at the client machine, so that the next time a client wants to read the same blob, we won’t have to burden the manager node. Additionally, the client’s read operation will be faster the next time.
 
-Point to Ponder
-
 **Question**
 
 Suppose the manager node moves data from one data node to another because of an impending disk failure. The user will now have stale information if they use the cached metadata to access the data. How do we handle such situations?
 
-Show Answer
+In such cases, the client calls fail. The client then flushes the cache and fetches new metadata information from the manager node.
+
+\--------------
 
 **Deleting a blob** Upon receiving a delete blob request, the manager node marks that blob as deleted in the metadata, and frees up the space later using a garbage collector. We learn more about garbage collectors in the next lesson.
-
-Point to Ponder
 
 **Question**
 
 Can the manager node be considered a single point of failure? If yes, then how can we cope with this problem?
 
-Show Answer
+Yes, because the manager node is the central point of a blob store and is a single point of failure. Therefore, we have to have a backup or shadow server in place of a manager node.
+
+The technique that we use for this is called checkpointing, meaning we take snapshots of the data at different time intervals. A snapshot captures the state, data, hardware configuration of the running manager node, and messages in transit between the manager and data nodes. It maintains the operation log in an external storage area or snapshot repository. If the manager node fails, an automated system or the administrator uses the snapshot to restart that manager node from the state it failed at and replays the operation log.
+
+\------------
 
 In the next lesson, we talk about the design considerations of a blob store.
