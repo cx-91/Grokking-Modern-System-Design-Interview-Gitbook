@@ -24,10 +24,10 @@ In this chapter, we’ll focus on the high-level and detailed design of the What
 
 We’ve divided the design of WhatsApp messenger into the following five lessons:
 
-1. [**Requirements**](https://www.educative.io/collection/page/10370001/4941429335392256/5023065490063360): In this lesson, we’ll identify functional and non-functional requirements. We’ll also discuss resource estimations required for better and smooth operations of the proposed design of WhatsApp.
-2. [**High-level Design**](https://www.educative.io/collection/page/10370001/4941429335392256/6728651831246848): We’ll focus on the high-level design of our WhatsApp version. We’ll also discuss essential APIs for our WhatsApp design.
-3. [**Detailed Design**](https://www.educative.io/collection/page/10370001/4941429335392256/6731604231192576): In this lesson, we’ll describe the design of our WhatsApp messenger in detail. Initially, we’ll explain the design of each microservice, including connection with servers, send and receive messages and media content, and group messages. In the end, the design of each microservice is combined into the detailed design of WhatsApp.
-4. [**Evaluation**](https://www.educative.io/collection/page/10370001/4941429335392256/4861549654573056): This lesson will explain how our version of WhatsApp fulfills non-functional requirements. We’ll also evaluate some trade-offs of our design.
-5. [**Quiz**](https://www.educative.io/collection/page/10370001/4941429335392256/4877609447456768): Here, we’ll assess what we’ve learned in this chapter through a quiz.
+1. [**Requirements**](requirements-of-whatsapps-design.md): In this lesson, we’ll identify functional and non-functional requirements. We’ll also discuss resource estimations required for better and smooth operations of the proposed design of WhatsApp.
+2. [**High-level Design**](high-level-design-of-whatsapp.md): We’ll focus on the high-level design of our WhatsApp version. We’ll also discuss essential APIs for our WhatsApp design.
+3. [**Detailed Design**](detailed-design-of-whatsapp.md): In this lesson, we’ll describe the design of our WhatsApp messenger in detail. Initially, we’ll explain the design of each microservice, including connection with servers, send and receive messages and media content, and group messages. In the end, the design of each microservice is combined into the detailed design of WhatsApp.
+4. [**Evaluation**](evaluation-of-whatsapps-design.md): This lesson will explain how our version of WhatsApp fulfills non-functional requirements. We’ll also evaluate some trade-offs of our design.
+5. [**Quiz**](quiz-on-whatsapps-design.md): Here, we’ll assess what we’ve learned in this chapter through a quiz.
 
 Let’s start by discussing the requirements of our version of WhatsApp.

@@ -13,7 +13,7 @@ The following are the functional requirements:
 * **Insert data:** The user of a distributed cache system must be able to insert an entry to the cache.
 * **Retrieve data:** The user should be able to retrieve data corresponding to a specific key.
 
-Functional and non-functional requirements of a distributed cache
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.29.49 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Non-functional requirements <a href="#non-functional-requirements-0" id="non-functional-requirements-0"></a>
 
@@ -37,8 +37,6 @@ The API call to perform insertion should look like this:
 insert(key, value)
 ```
 
-###
-
 | **Parameter** | **Description**                                 |
 | ------------- | ----------------------------------------------- |
 | `key`         | This is a unique identifier.                    |
@@ -54,21 +52,21 @@ The API call to retrieve data from the cache should look like this:
 retrieve(key)
 ```
 
-###
-
 | **Parameter** | **Description**                                 |
 | ------------- | ----------------------------------------------- |
 | `key`         | This returns the data stored against the `key.` |
 
 This call returns an object to the caller.
 
-Point to Ponder
-
 **Question**
 
 The API design of the distributed cache looks exactly like the key-value store. What are the possible differences between a key-value store and a distributed cache?
 
-Show Answer
+Some of the key differences are the following:
+
+* Key-value stores need to durably store data (persistence). A cache is used in addition to persistent storage to increase reading performance.
+* A cache serves data from the RAM. A key-value store writes data to non-volatile storage.
+* Key-value stores are robust and should survive failures. However, caches can crash and be populated from scratch after recovery.
 
 ### Design considerations <a href="#design-considerations-0" id="design-considerations-0"></a>
 
@@ -106,7 +104,7 @@ Apart from the details in the sections above, optimizing the time-to-live (TTL) 
 
 The following figure depicts our high-level design:
 
-High-level design of distributed cache
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.31.22 AM.png" alt=""><figcaption></figcaption></figure>
 
 The main components in this high-level design are the following:
 

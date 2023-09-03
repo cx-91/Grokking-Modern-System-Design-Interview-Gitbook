@@ -106,11 +106,11 @@ In the next lesson, we’ll focus on the high-level design of Instagram. The des
 
 Building blocks used in Instagram design
 
-* A [**load balancer**](https://www.educative.io/collection/page/10370001/4941429335392256/4521972679049216) at various layers will ensure smooth requests distribution among available servers.
-* A [**database**](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872) is used to store the user and accounts metadata and relationship among them.
-* [**Blob storage**](https://www.educative.io/collection/page/10370001/4941429335392256/4862646238576640) is needed to store the various types of content such as photos, videos, and so on.
-* A [**task scheduler**](https://www.educative.io/collection/page/10370001/4941429335392256/6152021643624448) schedules the events on the database such as removing the entries whose time to live exceeds the limit.
-* A [**cache**](https://www.educative.io/collection/page/10370001/4941429335392256/5053577315221504) stores the most frequent content related requests.
-* [**CDN**](https://www.educative.io/collection/page/10370001/4941429335392256/6624266925899776) is used to effectively deliver content to end users which reduces delay and burden on end-servers.
+* A [**load balancer**](../load-balancers/introduction-to-load-balancers.md) at various layers will ensure smooth requests distribution among available servers.
+* A [**database**](../databases/introduction-to-databases.md) is used to store the user and accounts metadata and relationship among them.
+* [**Blob storage**](../blob-store/system-design-a-blob-store.md) is needed to store the various types of content such as photos, videos, and so on.
+* A [**task scheduler**](../distributed-task-scheduler/system-design-the-distributed-task-scheduler.md) schedules the events on the database such as removing the entries whose time to live exceeds the limit.
+* A [**cache**](../distributed-cache/system-design-the-distributed-cache.md) stores the most frequent content related requests.
+* [**CDN**](../content-delivery-network-cdn/system-design-the-content-delivery-network-cdn.md) is used to effectively deliver content to end users which reduces delay and burden on end-servers.
 
 In the next lesson, we’ll discuss the high-level design of the Instagram system.

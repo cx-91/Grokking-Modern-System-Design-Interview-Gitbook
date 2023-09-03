@@ -148,11 +148,11 @@ With the estimations done, we can identify the key building blocks in our design
 
 Building blocks in high level design
 
-* [**Database(s)**](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872) will be needed to store the mapping of long URLs and the corresponding short URLs.
-* [**Sequencer**](https://www.educative.io/collection/page/10370001/4941429335392256/6499939719053312) will provide unique IDs that will serve as a starting point for each short URL generation.
-* [**Load balancers**](https://www.educative.io/collection/page/10370001/4941429335392256/4521972679049216) at various layers will ensure smooth requests distribution among available servers.
-* [**Caches**](https://www.educative.io/collection/page/10370001/4941429335392256/5053577315221504) will be utilized to store the most frequent short URLs related requests.
-* [**Rate limiters**](https://www.educative.io/collection/page/10370001/4941429335392256/4770834422169600) will be used to avoid system exploitation.
+* [**Database(s)**](../databases/introduction-to-databases.md) will be needed to store the mapping of long URLs and the corresponding short URLs.
+* [**Sequencer**](../sequencer/system-design-sequencer.md) will provide unique IDs that will serve as a starting point for each short URL generation.
+* [**Load balancers**](../load-balancers/introduction-to-load-balancers.md) at various layers will ensure smooth requests distribution among available servers.
+* [**Caches**](../distributed-cache/system-design-the-distributed-cache.md) will be utilized to store the most frequent short URLs related requests.
+* [**Rate limiters**](../rate-limiter/system-design-the-rate-limiter.md) will be used to avoid system exploitation.
 
 Besides these building blocks, we'll also need the following additional components to achieve the desired service:
 

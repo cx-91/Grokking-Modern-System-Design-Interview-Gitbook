@@ -10,11 +10,11 @@ The typeahead suggestion system in action
 
 We’ve divided the chapter on the design of the typeahead suggestion system into six lessons:
 
-1. [**Requirements**](https://www.educative.io/collection/page/10370001/4941429335392256/6369391511339008)**:** In this lesson, we focus on the functional and non-functional requirements for designing a typeahead suggestion system. We also discuss resource estimations for the smooth operation of the system.
-2. [**High-level design**](https://www.educative.io/collection/page/10370001/4941429335392256/6376843531255808)**:** In this lesson, we discuss the high-level design of our version of the typeahead suggestion system. We also discuss some essential APIs used in the design.
-3. [**Data Structure for Storing Prefixes**](https://www.educative.io/collection/page/10370001/4941429335392256/6110217372172288)**:** In this lesson, we cover an efficient tree data structure called trie that’s used to store search prefixes. We also discuss how it can be further optimized to reduce the tree traversal time.
-4. [**Detailed design**](https://www.educative.io/collection/page/10370001/4941429335392256/5464491722801152)**:** In this lesson, we explain the two main components, the _suggestions_ service and the _assembler_, which make up the detailed design of the typeahead suggestion system.
-5. [**Evaluation**](https://www.educative.io/collection/page/10370001/4941429335392256/6626894497185792)**:** This lesson evaluates the proposed design of the typeahead suggestion system based on the non-functional requirements of the system. It also presents some client-side optimization and personalization that could significantly affect the system’s design.
-6. [**Quiz**](https://www.educative.io/collection/page/10370001/4941429335392256/5201949791617024)**:** In this lesson, we assess our understanding of the design via a quiz.
+1. [**Requirements**](requirements-of-the-typeahead-suggestion-systems-design.md)**:** In this lesson, we focus on the functional and non-functional requirements for designing a typeahead suggestion system. We also discuss resource estimations for the smooth operation of the system.
+2. [**High-level design**](high-level-design-of-the-typeahead-suggestion-system.md)**:** In this lesson, we discuss the high-level design of our version of the typeahead suggestion system. We also discuss some essential APIs used in the design.
+3. [**Data Structure for Storing Prefixes**](data-structure-for-storing-prefixes.md)**:** In this lesson, we cover an efficient tree data structure called trie that’s used to store search prefixes. We also discuss how it can be further optimized to reduce the tree traversal time.
+4. [**Detailed design**](detailed-design-of-the-typeahead-suggestion-system.md)**:** In this lesson, we explain the two main components, the _suggestions_ service and the _assembler_, which make up the detailed design of the typeahead suggestion system.
+5. [**Evaluation**](evaluation-of-the-typeahead-suggestion-systems-design.md)**:** This lesson evaluates the proposed design of the typeahead suggestion system based on the non-functional requirements of the system. It also presents some client-side optimization and personalization that could significantly affect the system’s design.
+6. [**Quiz**](quiz-on-the-typeahead-suggestion-systems-design.md)**:** In this lesson, we assess our understanding of the design via a quiz.
 
 Let’s start by identifying the requirements for designing a typeahead suggestion system.

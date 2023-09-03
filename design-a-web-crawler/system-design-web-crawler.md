@@ -25,9 +25,9 @@ The output of the crawling process is the data that’s the input for the subseq
 
 This chapter consists of four lessons that encompass the overall design of the web crawler system:
 
-1. [**Requirements**:](https://www.educative.io/collection/page/10370001/4941429335392256/6454882160082944) This lesson enlists the functional and non-functional requirements of the system and estimates calculations for various system parameters.
-2. [**Design**:](https://www.educative.io/collection/page/10370001/4941429335392256/6632099624255488) This lesson analyzes a bottom-up approach for a web-crawling service. We get a detailed overview of all the individual components leading to a combined operational mechanism to meet the requirements.
-3. [**Improvements**:](https://www.educative.io/collection/page/10370001/4941429335392256/5983505204379648) This lesson provides all the design improvements required to counter shortcomings, especially the crawler traps. These crawler traps include links with query parameters, internal links redirection, links holding infinite calendar pages, links for dynamic content generation, and links containing cyclic directories.
-4. [**Evaluation**:](https://www.educative.io/collection/page/10370001/4941429335392256/6142975511363584) This lesson provides an in-depth evaluation of our design choices to check if they meet all the standards and requirements we expect from our design.
+1. [**Requirements**:](requirements-of-a-web-crawlers-design.md) This lesson enlists the functional and non-functional requirements of the system and estimates calculations for various system parameters.
+2. [**Design**:](design-of-a-web-crawler.md) This lesson analyzes a bottom-up approach for a web-crawling service. We get a detailed overview of all the individual components leading to a combined operational mechanism to meet the requirements.
+3. [**Improvements**:](design-improvements-of-a-web-crawler.md) This lesson provides all the design improvements required to counter shortcomings, especially the crawler traps. These crawler traps include links with query parameters, internal links redirection, links holding infinite calendar pages, links for dynamic content generation, and links containing cyclic directories.
+4. [**Evaluation**:](evaluation-of-web-crawlers-design.md) This lesson provides an in-depth evaluation of our design choices to check if they meet all the standards and requirements we expect from our design.
 
 Let’s begin with defining the requirements of a web crawler.

@@ -78,8 +78,8 @@ The design of the typeahead suggestion system consists of the following building
 
 Building blocks required in the design of the typeahead suggestion system
 
-* [**Databases**](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872) are required to keep the data related to the queries’ prefixes.
-* [**Load balancers**](https://www.educative.io/collection/page/10370001/4941429335392256/4521972679049216) are required to disseminate incoming queries among a number of active servers.
-* [**Caches**](https://www.educative.io/collection/page/10370001/4941429335392256/5053577315221504) are used to keep the top �N suggestions for fast retrieval.
+* [**Databases**](../databases/introduction-to-databases.md) are required to keep the data related to the queries’ prefixes.
+* [**Load balancers**](../load-balancers/introduction-to-load-balancers.md) are required to disseminate incoming queries among a number of active servers.
+* [**Caches**](../distributed-cache/system-design-the-distributed-cache.md) are used to keep the top �N suggestions for fast retrieval.
 
 In the next lesson, we’ll focus on the high-level design and APIs of the typeahead suggestion system.

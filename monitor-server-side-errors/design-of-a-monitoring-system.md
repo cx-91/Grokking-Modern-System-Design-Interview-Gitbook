@@ -37,6 +37,6 @@ The high-level components of our monitoring service are the following:
 * **Data collector service**: This fetches the relevant data from each service and saves it in the storage.
 * **Querying service**: This is an API that can query on the time-series database and return the relevant information.
 
-High-level design of a monitoring system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.00.16 AM.png" alt=""><figcaption></figcaption></figure>
 
 Let’s dive deep into the components mentioned above in the next lesson.

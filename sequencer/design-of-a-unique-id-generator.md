@@ -1,6 +1,6 @@
 # Design of a Unique ID Generator
 
-In the [previous](https://www.educative.io/collection/page/10370001/4941429335392256/6499939719053312) lesson, we saw that we need unique identifiers for many use cases, such as identifying objects (for example, Tweets, uploaded videos, and so on) and tracing the execution flow in a complex web of services. Now, we’ll formalize the requirements for a unique identifier and discuss three progressively improving designs to meet our requirements.
+In the [previous](system-design-sequencer.md) lesson, we saw that we need unique identifiers for many use cases, such as identifying objects (for example, Tweets, uploaded videos, and so on) and tracing the execution flow in a complex web of services. Now, we’ll formalize the requirements for a unique identifier and discuss three progressively improving designs to meet our requirements.
 
 ### Requirements for unique identifiers <a href="#requirements-for-unique-identifiers-0" id="requirements-for-unique-identifiers-0"></a>
 
@@ -25,13 +25,9 @@ Let’s dive into the possible solutions for the problem mentioned above.
 
 ### First solution: UUID <a href="#first-solution-uuid-0" id="first-solution-uuid-0"></a>
 
-A straw man solution for our design uses **UUIDs (universally unique IDs)**. This is a 128-bit number and it looks like 123�4567�89�12�3�456426614174000123e4567e89b12d3a456426614174000 in hexadecimal. It gives us about 10381038 numbers. UUIDs have different versions. We opt for version 4, which generates a pseudorandom number.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.19.59 PM.png" alt=""><figcaption></figcaption></figure>
 
-Each server can generate its own ID and assign the ID to its respective event. No coordination is needed for UUID since it’s independent of the server. Scaling up and down is easy with UUID, and this system is also highly available. Furthermore, it has a low probability of collisions. The design for this approach is given below:
-
-Generating a unique ID using the UUID approach
-
-#### Cons <a href="#cons-0" id="cons-0"></a>
+Cons
 
 Using 128-bit numbers as primary keys makes the primary-key indexing slower, which results in slow inserts. A workaround might be to interpret an ID as a hex string instead of a number. However, non-numeric identifiers might not be suitable for many use cases. The ID isn’t of 64-bit size. Moreover, there’s a chance of duplication. Although this chance is minimal, we can’t claim UUID to be deterministically unique. Additionally, UUIDs given to clients over time might not be monotonically increasing. The following table summarizes the requirements we have fulfilled using UUID:
 
@@ -45,9 +41,9 @@ Using 128-bit numbers as primary keys makes the primary-key indexing slower, whi
 
 Let’s try mimicking the auto-increment feature of a database. Consider a central database that provides a current ID and then increments the value by one. We can use the current ID as a unique identifier for our events.
 
-Using a central database to generate unique IDs
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.21.28 PM.png" alt=""><figcaption></figcaption></figure>
 
-Point to Ponder
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.29.03 PM.png" alt=""><figcaption></figcaption></figure>
 
 **Question**
 
@@ -57,7 +53,9 @@ Show Answer
 
 To cater to the problem of a single point of failure, we modify the conventional auto-increment feature that increments by one. Instead of incrementing by one, let’s rely on a value `m`, where `m` equals the number of database servers we have. Each server generates an ID, and the following ID adds `m` to the previous value. This method is scalable and prevents the duplication of IDs. The following image provides a visualization of how a unique ID is generated using a database:
 
-Generating IDs using the value of m**1** of 2
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.22.07 PM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.22.55 PM.png" alt=""><figcaption></figcaption></figure>
 
 #### Pros <a href="#pros-0" id="pros-0"></a>
 
@@ -90,9 +88,9 @@ We use a microservice called **range handler** that keeps a record of all the ta
 
 This microservice can become a single point of failure, but a **failover server** acts as the savior in that case. The failover server hands out ranges when the main server is down. We can recover the state of available and unavailable ranges from the latest checkpoint of the replicated store.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzYyIiBoZWlnaHQ9IjMyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Design of the range handler microservice
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.25.05 PM.png" alt=""><figcaption></figcaption></figure>
 
-#### Pros <a href="#pros-0" id="pros-0"></a>
+**Pros**
 
 This system is scalable, available, and yields user IDs that have no duplicates. Moreover, we can maintain this range in 64 bits, which is numeric.
 

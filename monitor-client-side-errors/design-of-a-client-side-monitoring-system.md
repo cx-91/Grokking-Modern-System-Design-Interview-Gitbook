@@ -6,7 +6,7 @@ A service has no visibility of the errors that don’t occur at its infrastructu
 
 To ensure that the client’s requests reach the server, we’ll act as clients and perform reachability and health checks. We’ll need various vantage points across the globe. We can run a service, let’s call it prober, that periodically sends requests to the service to check availability. This way, we can monitor reachability to our service from many different places.
 
-Prober checking availability of website
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.21.45 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Issues with probers <a href="#issues-with-probers-0" id="issues-with-probers-0"></a>
 
@@ -26,7 +26,7 @@ Instead of using a prober on vantage points, we can embed the probers into the a
 
 The following illustration shows how an agent reaches an independent collector when primary service isn’t reachable:
 
-Evaluating the agent's report to see a spike in errors
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.22.07 AM.png" alt=""><figcaption></figcaption></figure>
 
 These collectors are a hierarchy of big data processing systems. We can place them near the client network, and over time, we can accumulate these statistics from all such localized sites. We’ll use online stream processing systems to make such a system near real-time. If we’re mainly looking for summary statistics, our system can tolerate the loss of some error reports. Some reports will be relative to the overall user population. We might say 1% of service users are “some.” If we don’t want to lose any reports, we’ll need to design a system with more care, which will be more expensive.
 
@@ -44,7 +44,7 @@ Another solution can be to use a client-side application that the service contro
 
 The client can fill in the request header if the client has already consented to that. The service can then reply with appropriate values for the policy and collection endpoints.
 
-Activate and deactivate reports
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.22.39 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Reach collectors under faulty conditions <a href="#reach-collectors-under-faulty-conditions-0" id="reach-collectors-under-faulty-conditions-0"></a>
 

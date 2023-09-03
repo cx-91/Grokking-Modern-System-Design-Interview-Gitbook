@@ -87,10 +87,10 @@ The design of newsfeed system utilizes the following building blocks:
 
 The building blocks to design a newsfeed system
 
-* [**Database(s)**](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872) is required to store the posts from different entities and the generated personalized newsfeed. It is also used to store users’ metadata and their relationships with other entities, such as friends and followers.
-* [**Cache**](https://www.educative.io/collection/page/10370001/4941429335392256/5053577315221504) is an important building block to keep the frequently accessed data, whether posts and newsfeeds or users’ metadata.
-* [**Blob storage**](https://www.educative.io/collection/page/10370001/4941429335392256/4862646238576640) is essential to store media content, for example, images and videos.
-* [**CDN**](https://www.educative.io/collection/page/10370001/4941429335392256/6624266925899776) effectively delivers content to end-users reducing delay and burden on back-end servers.
-* [**Load balancers**](https://www.educative.io/collection/page/10370001/4941429335392256/4521972679049216) are necessary to distribute millions of incoming clients’ requests for newsfeed among the pool of available servers.
+* [**Database(s)**](../databases/introduction-to-databases.md) is required to store the posts from different entities and the generated personalized newsfeed. It is also used to store users’ metadata and their relationships with other entities, such as friends and followers.
+* [**Cache**](../distributed-cache/system-design-the-distributed-cache.md) is an important building block to keep the frequently accessed data, whether posts and newsfeeds or users’ metadata.
+* [**Blob storage**](../blob-store/system-design-a-blob-store.md) is essential to store media content, for example, images and videos.
+* [**CDN**](../content-delivery-network-cdn/system-design-the-content-delivery-network-cdn.md) effectively delivers content to end-users reducing delay and burden on back-end servers.
+* [**Load balancers**](../load-balancers/introduction-to-load-balancers.md) are necessary to distribute millions of incoming clients’ requests for newsfeed among the pool of available servers.
 
 In the next lesson, we’ll focus on the high-level and detailed design of the newsfeed system.

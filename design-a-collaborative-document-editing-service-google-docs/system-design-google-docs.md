@@ -35,9 +35,9 @@ Most commercial solutions focus on client-service architecture to have finer con
 
 We've divided the design problem into four stages:
 
-1. [**Requirements for Google Docs’ Design**](https://www.educative.io/collection/page/10370001/4941429335392256/5975395656007680): This lesson will focus on establishing the requirements for designing a collaborative document editing service. We’ll also quantify the infrastructure requirements in this stage.
-2. [**Google Docs’ Design**](https://www.educative.io/collection/page/10370001/4941429335392256/5921693154934784): The goal of this lesson is to come up with a design that fulfills the requirements of the service. This lesson will explain why a component is used and how it integrates with other components to fulfill functional requirements.
-3. [**Concurrency in Collaborative Editing**](https://www.educative.io/collection/page/10370001/4941429335392256/6200295243120640): Online document editing services have to resolve conflicts between users editing the same portion of a document. This lesson covers the type of problems that can arise and the techniques used to resolve such conflicts.
-4. [**Evaluating Google Docs’ Design**](https://www.educative.io/collection/page/10370001/4941429335392256/5489039691481088): The main objective of this lesson is to evaluate our design for non-functional requirements. Mainly, we see if our design is performant, consistent, available, and scalable.
+1. [**Requirements for Google Docs’ Design**](requirements-of-google-docs-design.md): This lesson will focus on establishing the requirements for designing a collaborative document editing service. We’ll also quantify the infrastructure requirements in this stage.
+2. [**Google Docs’ Design**](design-of-google-docs.md): The goal of this lesson is to come up with a design that fulfills the requirements of the service. This lesson will explain why a component is used and how it integrates with other components to fulfill functional requirements.
+3. [**Concurrency in Collaborative Editing**](concurrency-in-collaborative-editing.md): Online document editing services have to resolve conflicts between users editing the same portion of a document. This lesson covers the type of problems that can arise and the techniques used to resolve such conflicts.
+4. [**Evaluating Google Docs’ Design**](evaluation-of-google-docs-design.md): The main objective of this lesson is to evaluate our design for non-functional requirements. Mainly, we see if our design is performant, consistent, available, and scalable.
 
 Let’s begin with a look at our requirements.

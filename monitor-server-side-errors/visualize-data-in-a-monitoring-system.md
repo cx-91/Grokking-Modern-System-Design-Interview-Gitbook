@@ -12,7 +12,7 @@ A heat map depicting the operational state of a large number of components is an
 
 Below, we have a heat map displaying the server’s state.
 
-Viewing servers in a data center using heat maps
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.04.14 AM.png" alt=""><figcaption></figcaption></figure>
 
 We can use heat maps for the globally distributed systems and continuously share the health information of a server. We can use one bit (one for live, zero for dead). For 1,000,000 servers, we have 125 KB of data. We can quickly find out which server is down by the red color and focus on the problematic parts.
 

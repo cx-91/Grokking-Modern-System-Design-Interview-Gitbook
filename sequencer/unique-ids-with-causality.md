@@ -2,7 +2,7 @@
 
 ### Causality <a href="#causality-0" id="causality-0"></a>
 
-In the [previous](https://www.educative.io/collection/page/10370001/4941429335392256/5216880444309504) lesson,we generated unique IDs to differentiate between various events. Apart from having unique identifiers for events, we’re also interested in finding the sequence of these events. Let’s consider an example where Peter and John are two Twitter users. John posts a comment (event A), and Peter replies to John’s comment (event B). Event B is dependent on event A and can’t happen before it. The events are not concurrent here.
+In the [previous](design-of-a-unique-id-generator.md) lesson,we generated unique IDs to differentiate between various events. Apart from having unique identifiers for events, we’re also interested in finding the sequence of these events. Let’s consider an example where Peter and John are two Twitter users. John posts a comment (event A), and Peter replies to John’s comment (event B). Event B is dependent on event A and can’t happen before it. The events are not concurrent here.
 
 We can also have concurrent events—that is, two events that occur independently of each other. For example, if Peter and John comment on two different Tweets, there’s no happened-before relationship or causality between them. It’s essential to identify the dependence of one event over the other but not in the case of concurrent events.
 
@@ -10,7 +10,15 @@ We can also have concurrent events—that is, two events that occur independentl
 
 The following slides provide a visualization of concurrent and nonconcurrent events.
 
-**1** of 5
+![](<../.gitbook/assets/Screenshot 2023-09-02 at 11.31.40 PM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-02 at 11.31.53 PM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-02 at 11.32.05 PM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-02 at 11.32.22 PM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-02 at 11.32.36 PM.png>)
 
 Some applications need the events to have unique identifiers and carry any relevant causality information. An example of this is giving an identifier to the concurrent writes of a key into a key-value store to implement the last-write-wins strategy.
 
@@ -20,13 +28,17 @@ We can either use logical or physical clocks to infer causality. Some systems ha
 
 We use time to determine the sequence of events in our life. For example, if Sam took a bath at 6 a.m. and ate breakfast at 7:00 a.m., we can determine that Sam took a bath before breakfast by the time stamps of each event. Time stamps, therefore, can be used to maintain causality.
 
-Optional Revision: Time in a Distributed System
+![](<../.gitbook/assets/Screenshot 2023-09-02 at 11.33.27 PM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-02 at 11.33.48 PM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-02 at 11.34.04 PM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-02 at 11.34.27 PM.png>)
 
 ### Use UNIX time stamps <a href="#use-unix-time-stamps-0" id="use-unix-time-stamps-0"></a>
 
-UNIX time stamps are granular to the millisecond and can be used to distinguish different events. We have an **ID-generating server** that can generate one ID in a single millisecond. Any request to generate a unique ID is routed to that server, which returns a time stamp and then returns a unique ID. The ability to generate an ID in milliseconds allows us to generate a thousand identifiers per second. This means we can get 24(ℎ���)∗60(���/ℎ���)∗60(���/���)∗1000(��/���)=86400000���24(hour)∗60(min/hour)∗60(sec/min)∗1000(ID/sec)=86400000IDs in a day. That’s less than a billion per day.
-
-> **Note:** Connect to the following terminal to view the UNIX time stamp in milliseconds.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.34.52 PM.png" alt=""><figcaption></figcaption></figure>
 
 Terminal 1Terminal
 
@@ -34,7 +46,7 @@ Click to Connect...
 
 Our system works well with generating IDs, but it poses a crucial problem. The ID-generating server is a single point of failure (SPOF), and we need to handle it. To cater to SPOF, we can add more servers. Each server generates a unique ID for every millisecond. To make the overall identifier unique across the system, we attach the server ID with the UNIX time stamp. Then, we add a load balancer to distribute the traffic more efficiently. The design of a unique ID generator using a UNIX time stamps is given below:
 
-Using the time stamp as an ID
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.35.27 PM.png" alt=""><figcaption></figcaption></figure>
 
 #### Pros <a href="#pros-0" id="pros-0"></a>
 
@@ -57,7 +69,7 @@ For two concurrent events, the same time stamp is returned and the same ID can b
 
 Let’s try to use time efficiently. We can use some bits out of our targetted 64 bits for storing time and the remaining for other information. An overview of division is below:
 
-Overview of the division of bits in Twitter Snowflake
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.36.14 PM.png" alt=""><figcaption></figcaption></figure>
 
 The explanation of the bits division is as follows:
 
@@ -65,7 +77,7 @@ The explanation of the bits division is as follows:
 
 • **Time stamp**: 41 bits are assigned for milliseconds. The Twitter Snowflake default epoch will be used. Its value is 12888349746571288834974657, which is equivalent to November 4, 2010, 01:42:54 UTC. We can initiate our own epoch when our system will be deployed, say January 1, 2022, at 12 midnight can be the start of our epoch from zero. The maximum time to deplete this range is shown below:
 
-Time to range depletion = 241�����������365(����/����)∗24(ℎ����/���)∗60(�������/ℎ���)∗60(�������/�����)∗1000(����������/���)365(days/year)∗24(hours/day)∗60(minutes/hour)∗60(seconds/minut)∗1000(identifier/sec)241identifiers​ \~= 69 years
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.36.49 PM.png" alt=""><figcaption></figcaption></figure>
 
 The above calculations give us 69 years before we need a new algorithm to generate IDs. As we saw earlier, if we can generate 1,000 identifiers per second, we aren’t able to get our target of a billion identifiers per day. Though now, in the Snowflake proposal, we have ample identifiers available when we utilize worker ID and machine local sequence numbers.
 
@@ -75,7 +87,15 @@ The above calculations give us 69 years before we need a new algorithm to genera
 
 The following slides show the conversion of the time stamp to UTC.
 
-Overview of the division of bits**1** of 5
+![](<../.gitbook/assets/Screenshot 2023-09-02 at 11.40.14 PM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-02 at 11.40.30 PM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-02 at 11.40.42 PM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-02 at 11.41.02 PM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-02 at 11.41.16 PM.png>)
 
 #### Pros <a href="#pros-0" id="pros-0"></a>
 
@@ -139,7 +159,7 @@ The following slides explain the unique ID generation using vector clocks, where
 > [vector-clock][worker-id]
 > ```
 
-No event is currently in progress**1** of 14
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.42.00 PM.png" alt=""><figcaption></figcaption></figure>
 
 Our approach with vector clocks works. However, in order to completely capture causality, a vector clock must be at least �n nodes in size. As a result, when the total number of participating nodes is enormous, vector clocks require a significant amount of storage. Some systems nowadays, such as web applications, treat every browser as a client of the system. Such information increases the ID length significantly, making it difficult to handle, store, use, and scale.
 
@@ -154,13 +174,7 @@ Our approach with vector clocks works. However, in order to completely capture c
 | **Using Twitter Snowflake** | ✔️         | ✔️            | ✔️            | ✔️                    | **weak**                 |
 | **Using vector clocks**     | ✔️         | **weak**      | ✔️            | **can exceed**        | ✔️                       |
 
-Point to Ponder
-
-**Question**
-
-Would a global clock help solve our problem?
-
-Show Answer
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.42.28 PM.png" alt=""><figcaption></figcaption></figure>
 
 ### TrueTime API <a href="#truetime-api-0" id="truetime-api-0"></a>
 
@@ -174,20 +188,19 @@ The following slides explain how TrueTime’s time master servers work with GPS 
 
 In every data center, we have time handlers. GPS timemasters have GPS receivers attached, and few of them have atomic clocks**1** of 5
 
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.42.53 PM.png" alt=""><figcaption></figcaption></figure>
+
 The following slides explain how time is calculated when the client asks to give TrueTime.
 
-Before the client asks for TrueTime**1** of 7
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.44.19 PM.png" alt=""><figcaption></figcaption></figure>
 
-Spanner guarantees that two confidence intervals don’t overlap (that is, ���������Aearliest​ < �������Alatest​ < ���������Bearliest​ < �������Blatest​), then B definitely happened after A.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.44.37 PM.png" alt=""><figcaption></figcaption></figure>
 
-We generate our unique ID using TrueTime intervals. Let’s say the earliest interval is ��TE​, the latest is ��TL​, and the uncertainty is `ε`. We use ��TE​ in milliseconds as a time stamp in our unique ID.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.45.04 PM.png" alt=""><figcaption></figcaption></figure>
 
-* **Time stamp**: The time stamp is 41 bits. We use ��TE​ as a time stamp.
-* **Uncertainty**: The uncertainty is four bits. Since the maximum uncertainty is claimed to be 6–10 ms, we’ll use four bits for storing it.
-* **Worker number**: This is 10 bits. It gives us 210210 = 1,024 worker IDs.
-* **Sequence number**: This is eight bits. For every ID generated on the server, the sequence number is incremented by one. It gives us 2828 = 256 combinations. We’ll reset it to zero when it reaches 256.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.46.11 PM.png" alt=""><figcaption></figcaption></figure>
 
-Node B generating a unique ID for its event using TrueTime
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-02 at 11.46.39 PM.png" alt=""><figcaption></figcaption></figure>
 
 #### Pros <a href="#pros-0" id="pros-0"></a>
 

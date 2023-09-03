@@ -12,11 +12,13 @@ Under normal circumstances, this abstraction performs fine. However, as the numb
 
 In such cases, a **cache** is added to the system to deal with performance deterioration. A cache is a temporary data storage that can serve data faster by keeping data entries in memory. Caches store only the most frequently accessed data. When a request reaches the serving host, it retrieves data from the cache (cache hit) and serves the user. However, if the data is unavailable in the cache (cache miss), the data will be queried from the database. Also, the cache is populated with the new value to avoid cache misses for the next time.
 
-Service before using caching**1** of 2
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.24.49 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.25.06 AM.png" alt=""><figcaption></figcaption></figure>
 
 A cache is a nonpersistent storage area used to keep repeatedly read and written data, which provides the end user with lower latency. Therefore, a cache must serve data from a storage component that is fast, has enough storage, and is affordable in terms of dollar cost as we scale the caching service. The following illustration highlights the suitability of RAM as the raw building block for caching:
 
-An approximation that depicts how RAM is the optimal choice for serving cached data
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.25.26 AM.png" alt=""><figcaption></figcaption></figure>
 
 We understand the need for a cache and suitable storage hardware, but what is distributed cache? Let’s discuss this next.
 

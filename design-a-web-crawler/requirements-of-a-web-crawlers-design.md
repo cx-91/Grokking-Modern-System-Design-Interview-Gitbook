@@ -109,10 +109,10 @@ Here is the list of the main building blocks we’ll use in our design:
 
 ![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjExMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Building blocks in high-level design
 
-* [**Scheduler**](https://www.educative.io/collection/page/10370001/4941429335392256/6152021643624448) is used to schedule crawling events on the URLs that are stored in its database.
-* [**DNS**](https://www.educative.io/collection/page/10370001/4941429335392256/5728619204182016) is needed to get the IP address resolution of the web pages.
-* [**Cache**](https://www.educative.io/collection/page/10370001/4941429335392256/5053577315221504) is utilized in storing fetched documents for quick access by all the processing modules.
-* [**Blob store**](https://www.educative.io/collection/page/10370001/4941429335392256/4862646238576640)’s main application is to store the crawled content.
+* [**Scheduler**](../distributed-task-scheduler/system-design-the-distributed-task-scheduler.md) is used to schedule crawling events on the URLs that are stored in its database.
+* [**DNS**](../domain-name-system/introduction-to-domain-name-system-dns.md) is needed to get the IP address resolution of the web pages.
+* [**Cache**](../distributed-cache/system-design-the-distributed-cache.md) is utilized in storing fetched documents for quick access by all the processing modules.
+* [**Blob store**](../blob-store/system-design-a-blob-store.md)’s main application is to store the crawled content.
 
 Besides these basic building blocks, our design includes some additional components as well:
 

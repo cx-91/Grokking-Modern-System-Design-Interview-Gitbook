@@ -100,7 +100,7 @@ Let’s assume that one user is able to generate 100 requests per day. Keeping i
 | Number of DAU      | 80    | Million              |
 | RPS                | f92.6 | Thousands per second |
 
-We discussed in the [Back of the Envelope lesson](https://www.educative.io/collection/page/10370001/4941429335392256/5711642666467328) that RPS isn’t sufficient information to calculate the number of servers. We’ll use the following approximation for server count.
+We discussed in the [Back of the Envelope lesson](../back-of-the-envelope-calculations/put-back-of-the-envelope-numbers-in-perspective.md) that RPS isn’t sufficient information to calculate the number of servers. We’ll use the following approximation for server count.
 
 To estimate the number of servers required to fulfill the requests of 80 million users, we simply divide the number of users by the number of requests a server can handle. In the “Back of the Envelope” lesson, we discussed that our reference server can handle 8,000 requests per second. So, we see the following:
 
@@ -116,10 +116,10 @@ We’ll use the following building blocks in designing the collaborative documen
 
 Building blocks required to be integrated in the design
 
-* [**Load balancers**](https://www.educative.io/collection/page/10370001/4941429335392256/4521972679049216) will be the first point of contact for users.
-* [**Databases** ](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872)will be needed to store several things including textual content, history of documents, user data, etc. For this purpose, we may need different types of databases.
-* [**Pub-sub**](https://www.educative.io/collection/page/10370001/4941429335392256/4996814243889152) systems can complete tasks that can't be performed right away. We'll complete a number of tasks asynchronously in our design. Therefore, we'll use a pub-sub system.
-* [**Caching**](https://www.educative.io/collection/page/10370001/4941429335392256/5053577315221504) will help us improve the performance of our design.
-* [**Blob storage**](https://www.educative.io/collection/page/10370001/4941429335392256/4862646238576640) will store large files, such as images and videos.
-* [**A Queueing system** ](https://www.educative.io/collection/page/10370001/4941429335392256/5148400467312640)will queue editing operations requested by different users. Because many editing requests can’t be performed simultaneously, we have to temporarily put them in a queue.
-* [**A CDN** ](https://www.educative.io/collection/page/10370001/4941429335392256/6624266925899776)can store frequently accessed media in a document. We can also put read-only documents that are frequently requested in a CDN.
+* [**Load balancers**](../load-balancers/introduction-to-load-balancers.md) will be the first point of contact for users.
+* [**Databases** ](../databases/introduction-to-databases.md)will be needed to store several things including textual content, history of documents, user data, etc. For this purpose, we may need different types of databases.
+* [**Pub-sub**](../pub-sub/system-design-the-pub-sub-abstraction.md) systems can complete tasks that can't be performed right away. We'll complete a number of tasks asynchronously in our design. Therefore, we'll use a pub-sub system.
+* [**Caching**](../distributed-cache/system-design-the-distributed-cache.md) will help us improve the performance of our design.
+* [**Blob storage**](../blob-store/system-design-a-blob-store.md) will store large files, such as images and videos.
+* [**A Queueing system** ](../distributed-messaging-queue/system-design-the-distributed-messaging-queue.md)will queue editing operations requested by different users. Because many editing requests can’t be performed simultaneously, we have to temporarily put them in a queue.
+* [**A CDN** ](../content-delivery-network-cdn/system-design-the-content-delivery-network-cdn.md)can store frequently accessed media in a document. We can also put read-only documents that are frequently requested in a CDN.

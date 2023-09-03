@@ -10,7 +10,7 @@ We need to store metrics and know which action to perform if a metric has reache
 
 Here, we have identified two more components in our design—that is, a rules and action database and a storage node (a blob store).
 
-Adding blob storage and a rules and action database
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.00.53 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Data collector <a href="#data-collector-0" id="data-collector-0"></a>
 
@@ -24,7 +24,7 @@ Point to Ponder
 
 What are some drawbacks of using a push-based approach?
 
-Show Answer
+The push-based monitoring tool collects metric data from the applications and servers and sends it to a central collection platform. Each microservice sends its metrics to the monitoring system, resulting in a heavy traffic load on the infrastructure. This is how monitoring might become a bottleneck for business operations. The monitoring can be near real-time. However, if appropriate care isn’t taken, it can overwhelm the infrastructure with continual push requests from all services, resulting in network floods. We must also install daemons on each of these targets to send metrics to the monitoring server, which requires additional work.
 
 #### Service discoverer <a href="#service-discoverer-0" id="service-discoverer-0"></a>
 
@@ -32,7 +32,7 @@ The data collector is responsible for fetching metrics from the services it moni
 
 Let’s add our newly identified component to our existing design.
 
-Adding the service discoverer
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.01.32 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Querying service <a href="#querying-service-0" id="querying-service-0"></a>
 
@@ -48,7 +48,7 @@ We can set dashboards by using the collected metrics to display the required inf
 
 Let’s add the components discussed above, which completes our design of the monitoring system.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTEyMSIgaGVpZ2h0PSI0MzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIi8+)Detailed design of monitoring system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.01.56 AM.png" alt=""><figcaption></figcaption></figure>
 
 Our all-in-one monitoring service works for actively tracking systems and services. It collects and stores data, and it supports searches, graphs, and alerts.
 
@@ -69,7 +69,7 @@ Let’s think of a way to overcome the problems with our monitoring service.
 
 We want to improve our design so that our system can scale better and decide what data to keep and what to delete. Let’s see how the push-based approach works. In a push-based approach, the application pushes its data to the monitoring system.
 
-Push-based monitoring system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.02.14 AM.png" alt=""><figcaption></figcaption></figure>
 
 We used a pull-based strategy to avoid network congestion. This also allows the applications to be free of the aspect that they have to send the relevant monitoring data of to the system. Instead, the monitoring system fetches or pulls the data itself. To cater to scaling needs, we need to apply a push-based approach too. We’ll use a hybrid approach by combining our pull-based strategy with the push-based strategy.
 
@@ -81,7 +81,11 @@ We’ll use blob storage to store our excessive data, apply elastic search, and 
 
 > **Note**: Using a hierarchy of systems for scaling is a common design pattern in system design. By increasing nodes on a level or introducing additional levels in the hierarchy, we get the ability to scale according to our current needs.
 
-Monitoring systems pull the data from various servers and then push the data to the data center monitoring system**1** of 2
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.02.45 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.02.45 AM (1).png" alt=""><figcaption></figcaption></figure>
+
+
 
 Points to Ponder
 
@@ -89,8 +93,15 @@ Points to Ponder
 
 What happens if a local or global monitoring system is down?
 
-Show Answer
+We can store the data locally and wait for the system to be up and running again. But there’s a limit for the local data storage. So, either we delete previous data or we don’t store new data. To make a decision, relevant policies need to be created.
 
-**1 of 2**
+**Question 2**
+
+How can a monitoring system reliably work if it uses the same infrastructure in a data center that it was supposed to monitor? Consider this given that a failure of a network in a data center can knock out the monitoring components.
+
+The actual deployment of a monitoring system needs special care. We might have an internal, monitoring-specific network to isolate it from the common network. We should use a separate instance of blob stores and other services.
+
+It also helps to have external components to the monitoring, where external might mean an independent service provider’s infrastructure. However, designing such a system is complex and is more expensive.
 
 Humans need to consume enormous amounts of data, and even after different kinds of data summarizations, the data can still be huge. Next, we’ll tackle how to present enormous data to human administrators.
+

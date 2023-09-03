@@ -17,36 +17,12 @@ Here are some design choices we made that will contribute to overall good perfor
 
 To get an idea of how important the eviction algorithm is, let’s assume the following:
 
-* Cache hit service time (99.9�ℎ99.9th percentile): 5 ms
-* Cach miss service time (99.9�ℎ99.9th percentile): 30 ms (this includes time to get the data from the database and set the cache)
+* Cache hit service time (99.9 percentile): 5 ms
+* Cach miss service time (99.9 percentile): 30 ms (this includes time to get the data from the database and set the cache)
 
 Let’s assume we have a 10% cache miss rate using the most frequently used (MFU) algorithm, whereas we have a 5% cache miss rate using the LRU algorithm. Then, we use the following formula:
 
-���EAT = �����ℎ��Ratiohit​ x ����ℎ��Timehit​ ++ ���������Ratiomiss​ x ��������Timemiss​
-
-Here, this means the following:
-
-���EAT: Effective access time.
-
-�����ℎ��Ratiohit​: The percentage of times a cache hit will occur.
-
-���������Ratiomiss​: The percentage of times a cache miss will occur.
-
-����ℎ��Timehit​: Time required to serve a cache hit.
-
-��������Timemiss​: Time required to serve a cache miss.
-
-For MFU, we see the following:
-
-```
-EAT = 0.90 x 5 milliseconds + 0.10 x 30 milliseconds = 0.0045 + 0.003 = 0.0075 = 7.5 milliseconds
-```
-
-For LRU, we see the following:
-
-```
-EAT = 0.95 x 5 milliseconds + 0.05 x 30 milliseconds =  0.00475 + 0.0015 = 0.00625 = 6.25 milliseconds.
-```
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.36.41 AM.png" alt=""><figcaption></figcaption></figure>
 
 The numbers above highlight the importance of the eviction algorithm to increase the cache hit rate. Each application should conduct an empirical study to determine the eviction algorithm that gives better results for a specific workload.
 
@@ -56,7 +32,7 @@ We can create shards based on requirements and changing server loads. While we a
 
 Adding replicas reduces the load on hot shards. Another way to handle the hotkeys problem is to do further sharding within the range of those keys. Although the scenario where a single key will become hot is rare, it’s possible for the cache client to devise solutions to avoid the single hotkey contention issue. For example, cache clients can intelligently avoid such a situation that a single key becomes a bottleneck, or we can use dynamic replication for specific keys, and so on. Nonetheless, the solutions are complex and beyond the scope of this lesson.
 
-Guarantees provided by a distributed cache
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.37.03 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### High availability <a href="#high-availability-0" id="high-availability-0"></a>
 

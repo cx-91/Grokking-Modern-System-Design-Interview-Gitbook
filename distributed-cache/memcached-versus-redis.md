@@ -10,9 +10,9 @@ This lesson will discuss some of the widely adopted real-world implementations o
 
 Memcached has a client and server component, each of which is necessary to run the system. The system is designed in a way that half the logic is encompassed in the server, whereas the other half is in the client. However, each server follows the **shared-nothing architecture**. In this architecture, servers are unaware of each other, and there’s no synchronization, data sharing, and communication between the servers.
 
-Due to the disconnected design, Memcached is able to achieve almost a deterministic query speed (�(1))(O(1)) serving millions of keys per second using a high-end system. Therefore, Memcached offers a high throughput and low latency.
+Due to the disconnected design, Memcached is able to achieve almost a deterministic query speed (O(1) serving millions of keys per second using a high-end system. Therefore, Memcached offers a high throughput and low latency.
 
-Design of a typical Memcached cluster
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.37.34 AM.png" alt=""><figcaption></figcaption></figure>
 
 As evident from the design of a typical Memcached cluster, Memcached scales well horizontally. The client process is usually maintained with the service host that also interacts with the authoritative storage (back-end database).
 
@@ -21,6 +21,8 @@ As evident from the design of a typical Memcached cluster, Memcached scales well
 The data access pattern in Facebook requires frequent reads and updates because views are presented to the users on the fly instead of being generated ahead of time. Because Memcached is simple, it was an easy choice for the solution because Memcached started developing in 2003 whereas Facebook was developed in 2004. In fact, in some cases, Facebook and Memcached teams worked together to find solutions.
 
 What about Redis?
+
+Redis was developed in 2009. So, using Redis wasn’t a possibility at Facebook by then.
 
 Some of the simple commands of Memcached include the following:
 
@@ -34,7 +36,7 @@ At Facebook, Memcached sits between the MySQL database and the web layer that us
 
 The following illustration shows the high-level design of caching architecture at Facebook. As we can see, out of a total of 50 million requests made by the web layer, only 2.5 million requests reach the persistence layer.
 
-Facebook using a layer of Memcached sitting between persistence and web layer
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.38.53 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Redis <a href="#redis-0" id="redis-0"></a>
 
@@ -46,7 +48,7 @@ Facebook using a layer of Memcached sitting between persistence and web layer
 
 Redis provides a built-in replication mechanism, automatic failover, and different levels of persistence. Apart from that, Redis understands Memcached protocols, and therefore, solutions using Memcached can translate to Redis. A particularly good aspect of Redis is that it separates data access from cluster management. It decouples data and controls the plane. This results in increased reliability and performance. Finally, Redis doesn’t provide strong consistency due to the use of asynchronous replication.
 
-Redis structure supporting automatic failover using redundant secondary replicas
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.39.24 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Redis cluster <a href="#redis-cluster-0" id="redis-cluster-0"></a>
 
@@ -54,7 +56,7 @@ Redis has built-in cluster support that provides high availability. This is call
 
 Each Redis cluster is maintained by a cluster manager whose job is to detect failures and perform automatic failovers. The management layer consists of monitoring and configuration software components.
 
-Architecture of Redis clusters
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.39.51 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Pipelining in Redis <a href="#pipelining-in-redis-0" id="pipelining-in-redis-0"></a>
 
@@ -62,7 +64,7 @@ Since Redis uses a client-server model, each request blocks the client until the
 
 Redis uses **pipelining** to speed up the process. **Pipelining** is the process of combining multiple requests from the client side without waiting for a response from the server. As a result, it reduces the number of RTT spans for multiple requests.
 
-Redis client-server communication without pipelining versus Redis client-server communication with pipelining
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.40.10 AM.png" alt=""><figcaption></figcaption></figure>
 
 The process of pipelining reduces the latency through RTT and the time to do socket level I/O. Also, mode switching through system calls in the operating system is an expensive operation that’s reduced significantly via pipelining. Pipelining the commands from the client side has no impact on how the server processes these requests.
 
@@ -104,9 +106,24 @@ Points to Ponder
 
 Based on the implementation details, which of the two frameworks (Memcached or Redis) has a striking similarity with the distributed cache that we designed in the previous lesson?
 
-Show Answer
+The answer is Memcached. The reasons are as follows:
 
-**1 of 3**
+* Client software chooses which cache server to use with a hashing algorithm.
+* Server software stores the values against each key using an internal hash table.
+* Least recently used (LRU) is used as the eviction policy.
+* There’s no communication between different cache servers.
+
+**Question 2**
+
+Why do third-party tools exist for persisting Memcached data?
+
+It’s because a lot of data is read and written to cache servers, and they may occasionally crash for whatever reason. After restarting, building a cache from scratch can take up to hours in specific scenarios, and that ultimately reduces system performance. Therefore, cache data may be persisted to disk to be loaded on a restart.
+
+**Question 3**
+
+What is the advantage of storing different data structures as compared to strings only?
+
+The main advantage is that Redis can modify data in place without wasting network bandwidth by downloading and uploading. It saves network bandwidth, but it also saves time and effort by avoiding the serialization and deserialization of data.
 
 ### Conclusion <a href="#conclusion-0" id="conclusion-0"></a>
 

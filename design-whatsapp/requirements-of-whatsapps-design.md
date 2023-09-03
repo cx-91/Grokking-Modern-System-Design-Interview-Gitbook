@@ -97,11 +97,11 @@ The design of WhatsApp utilizes the following building blocks that have also bee
 
 The building blocks required to design WhatsApp
 
-* [**Databases**](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872) are required to store users’ and groups’ metadata.
-* [**Blob storage**](https://www.educative.io/collection/page/10370001/4941429335392256/4862646238576640) is used to store multimedia content shared in messages.
-* A [**CDN**](https://www.educative.io/collection/page/10370001/4941429335392256/6624266925899776) is used to effectively deliver multimedia content that’s frequently shared.
-* A [**load balancer**](https://www.educative.io/collection/page/10370001/4941429335392256/4521972679049216) distributes incoming requests among the pool of available servers.
-* [**Caches**](https://www.educative.io/collection/page/10370001/4941429335392256/5053577315221504) are required to keep frequently accessed data used by various services.
-* A [**messaging queue**](https://www.educative.io/collection/page/10370001/4941429335392256/5148400467312640) is used to temporarily keep messages in a queue on a database when a user is offline.
+* [**Databases**](../databases/introduction-to-databases.md) are required to store users’ and groups’ metadata.
+* [**Blob storage**](../blob-store/system-design-a-blob-store.md) is used to store multimedia content shared in messages.
+* A [**CDN**](../content-delivery-network-cdn/system-design-the-content-delivery-network-cdn.md) is used to effectively deliver multimedia content that’s frequently shared.
+* A [**load balancer**](../load-balancers/introduction-to-load-balancers.md) distributes incoming requests among the pool of available servers.
+* [**Caches**](../distributed-cache/system-design-the-distributed-cache.md) are required to keep frequently accessed data used by various services.
+* A [**messaging queue**](../distributed-messaging-queue/system-design-the-distributed-messaging-queue.md) is used to temporarily keep messages in a queue on a database when a user is offline.
 
 In the next lesson, we’ll focus on the high-level design of the WhatsApp messenger.

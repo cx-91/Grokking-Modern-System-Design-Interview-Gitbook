@@ -25,26 +25,6 @@ The short answer is, it depends on the application requirements. Let’s look at
 * **Write-back cache**: In the write-back cache mechanism, the data is first written to the cache and asynchronously written to the database. Although the cache has updated data, inconsistency is inevitable in scenarios where a client reads stale data from the database. However, systems using this strategy will have small writing latency.
 * **Write-around cache**: This strategy involves writing data to the database only. Later, when a read is triggered for the data, it’s written to cache after a cache miss. The database will have updated data, but such a strategy isn’t favorable for reading recently updated data.
 
-Quiz
-
-1
-
-A system wants to write data and promptly read it back. At the same time, we want consistency between the cache and database. Which writing policy is the optimal choice?
-
-A)
-
-Write-through cache
-
-B)
-
-Write-around cache
-
-C)
-
-Write-back cache
-
-Reset QuizQuestion 1 of 30 attemptedSubmit Answer
-
 ### Eviction policies <a href="#eviction-policies-0" id="eviction-policies-0"></a>
 
 One of the main reasons caches perform fast is that they’re small. Small caches mean limited storage capacity. Therefore, we need an eviction mechanism to remove less frequently accessed data from the cache.
@@ -58,7 +38,7 @@ Several well-known strategies are used to evict data from the cache. The most we
 
 Other strategies like first in, first out (FIFO) also exist. The choice of each of these algorithms depends on the system the cache is being developed for.
 
-Data Temperatures
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.27.44 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Cache invalidation <a href="#cache-invalidation-0" id="cache-invalidation-0"></a>
 
@@ -116,7 +96,7 @@ The advantages of using dedicated cache servers are the following:
 
 Apart from the advantages above, working as a standalone caching service enables other microservices to benefit from them—for example, Cache as a Service. In that case, the caching system will have to be aware of different applications so that their data doesn’t collide.
 
-A depiction of service hosts coordinating with dedicated cache servers
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.28.43 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Co-located cache**
 
@@ -124,7 +104,7 @@ The co-located cache embeds cache and service functionality within the same host
 
 The main advantage of this strategy is the reduction in CAPEX and OPEX of extra hardware. Furthermore, with the scaling of one service, automatic scaling of the other service is obtained. However, the failure of one machine will result in the loss of both services simultaneously.
 
-Hosting cache and application logic in the same machine
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.29.02 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Cache client <a href="#cache-client-0" id="cache-client-0"></a>
 

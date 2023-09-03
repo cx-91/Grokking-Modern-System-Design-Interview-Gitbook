@@ -27,10 +27,10 @@ The URL shortening service has some associated drawbacks as well. Some of them a
 
 We’ve divided the URL shortening service design into the following five lessons:
 
-1. [**Requirements:**](https://www.educative.io/collection/page/10370001/4941429335392256/5146211836755968) This lesson discusses the functional and non-functional requirements of the URL shortening service, along with estimating the resources required to achieve these requirements. Moreover, it also lists down the fundamental building blocks needed to build such a service.
-2. [**Design and Deployment:**](https://www.educative.io/collection/page/10370001/4941429335392256/5753981720068096) This explains the working and usage of each component, the linkage among them, and the overall working mechanism of them as a unit.
-3. [**Encoder:**](https://www.educative.io/collection/page/10370001/4941429335392256/5084162431647744) This particular lesson unfolds the inner mechanism of the encoder used in the design, stating the reason we use it along with the mathematical explanation.
-4. [**Evaluation:**](https://www.educative.io/collection/page/10370001/4941429335392256/6451282881019904) Lastly, we test our design by considering different dimensions of our design requirements and include the possibility of improving it.
-5. [**Quiz**](https://www.educative.io/collection/page/10370001/4941429335392256/6050864745152512): This lesson will test our understanding of the TinyURL design.
+1. [**Requirements:**](requirements-of-tinyurls-design.md) This lesson discusses the functional and non-functional requirements of the URL shortening service, along with estimating the resources required to achieve these requirements. Moreover, it also lists down the fundamental building blocks needed to build such a service.
+2. [**Design and Deployment:**](design-and-deployment-of-tinyurl.md) This explains the working and usage of each component, the linkage among them, and the overall working mechanism of them as a unit.
+3. [**Encoder:**](encoder-for-tinyurl.md) This particular lesson unfolds the inner mechanism of the encoder used in the design, stating the reason we use it along with the mathematical explanation.
+4. [**Evaluation:**](evaluation-of-tinyurls-design.md) Lastly, we test our design by considering different dimensions of our design requirements and include the possibility of improving it.
+5. [**Quiz**](quiz-on-tinyurls-design.md): This lesson will test our understanding of the TinyURL design.
 
 Let’s start by defining the requirements for a TinyURL-like URL shortening service.
