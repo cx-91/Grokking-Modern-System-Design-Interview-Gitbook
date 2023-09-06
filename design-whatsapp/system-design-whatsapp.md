@@ -6,7 +6,7 @@ In today’s technological world, WhatsApp is an important messaging application
 
 In December 2020, the WhatsApp CEO tweeted that WhatsApp users share more than 100 billion messages per day, an increase of approximately 54% since 2018. The increase in messages sent globally per day is depicted in the following chart:
 
-The increase in messages communicated per day each year
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.41.03 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Design problem <a href="#design-problem-0" id="design-problem-0"></a>
 

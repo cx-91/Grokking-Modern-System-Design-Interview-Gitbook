@@ -19,7 +19,7 @@ To achieve this extensibility, we only need to add additional modules for the ne
 
 Along the same lines, we expect our design to extend its functionality for other MIME types as well. The modular approach for different MIME schemes facilitates this requirement. The worker will call the associated MIME’s processing module to extract the content from the document stored in the DIS.
 
-The requirements met by our web crawler
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.39.18 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Consistency <a href="#consistency-0" id="consistency-0"></a>
 

@@ -15,15 +15,15 @@ To answer all these questions, let’s dive deep into the high-level design and 
 
 In WhatsApp, each active device is connected with a **WebSocket server** via WebSocket protocol. A WebSocket server keeps the connection open with all the active (online) users. Since one server isn’t enough to handle billions of devices, there should be enough servers to handle billions of users. The responsibility of each of these servers is to provide a port to every online user. The mapping between servers, ports, and users is stored in the WebSocket manager that resides on top of a cluster of the data store. In this case, that’s Redis.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzUxIiBoZWlnaHQ9IjMxNSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Two users are connected via WebSocket handlers
-
-Point to Ponder
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.57.12 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Question**
 
 Why is WebSocket preferred over HTTP(S) protocol for client-server communication?
 
-Show Answer
+HTTP(S) doesn’t keep the connection open for the servers to send frequent data to a client. With HTTP(S) protocol, a client constantly requests updates from the server, commonly called **polling**, which is resource intensive and causes latency. WebSocket maintains a persistent connection between the client and a server. This protocol transfers data to the client immediately whenever it becomes available. It provides a bidirectional connection used as a common solution to send asynchronous updates from a server to a client.
+
+\-------------------
 
 #### Send or receive messages <a href="#send-or-receive-messages-0" id="send-or-receive-messages-0"></a>
 
@@ -31,7 +31,7 @@ The WebSocket manager is responsible for maintaining a mapping between an active
 
 A WebSocket server also communicates with another service called message service. **Message service** is a repository of messages on top of the Mnesia database cluster. It acts as an interface to the Mnesia database for other services interacting with the databases. It is responsible for storing and retrieving messages from the Mnesia database. It also deletes messages from the Mnesia database after a configurable amount of time. And, it exposes APIs to receive messages by various filters, such as user ID, message ID, and so on.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzUxIiBoZWlnaHQ9IjQ2MSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)WebSocket communicates with message service on top of Mnesia database cluster
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.58.52 AM.png" alt=""><figcaption></figcaption></figure>
 
 Now, let’s assume that user A wants to send a message to user B. As shown in the above figure, both users are connected to different WebSocket servers. The system performs the following steps to send messages from user A to user B:
 
@@ -46,13 +46,13 @@ Both users (sender and receiver) communicate with the WebSocket manager to find 
 * If both users are connected to the same server, the call to the WebSocket manager is avoided.
 * It caches information of recent conversations about which user is connected to which WebSocket server.
 
-Point to Ponder
-
 **Question**
 
 The data in the cache will become outdated if a user gets disconnected and connects with another server. Keeping this in mind, how long should a WebSocket server cache information?
 
-Show Answer
+The information will be updated in the WebSocket manager when a user disconnects due to some faults in the connection and reconnects with a different WebSocket server. The WebSocket manager, in turn, invalidates the data in the cache used by the WebSocket servers, and the updated data is sent to the corresponding cache. So, the information in the cache will remain there until it receives an invalidate signal from the WebSocket manager.
+
+\-----------------
 
 #### Send or receive media files <a href="#send-or-receive-media-files-0" id="send-or-receive-media-files-0"></a>
 
@@ -67,9 +67,9 @@ Moreover, the sending of media files consists of the following steps:
 
 The following figure demonstrates the components involved in sharing media files over WhatsApp messenger:
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAyIiBoZWlnaHQ9IjM5MSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Sending media files via the asset service
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.00.56 AM.png" alt=""><figcaption></figcaption></figure>
 
-#### Support for group messages <a href="#support-for-group-messages-0" id="support-for-group-messages-0"></a>
+#### Support for group messages <a href="#support-for-group-messages" id="support-for-group-messages"></a>
 
 WebSocket servers don’t keep track of groups because they only track active users. However, some users could be online and others could be offline in a group. For group messages, the following three main components are responsible for delivering messages to each user in a group:
 
@@ -85,12 +85,49 @@ Let’s assume that user A wants to send a message to a group with some unique I
 4. The group message handler communicates with the group service to retrieve data of `Group/A` users.
 5. In the last step, the group message handler follows the same process as a WebSocket server and delivers the message to each user.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODUxIiBoZWlnaHQ9IjM5MSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Components responsible for sending group messagesOptional: How encryption and decryption work in WhatsApp
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.01.57 AM.png" alt=""><figcaption></figcaption></figure>
+
+\----------------------------
+
+Optional: How encryption and decryption work in WhatsApp?
+
+#### End-to-end encryption
+
+Similar to the group message service, there’s another service known as **user service** that keeps track of each user. It contains user-related data, such as name, profile picture, status, and so on. This service resides on top of the MySQL database and utilizes cache for frequently used data.
+
+At registration time, a WhatsApp client generates a number of public-private key pairs that include keys pairs for identity, a signed prekey, and a batch of one-time prekeys. These keys are used for different purposes. The public keys are stored in the database associated with the user service along with the user’s identifier. Whenever a sender wants to establish a connection with the receiver, it also requests the server for the keys associated with a receiver’s ID. Private keys are only stored on the client’s end devices.
+
+**One-to-one communication**
+
+To communicate securely, WhatsApp clients, on both sender and receiver sides, establish a pairwise encrypted session with each other. The session is created using the following steps:
+
+1. The sender requests the public identity key, signed prekey, and a single public one-time prekey of the receiver’s device. The one-time prekey is used only once.
+2. The WhatsApp server returns the requested public keys of the receiver.
+3. The sender generates an ephemeral Curve25519 key pair.
+4. The sender creates a master secret key using its own identity key, the ephemeral key pair, and the receiver’s public keys.
+5. The sender uses the HMAC-based key-derivation function (HKDF) to create two other keys known as a root key and chain key from the master secret key. The sender starts sending messages to the receiver after establishing the pairwise encrypted session. The receiver creates the same session based on the information present in the header of the first receiving message.
+6. After establishing a session, an 80-byte `Message Key` is generated based on the root and chain Keys. The `Message Key` is used for encryption and authentication of messages.
+
+**Group communication**
+
+The communication in a WhatsApp group is handled by the same process discussed in the previous section on one-to-one communication. A sender key, used by the signaling messaging protocol, is generated and shared with each member’s device of the group using the pairwise encrypted session. The messages sent to a group are encrypted using the sender key.
+
+The communication in a group is directed by Kafka, where each user in a group subscribes to the relevant topic (a group with an associated messaging queue). The messages are then delivered in a fanout messaging pattern where messages are delivered from a single sender to multiple receivers.
+
+#### Simultaneous maintenance of WhatsApp sessions on multiple devices
+
+Every device on WhatsApp is identified by a device identity key. If a user uses multiple devices (a primary and several other companion devices), each device identity key is stored against the user’s account on the WhatsApp server. When the WhatsApp server receives a message from a user, it transmits messages multiple times to each device linked with a user’s account.
+
+Similarly, each device used by a user has its own set of encryption keys. If a set of keys of one companion device is compromised, the attacker won’t be able to see messages communicated with the other device.
+
+We’ve just touched the basics here because security is a deep topic. See the WhatsApp security whitepaper for further details.
+
+\-----------------
 
 ### Put everything together <a href="#put-everything-together-0" id="put-everything-together-0"></a>
 
 We discussed the features of our WhatsApp system design. It includes user connection with a server, sending messages and media files, group messages, and end-to-end encryption, individually. The final design of our WhatsApp messenger is as follows:
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODIxIiBoZWlnaHQ9IjU0MSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)The detailed WhatsApp design. Interaction of each component with other components is shown with arrows
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.03.35 AM.png" alt=""><figcaption></figcaption></figure>
 
 In the next lesson, we’ll evaluate our design and look into the non-functional requirements.

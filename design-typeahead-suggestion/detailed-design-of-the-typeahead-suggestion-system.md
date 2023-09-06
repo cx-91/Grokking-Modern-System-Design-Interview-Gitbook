@@ -7,7 +7,7 @@ Let’s go over the flow and interaction of the components shown in the illustra
 * A suggestion service
 * An assembler
 
-The detailed design of the typeahead suggestion system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.24.57 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Suggestion service <a href="#suggestion-service-0" id="suggestion-service-0"></a>
 
@@ -54,10 +54,10 @@ In light of the reasons given above, we have a separate service called an assemb
 
     Once a trie is created or updated, the system makes it available for the suggestion service.
 
-Point to Ponder
-
 **Question**
 
 Should we collect data and build a trie per user, or should it be shared among all users?
 
-Show Answer
+Since we aim to design a system on a scale that’s similar to Google Search, billions of users will be using our service. Since the number of users would be huge, maintaining a tree for each user would become complex and time-consuming. There’s also a possibility of duplicated trees if several users have typed some common searches, resulting in resource wastage.
+
+Therefore, our design assumes a **common trie** that’s shared among users, where the ranking would be based on single phrases in the trie and the frequency of the terms.

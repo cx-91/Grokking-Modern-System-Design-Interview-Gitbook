@@ -76,7 +76,7 @@ These are the assumptions we’ll use when estimating our resource requirements:
 
 #### Storage estimation <a href="#storage-estimation-1" id="storage-estimation-1"></a>
 
-
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.17.24 AM.png" alt=""><figcaption></figcaption></figure>
 
 It’ll take approximately 9.5 years to traverse the whole Internet while using one instance of crawling, but we want to achieve our goal in one day. We can accomplish this by designing our system to support multi-worker architecture and divide the tasks among multiple workers running on different servers.
 
@@ -84,27 +84,17 @@ It’ll take approximately 9.5 years to traverse the whole Internet while using 
 
 Let’s calculate the number of servers required to finish crawling in one day. Assume that there is only one worker per server.
 
-��. �� ���� �������� �� 1 ������ �� �������� �ℎ� ����=9.5 �����×365 ����≈3468 ����No. of days required by 1 server to complete the task=9.5 years×365 days≈3468 days
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.22.12 AM (1).png" alt=""><figcaption></figcaption></figure>
 
-One server takes 3,468 days to complete the task.
+Case for multi-threaded server!
 
-How many servers would we need to complete this same task in one day?
-
-We would need 3,468 servers to complete the same task in just one day.
-
-The number of servers required for the web crawler systemCase for multi-threaded server!
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.22.41 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Bandwidth estimation <a href="#bandwidth-estimation-0" id="bandwidth-estimation-0"></a>
 
 Since we want to process 10.35PB of data per day the total bandwidth required would be:
 
-10.35��86400���≈120��/���≈960��/���86400sec10.35PB​≈120GB/sec≈960Gb/sec
-
-960��/���960Gb/sec is the total required bandwidth. Now, assume that the task is distributed equally among 3468 �������3468 servers to accomplish the task in one day. Thus, the per server bandwidth would be:
-
-960��/���3468 ������≈277��/��� ��� ������3468 server960Gb/sec​≈277Mb/sec per server
-
-The total bandwidth required for the web crawler system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.23.07 AM.png" alt=""><figcaption></figcaption></figure>
 
 Let's play around with the initial assumptions and see how the estimates change in the following calculator:
 
@@ -123,7 +113,7 @@ Let's play around with the initial assumptions and see how the estimates change 
 
 Here is the list of the main building blocks we’ll use in our design:
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjExMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Building blocks in high-level design
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.23.07 AM (1).png" alt=""><figcaption></figcaption></figure>
 
 * [**Scheduler**](../distributed-task-scheduler/system-design-the-distributed-task-scheduler.md) is used to schedule crawling events on the URLs that are stored in its database.
 * [**DNS**](../domain-name-system/introduction-to-domain-name-system-dns.md) is needed to get the IP address resolution of the web pages.
@@ -137,6 +127,6 @@ Besides these basic building blocks, our design includes some additional compone
 * The **extractor** extracts the embedded URLs and the document from the web page.
 * The **duplicate eliminator** performs dedup testing on the incoming URLs and the documents.
 
-The components in a high-level design
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.24.09 AM.png" alt=""><figcaption></figcaption></figure>
 
 In the next lesson, we’ll focus on the high-level and detailed design of a web crawler.

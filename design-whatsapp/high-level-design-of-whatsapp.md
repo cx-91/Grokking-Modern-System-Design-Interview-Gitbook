@@ -4,7 +4,7 @@
 
 At an abstract level, the high-level design consists of a chat server responsible for communication between the sender and the receiver. When a user wants to send a message to another user, both connect to the chat server. Both users send their messages to the chat server. The chat server then sends the message to the other intended user and also stores the message in the database.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzQxIiBoZWlnaHQ9IjMzNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)The high-level design of WhatsApp messenger
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.54.19 AM.png" alt=""><figcaption></figcaption></figure>
 
 The following steps describe the communication between both clients:
 
@@ -19,7 +19,7 @@ The following steps describe the communication between both clients:
 
 The process is shown in the following illustrations:
 
-User A and user B create connections with the chat server**1** of 8
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.55.49 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### API design <a href="#api-design-0" id="api-design-0"></a>
 

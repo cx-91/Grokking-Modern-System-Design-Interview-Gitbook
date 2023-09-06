@@ -8,29 +8,31 @@ There should be a method that can efficiently store our data and help us conduct
 
 The **trie** (pronounced “try”) is one of the data structures that’s best suited to our needs. A **trie** is a tree-like data structure for storing phrases, with each tree node storing a character in the phrase in order. If we needed to store `UNITED`, `UNIQUE`, `UNIVERSAL`, and `UNIVERSITY` in the trie, it would look like this:
 
-RootUNIVQTEUEREDSIATLYThe trie for UNITED, UNIQUE, UNIVERSAL, and UNIVERSITY
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.20.26 AM (1).png" alt=""><figcaption></figcaption></figure>
+
+
 
 If the user types “UNIV,” our service can traverse the trie to go to the node `V` to find all the terms that start with this prefix—for example, `UNIVERSAL`, `UNIVERSITY`, and so on.
 
 The trie can combine nodes as one where only a single branch exists, which reduces the depth of the tree. This also reduces the traversal time, which in turn increases the efficiency. As an example, a space- and time-efficient model of the above trie is the following:
 
-RootUNIVERSQUETEDITYALA reduced Trie for UNITED, UNIQUE, UNIVERSAL, and UNIVERSITY
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.21.07 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Track the top searches <a href="#track-the-top-searches-0" id="track-the-top-searches-0"></a>
 
 Since our system keeps track of the top searches and returns the top suggestion, we store the number of times each term is searched in the trie node. Let’s say that a user searches for `UNITED` 15 times, `UNIQUE` 20 times, `UNIVERSAL` 21 times, and `UNIVERSITY` 25 times. In order to provide the top suggestions to the user, these counts are stored in each node where these terms terminate. The resultant trie looks like this:
 
-RootUNIVERSQUE, 20TED, 15ITY, 25AL, 21A trie showing the search frequency for UNITED, UNIQUE, UNIVERSAL, and UNIVERSITY
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.21.54 AM.png" alt=""><figcaption></figcaption></figure>
 
 If a user types “UNI,” the system starts traversing the tree under the root node for `UNI`. After comparing all the terms originating from the root node, the system provides suggestions of all the possible words. Since the frequency of the word `UNIVERSITY` is high, it appears at the top. Similarly, the frequency of the word `UNITED` is relatively low, so it appears last. If the user picks `UNIQUE` from the list of suggestions, the number against `UNIQUE` increases to 21.
-
-Point to Ponder
 
 **Question**
 
 We reduced the time to traverse the trie by combining nodes with single branches and reducing the number of levels. Is there any other way to minimize the trie traversal time?
 
-Show Answer
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.22.47 AM.png" alt=""><figcaption></figcaption></figure>
+
+\---------------------
 
 #### Trie partitioning <a href="#trie-partitioning-0" id="trie-partitioning-0"></a>
 
@@ -53,7 +55,9 @@ Point to Ponder
 
 Where will the mapping between the prefixes and their primary and secondary storage be stored? Who will manage and direct the requests to these servers?
 
-Show Answer
+In a distributed system where multiple clusters consisting of several servers can be used for a specific service, we use a cluster manager like ZooKeeper to store the mapping between clusters.
+
+\----------------
 
 **Process a query after partitioning**
 
@@ -78,12 +82,12 @@ Primarily, we can update the trie using the following two approaches.
 * We can replicate the trie on each server to update it offline. After that, we can start using it for suggestions and throw away the old ones.
 * Another way is to have one primary copy and several secondary copies of the trie. While the main copy is used to answer the queries, we may update the secondary copy. We may also make the secondary our main copy once the upgrade is complete. We can then upgrade our previous primary, which will then be able to serve the traffic as well.
 
-Point to Ponder
-
 **Question**
 
 If the prefix frequencies keep increasing over time, the corresponding integers storing them can overflow. How can we manage this issue?
 
-Show Answer
+We can normalize frequencies by mapping them in a range, let’s say between zero and 1,000. Alternatively, we can stop any further additions after a certain threshold is reached, assuming that any prefix reaching that threshold is at the top of the rankings.
+
+\-------------------
 
 In the next lesson, we’ll discuss the detailed design of the typeahead suggestion system.

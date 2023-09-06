@@ -8,18 +8,18 @@ Our non-functional requirements for the proposed WhatsApp design are low latency
   * We can do this through geographically distributed WebSocket servers and the cache associated with them.
   * We can use Redis cache clusters on top of MySQL database clusters.
   * We can use CDNs for frequently sharing documents and media content.
-* **Consistency**: The system also provides high consistency in messages with the help of a FIFO messaging queue with strict ordering. However, the ordering of messages would require the [Sequencer](https://www.educative.io/collection/page/10370001/4941429335392256/6499939719053312) to provide ID with appropriate causality inference mechanisms to each message. For offline users, the Mnesia database stores messages in a queue. The messages are sent later in a sequence after the user goes online.
+* **Consistency**: The system also provides high consistency in messages with the help of a FIFO messaging queue with strict ordering. However, the ordering of messages would require the [Sequencer](../sequencer/system-design-sequencer.md) to provide ID with appropriate causality inference mechanisms to each message. For offline users, the Mnesia database stores messages in a queue. The messages are sent later in a sequence after the user goes online.
 * **Availability**: The system can be made highly available if we have enough WebSocket servers and replicate data across multiple servers. When a user gets disconnected due to some fault in the WebSocket server, the session is re-created via a load balancer with a different server. Moreover, the messages are stored on the Mnesia cluster following the primary-secondary replication model, which provides high availability and durability.
 * **Security**: The system also provides an end-to-end encryption mechanism that secures the chat between users.
 * **Scalability:** Due to high-performance engineering, scalability might not be a significant issue, as WhatsApp can handle around 10 million connections per server. However, our proposed system is flexible, as more servers can be added or removed as the load increases or decreases.
-
-Point to Ponder
 
 **Question**
 
 In the event of a network partition, what should the system choose to compromise between consistency and availability?
 
-Show Answer
+According to the CAP theorem, the system would provide either consistency or availability in the event of a network partition. In our system of a WhatsApp messenger, the correct ordering of messages is essential. Otherwise, the context of the information communicated between users might change significantly. Therefore, availability in our system can take a hit if the network partition occurs.
+
+\----------------
 
 ### Approaches to Achieve the Non-functional Requirements
 
@@ -48,7 +48,7 @@ Low latency is an essential factor in system design that provides a real-time ex
 
 We might wonder where the trade-off is. Often, communication involves multimedia. Encrypting them in near real-time on the sender device and decrypting on the receiver side can be taxing for the devices, causing latency. The process is illustrated in the following figure:
 
-End-to-end encryption causes a delay in processing, which has an impact on latency
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.06.08 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Summary <a href="#summary-0" id="summary-0"></a>
 

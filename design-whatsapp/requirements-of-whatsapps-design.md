@@ -20,7 +20,7 @@ Our design of the WhatsApp messenger should meet the following requirements.
 * **Security**: The system must be secure via end-to-end encryption. The end-to-end encryption ensures that only the two communicating parties can see the content of messages. Nobody in between, not even WhatsApp, should have access.
 * **Scalability:** The system should be highly scalable to support an ever-increasing number of users and messages per day.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzA1IiBoZWlnaHQ9IjIwMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)The non-functional requirements of the WhatsApp system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.41.30 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Resource estimation <a href="#resource-estimation-0" id="resource-estimation-0"></a>
 
@@ -30,27 +30,11 @@ WhatsApp is the most used messaging application across the globe. According to W
 
 As there are more than 100 billion messages shared per day over WhatsApp, let’s estimate the storage capacity based on this figure. Assume that each message takes 100 Bytes on average. Moreover, the WhatsApp servers keep the messages only for 30 days. So, if the user doesn’t get connected to the server within these days, the messages will be permanently deleted from the server.
 
-100 �������/���∗100 �����=10 ��/���100 billion/day∗100 Bytes=10 TB/day
-
-For 30 days, the storage capacity would become the following:
-
-30∗10 ��/���=300 ��/����ℎ30∗10 TB/day=300 TB/month
-
-Besides chat messages, we also have media files, which take more than 100 Bytes per message. Moreover, we also have to store users’ information and messages’ metadata—for example, time stamp, ID, and so on. Along the way, we also need encryption and decryption for secure communication. Therefore, we would also need to store encryption keys and relevant metadata. So, to be precise, we need more than 300 TB per month, but for the sake of simplicity, let’s stick to the number 300 TB per month.
-
-The total storage required by WhatsApp in a month
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.42.01 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Bandwidth estimation <a href="#bandwidth-estimation-0" id="bandwidth-estimation-0"></a>
 
-According to the storage capacity estimation, our service will get 10TB of data each day, giving us a bandwidth of 926 Mb/s.
-
-10 ��/86400���≈92610 TB/86400sec≈926 ��/�Mb/s
-
-> **Note:** To keep our design simple, we’ve ignored the media content (images, videos, documents, and so on). So, the number 926 might seem low.
-
-We also require an equal amount of outgoing bandwidth as the same message from the sender would need to be delivered to the receiver.
-
-The total bandwidth required by WhatsApp
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.43.00 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### High-level Estimates
 
@@ -70,11 +54,7 @@ WhatsApp handles around 10 million connections on a single server, which seems q
 
 Let’s move to the estimation of the number of servers:
 
-��. �� �������=����� ����������� ��� ���/��. �� ����������� ��� ������=2 �������/10 �������=200 �������No. of servers=Total connections per day/No. of connections per server=2 billion/10 million=200 servers
-
-So, according to the above estimates, we require 200 chat servers.
-
-Number of chat servers required for WhatsApp
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.44.33 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Try it out <a href="#try-it-out-0" id="try-it-out-0"></a>
 
@@ -95,7 +75,7 @@ Let’s analyze how the number of messages per day affects the storage and bandw
 
 The design of WhatsApp utilizes the following building blocks that have also been discussed in the initial chapters:
 
-The building blocks required to design WhatsApp
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.45.25 AM.png" alt=""><figcaption></figcaption></figure>
 
 * [**Databases**](../databases/introduction-to-databases.md) are required to store users’ and groups’ metadata.
 * [**Blob storage**](../blob-store/system-design-a-blob-store.md) is used to store multimedia content shared in messages.
