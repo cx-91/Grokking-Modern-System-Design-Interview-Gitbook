@@ -66,43 +66,23 @@ Base-58 = 27qMi57J
 
 Let's see the example above with the help of the following illustration.
 
-How a base-10 number is converted into a base-58 alphanumeric short URL
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 1.05.08 AM.png>)
 
 ### Converting base-58 to base-10 <a href="#converting-base-58-to-base-10-0" id="converting-base-58-to-base-10-0"></a>
 
-The decoding process holds equal importance as the encoding process, as we used a decoder in case of custom short URLs generation, as explained in the [design lesson](https://www.educative.io/collection/page/10370001/4941429335392256/5753981720068096).
+The decoding process holds equal importance as the encoding process, as we used a decoder in case of custom short URLs generation, as explained in the [design lesson](design-and-deployment-of-tinyurl.md).
 
 **Process**: The process of converting a base-58 number into a base-10 number is also straightforward. We just need to multiply each character index (value column from the table above) by the number of 58s that position holds, and add all the individual multiplication results.
 
 **Example**: Let's reverse engineer the example above to see how decoding works.
 
-Base-58: 27qMi57J
-
-  258=1×587=2207984167552258​=1×587=2207984167552
-
-  758=6×586=228412155264758​=6×586=228412155264
-
-  �58=48×585=31505124864q58​=48×585=31505124864
-
-  �58=20×584=226329920M58​=20×584=226329920
-
-  �58=41×583=7999592i58​=41×583=7999592
-
-  558=4×582=13456558​=4×582=13456
-
-  758=6×581=348758​=6×581=348
-
-  �58=17×580=17J58​=17×580=17
-
-Base-10 =17+348+13456+7999592+226329920+31505124864+228412155264+2207984167552=17+348+13456+7999592+226329920+31505124864+228412155264+2207984167552
-
-Base-10 =2468135791013=2468135791013.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.05.48 AM.png" alt=""><figcaption></figcaption></figure>
 
 This is the same unique ID of base-10 from the previous example.
 
 Let's see the example above with the help of the following illustration.
 
-How a base-58 number is converted into a base-10 numeric ID
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.06.06 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### The scope of the short URL generator <a href="#the-scope-of-the-short-url-generator-0" id="the-scope-of-the-short-url-generator-0"></a>
 
@@ -114,47 +94,47 @@ The short URL generator is the backbone of our URL shortening service. The outpu
 
 These limitations define the scope of our short URL generator. We can define the scope, as shown below:
 
-* **Starting range**: Our sequencer can generate a 64-bit binary number that ranges from 1→(264−1)1→(264−1). To meet the requirement for the minimum length of a short URL, we can select the sequencer IDs to start from at least 10 digits, i.e., 1 Billion.
-* **Ending point**: The maximum number of digits in sequencer IDs that map into the short URL generator's output depends on the maximum utilization of 64 bits, that is, the largest base-10 number in 64-bits. We can estimate the total number of digits in any base by calculating these two points:
-*
-  1. The numbers of bits to represent one digit in a base-n. This is given by ���2�log2​n.
-  2. ������ �� ������ =����� ���� ��������������� �� ���� �� ��������� ��� �����Number of digits =Number of bits to represent one digitTotal bits available​
-
-Let's see the calculations above for both the base-10 and base-58 mathematically:
-
-*
-  * **Base-10:**
-  *
-    * The number of bits needed to represent one decimal digit = ���210log2​10 = 3.133.13
-    * The total number of decimal digits in 64-bit numeric ID = 643.133.1364​ == 2020
-  * **Base-58:**
-  *
-    * The number of bits needed to represent one decimal digit = ���258log2​58 == 5.855.85
-    * The total number of base-58 digits in a 64-bit numeric ID = 645.855.8564​ == 1111
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.07.05 AM.png" alt=""><figcaption></figcaption></figure>
 
 > **Maximum digits**: The calculations above show that the maximum digits in the sequencer generated ID will be 20 and consequently, the maximum number of characters in the encoded short URL will be 11.  
-
-Quiz
 
 **Question 1**
 
 Since we’re using the 10 digits and beyond sequencer IDs, is there a way we can use the sequencer IDs shorter than 10 digits?
 
-Show Answer
+We can use the range below the ten digits sequencer IDs for custom short links for users with premium memberships. It will ensure two benefits:
 
-**1 of 2**
+* Utilization of the blocked range of IDs
+* Less than six characters short URLs
+
+**Example**: Let’s assume that the user requests `abc` as a custom short URL, and it’s available in our system, as there is no instance in the data store matching with this short URL. We need to perform the following two operations:
+
+1. Assign this short URL to the requested long URL and store this record in the datastore.
+2. Mark the associated unique ID unusable. To find the associated unique ID, we need to decode `abc` into base-10. Using the above decode method, we come up with the base-10 unique ID value as `113019`. The unique ID is less than 1 Billion, as the custom short URL is less than six characters, conforming to the above-stated two benefits.
+
+> Our system doesn’t ensure a guaranteed custom short link generation, as some other premium member might have claimed the requested custom short URL.
+
+**Question 2**
+
+What should the short URL be for the sequencer’s largest number?
+
+Hide Answer
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.07.55 AM (1).png" alt=""><figcaption></figcaption></figure>
+
+\----------------------
 
 ### The sequencer's lifetime <a href="#the-sequencers-lifetime-0" id="the-sequencers-lifetime-0"></a>
 
 The number of years that our sequencer can provide us with unique IDs depends on two factors:
 
-*
-  * Total numbers available in the sequencer = 264−109264−109 (starting from 1 Billion as discussed above)
-  * Number of requests per year = 200 ������� ��� ����ℎ×12=2.4 �������200 Million per month×12=2.4 Billion (as assumed in [_Requirements_](https://www.educative.io/collection/page/10370001/4941429335392256/5146211836755968))
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.10.29 AM.png" alt=""><figcaption></figcaption></figure>
+
+&#x20;[_Requirements_](requirements-of-tinyurls-design.md)
 
 So, taking the above two factors into consideration, we can calculate the expected life of our sequencer.
 
-  The lifetime of the sequencer = ����� ������� ��������������� ��������=264−1092.4 �������=7,686,143,363.63 �����yearly requeststotal numbers available​=2.4 Billion264−109​=7,686,143,363.63 years
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.09.16 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Life expectancy for sequencer**
 

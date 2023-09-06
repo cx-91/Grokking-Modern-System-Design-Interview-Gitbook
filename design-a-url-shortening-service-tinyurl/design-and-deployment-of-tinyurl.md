@@ -8,7 +8,7 @@ To expose the functionality of our service, we can use REST APIs for the followi
 * Redirecting a short URL
 * Deleting a short URL
 
-System API design overview
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.56.25 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Shortening a URL <a href="#shortening-a-url-0" id="shortening-a-url-0"></a>
 
@@ -87,13 +87,18 @@ Our service doesn’t require user registration for the generation of a short UR
 1. It uses leader-follower protocol, making it possible to use replicas for heavy reading.
 2. MongoDB ensures atomicity in concurrent write operations and avoids collisions by returning duplicate-key errors for record-duplication issues.
 
-Quiz
-
 **Question**
 
 Why are NoSQL databases like Cassandra or Riak not good choices instead of MongoDB?
 
-Show Answer
+Since our service is more read-intensive and less write-intensive, MongoDB suits our use case the best for the following reasons:
+
+* NoSQL databases like Cassandra, Riak, and DynamoDB need read-repair during the reading stage and hence provide slower reads to write performance.
+* They are leader-less NoSQL databases that provide weaker atomicity upon concurrent writes. Being a single leader database, MongoDB provides a higher read throughput as we can either read from the leader replica or follower replicas. The write operations have to pass through the leader replica. It ensures our system’s availability for reading-intensive tasks even in cases where the leader dies.
+
+> Since Cassandra inherently ensures availability more than MongoDB, choosing MongoDB over Cassandra might make our system look less available. However, the time taken by the leader election algorithm is negligible compared to the time elapsed between short URL generation and its first usage, so it doesn’t hamper our system’s availability.
+
+\----------------------
 
 **Short URL generator**: Our short URL generator will comprise a building block and an additional component:
 
@@ -104,29 +109,55 @@ We built a sequencer in our building blocks section to generate 64-bit unique _n
 
 Take a look at the diagram below to understand how the overall short URL generation unit will work.
 
-Internal working of a short URL generator
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.57.17 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Other building blocks**: Beside the elements mentioned above, we’ll also incorporate other building blocks like load balancers, cache, and rate limiters.
 
 * **Load balancing**: We can employ Global Server Load Balancing (GSLB) apart from local load balancing to improve availability. Since we have plenty of time between a short URL being generated and subsequently accessed, we can safely assume that our DB is geographically consistent and that distributing requests globally won’t cause any issues.
 * **Cache**: For our specific read-intensive design problem, Memcached is the best choice for a cache solution. We require a simple, horizontally scalable cache system with minimal data structure requirements. Moreover, we’ll have a data-center-specific caching layer to handle native requests. Having a global caching layer will result in higher latency.
-* **Rate limiter**: Limiting each user’s quota is preferable for adding a security layer to our system. We can achieve this by uniquely identifying users through their unique `api_dev_key` and applying one of the discussed rate-limiting algorithms (see [Rate Limiter](https://www.educative.io/collection/page/10370001/4941429335392256/5447913559293952) from _Building Blocks_). Keeping in view the simplicity of our system and the requirements, the fixed window counter algorithm would serve the purpose, as we can assign a set number of shortening and redirection operations per `api_dev_key` for a specific timeframe.
-
-Quiz
+* **Rate limiter**: Limiting each user’s quota is preferable for adding a security layer to our system. We can achieve this by uniquely identifying users through their unique `api_dev_key` and applying one of the discussed rate-limiting algorithms (see [Rate Limiter](../rate-limiter/rate-limiter-algorithms.md) from _Building Blocks_). Keeping in view the simplicity of our system and the requirements, the fixed window counter algorithm would serve the purpose, as we can assign a set number of shortening and redirection operations per `api_dev_key` for a specific timeframe.
 
 **Question 1**
 
 How will we maintain a unique mapping if redirection requests can go to different data centers that are geographically apart? Does our design assume that our DB is consistent geographically?
 
-Show Answer
+We initially assumed that our data center was globally consistent. Let’s look at the problem differently and consider the opposite case: we need to filter the redirection requests based on data centers.
 
-**1 of 3**
+**Solution**: An simple way of achieving this functionality is to introduce a unique character in the short URL. This special character will act as an indicator for the exact data center.
+
+**Example**: Let’s assume that the short URL that needs redirection is [service.com/x/short123/](http://service.com/x/short123/), where `x` indicates the data center containing this record.
+
+In this solution, if the short URL goes to the wrong data center, it can be redirected to the correct one. However, if a specific data center is not reachable for a specific short URL (and that URL is not yet cached), the redirection will fail.
+
+**Question 2**
+
+How will the data-center-specific caching handle an unseen redirection request?
+
+Since we’ve assumed the data-center-specific caching solution for our system, a case needs highlighting: handling unseen redirection requests by our system.
+
+**Scenario**: The scenario entails receiving an unknown redirection request at a data center. Since the local cache wouldn’t have that entry, it would fetch that record from the globally consistent database and place this entry into the local cache for future use.
+
+**Question 3**
+
+What is the probability of collision when we ask the short URL generator for a new short URL?
+
+We ask the sequencer for a unique ID and by the definition of our sequencer’s design, there will never be duplication in IDs. We then encode those IDs, which also ensures no duplication. Hence, the regular short URL generation process ensures no duplication in records.
+
+Now let’s consider the case of custom short URLs. Since the user is providing the short URL, there can be a duplication. We can easily calculate the probability of this collision by taking into account the size of the database containing short URL records.
+
+Let’s assume there are `n` already generated short URLs in the database. The probability that the user-provided custom short URL will be similar to an already existing one can be given by:
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.58.42 AM.png" alt=""><figcaption></figcaption></figure>
+
+With growing `n`, the collision probability would increase, ranging from 0 when `n=0` and 1 when `n=total number of combinations`.
+
+> This calculation assumes that the user selects a custom short URL randomly and equally likely from the set of allowed combinations. In reality, few words are more popular than others. So our probability can be seen as a lower bound on the probability of collusion.
 
 #### Design diagram <a href="#design-diagram-0" id="design-diagram-0"></a>
 
 A simple design diagram of the URL shortening system is given below.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzkxIiBoZWlnaHQ9IjMwMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)A design diagram of the URL shortening service
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.59.10 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Workflow <a href="#workflow-0" id="workflow-0"></a>
 
@@ -135,36 +166,69 @@ Let’s analyze the system in-depth and how the individual pieces fit together t
 Keeping in view the functional requirements, the workflow of the abstract design above would be as follows.
 
 1. **Shortening**: Each new request for short link computation gets forwarded to the short URL generator (SUG) by the application server. Upon successful generation of the short link, the system sends one copy back to the user and stores the record in the database for future use.
-
-Quiz
+2. **Redirection**: Application servers, upon receiving the redirection requests, check the storage units (caching system and database) for the required record. If found, the application server redirects the user to the associated long URL.
+3. **Deletion**: A logged-in user can delete a record by requesting the application server which forwards the user details and the associated URL’s information to the database server for deletion. A system-initiated deletion can also be triggered upon an expiry time, as we’ll see ahead.
+4. **Custom short links**: This task begins with checking the eligibility of the requested short URL. The maximum length allowed is 11 alphanumeric digits. We can find the details on the allowed format and the specific digits in the next lesson. Once verified, the system checks its availability in the database. If the requested URL is available, the user receives a successful short URL generation message, or an error message in the opposite case.
 
 **Question 1**
 
 How does our system avoid duplicate short URL generation?
 
-Show Answer
+* Computing a short URL for an already existing long URL is redundant, and the system sends the long URL to the database server to check its existence in the system. The system will check the respective entry in the cache first and then query the database.
+* If the short URL for the corresponding long URL is already present, the database returns the saved short URL to the application server which reroutes the requested short URL to the user.
+* If the requested short URL is unavailable in the system, the application server requests the SUG to compute the short URL for the requested long URL. Once computed, the SUG sends back a copy of the requested short URL to the application server and another copy to the database server.
 
-**1 of 2**
+**Question 2**
 
-2. **Redirection**: Application servers, upon receiving the redirection requests, check the storage units (caching system and database) for the required record. If found, the application server redirects the user to the associated long URL.
+How do we ensure that two concurrent requests for a short URL do not overwrite?
 
-Quiz
+Concurrency in handling URL shortening requests is essential, and we achieve it as follows:
+
+1. MongoDB ensures consistency by locking and concurrency control protocols, preventing the users from modifying the same data simultaneously.
+2. In MongoDB, all the write requests go through the single leader and hence exclude the possibility of race conditions due to the serialization of requests via a single leader.
+
+\-------------------------
 
 **Question**
 
 How does our system ensure that our data store will not be a bottleneck?
 
-Show Answer
+We can ensure that our data store doesn’t become a bottleneck, using the following two approaches:
 
-3. **Deletion**: A logged-in user can delete a record by requesting the application server which forwards the user details and the associated URL’s information to the database server for deletion. A system-initiated deletion can also be triggered upon an expiry time, as we’ll see ahead.
-4. **Custom short links**: This task begins with checking the eligibility of the requested short URL. The maximum length allowed is 11 alphanumeric digits. We can find the details on the allowed format and the specific digits in the next lesson. Once verified, the system checks its availability in the database. If the requested URL is available, the user receives a successful short URL generation message, or an error message in the opposite case.
+1. We use a range-based sequencer in our design, which ensures basic level mapping between the servers and the short URLs. We can redirect the request to the respective database for a quick search.
+2. As discussed above, we can also have unique IDs for various data stores and integrate them into short URLs. We can subsequently redirect requests to the respective data store for efficient request handling.
+
+Both of these approaches ensure smooth traffic handling and mitigate the risk of the data store becoming a bottleneck.
+
+\--------------
 
 The illustration below depicts how URL shortening, redirection, and deletion work.
 
-URL shortening: The user initiates the request**1** of 21
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 1.01.56 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 1.02.16 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 1.02.34 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 1.03.13 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 1.02.53 AM.png>)
+
+
 
 **Question**
 
 Upon successful allocation of a custom short URL, how does the system modify its records?
 
-Show Answer
+Since the custom short URL is the base-58 encoding of an available base-10 unique ID, marking that unique ID as unavailable for future use is necessary for the system’s integrity.
+
+On the backend, the system accesses the server with the base-10 equivalent unique ID of that specific base-58 short URL. It marks the ID as unavailable in the range, eliminating any chance of reallocating the same ID to any other request.
+
+![](https://www.educative.io/api/collection/10370001/4941429335392256/page/5753981720068096/image/5678875803910144?page\_type=collection\_lesson)
+
+This technique also helps availability. The node generating short URLs will no longer need to maintain a list of used and unused unique IDs in memory. Instead, a database is maintained for each of the lists. For good performance, this database can be NoSQL.
+
+The above part explains the post-processing of a custom short URL association. Some further details include the following:
+
+1. Once we generate IDs, we put them in the unused list. As soon as we use an ID from the unused list, we put it in the used list. This eliminates the possibility of duplicate association.
+2. As encoding guarantees unique mapping between base-10 and base-58, no two long URLs will have the same short URL.

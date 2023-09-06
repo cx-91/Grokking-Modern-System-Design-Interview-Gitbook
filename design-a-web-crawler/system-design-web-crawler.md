@@ -6,7 +6,7 @@ A **web crawler** is an Internet bot that systematically scours the world wide w
 
 This is the first step that’s performed by search engines; the stored data is used for indexing and ranking purposes. This specific design problem is limited to web crawlers and doesn’t include explanations of the later stages of indexing and ranking in the search engines.
 
-An overview of the web crawler system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.12.30 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Additional benefits <a href="#additional-benefits-0" id="additional-benefits-0"></a>
 
@@ -19,7 +19,7 @@ The additional utilities of a web crawler are as follows:
 
 In this chapter, we’ll design a web crawler and evaluate how it fulfills the functional and non-functional requirements.
 
-The output of the crawling process is the data that’s the input for the subsequent processing phases—data cleaning, indexing, page relevance using algorithms like page ranks, and analytics. To learn about some of these subsequent stages, refer to our chapter on [distributed search](https://www.educative.io/collection/page/10370001/4941429335392256/5400897294696448).
+The output of the crawling process is the data that’s the input for the subsequent processing phases—data cleaning, indexing, page relevance using algorithms like page ranks, and analytics. To learn about some of these subsequent stages, refer to our chapter on [distributed search](../distributed-search/system-design-the-distributed-search.md).
 
 ### How will we design a Web crawler? <a href="#how-will-we-design-a-web-crawler-0" id="how-will-we-design-a-web-crawler-0"></a>
 

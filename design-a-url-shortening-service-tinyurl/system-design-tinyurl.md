@@ -4,7 +4,7 @@
 
 **URL shortening** is a service that produces short aliases for long URLs, commonly referred to as **short links**. Upon clicking, these short links direct to the original URLs. The following illustration depicts how the process works:
 
-How URL shortening service works
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.51.44 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Advantages <a href="#advantages-0" id="advantages-0"></a>
 

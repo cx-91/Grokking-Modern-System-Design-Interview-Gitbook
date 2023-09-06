@@ -16,13 +16,16 @@ Our design uses **global server load balancing (GSLB)** to handle our system tra
 
 We also apply a limit on the requests from clients to secure the intrinsic points of failures. To protect the system against DoS attacks, we use rate limiters between the client and web servers to limit each user’s resource allocation. This will ensure a good and smooth traffic influx and mitigate the exploitation of system resources.
 
-Guarantees provided by our URL shortening service
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 1.11.15 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Scalability <a href="#scalability-0" id="scalability-0"></a>
 
 Our design is scalable because our data can easily be distributed among horizontally sharded databases. We can employ a consistent hashing scheme to balance the load between the application and database layers.
 
-Alternate to consistent hashing in load balancer
+Alternate to consistent hashing in load balancer\
+We can also use the range-based sharding while scaling our database server. However, if we partition our database based on a predefined range, it might lead to imbalanced partitions due to the variable distribution of URLs in each range. An example of this could be the distribution based on the first letter of the URL.
+
+\------------------
 
 Our choice of the database for mapping URLs, MongoDB, also facilitates horizontal scaling. Some interesting reasons for selecting a NoSQL database are:
 
