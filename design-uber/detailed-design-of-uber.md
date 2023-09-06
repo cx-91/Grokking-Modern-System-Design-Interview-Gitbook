@@ -2,7 +2,7 @@
 
 Let’s look at the detailed design of our Uber system and learn how the various components work together to offer a functioning service:
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAxMSIgaGVpZ2h0PSI1MzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIi8+)The detailed design of Uber
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 7.06.19 PM.png" alt=""><figcaption></figcaption></figure>
 
 ### Components <a href="#components-0" id="components-0"></a>
 
@@ -16,7 +16,7 @@ The riders and drivers are connected to the **location manager** service. This s
 
 The **QuadTree map service** updates the location of the drivers. The main problem is how we deal with finding nearby drivers efficiently.
 
-We’ll modify the solution discussed in the [Yelp](https://www.educative.io/collection/page/10370001/4941429335392256/5518783229198336) chapter according to our requirements. We used QuadTrees on Yelp to find the location. QuadTrees help to divide the map into segments. If the number of drivers exceeds a certain limit, for example, 500, then we split that segment into four more child nodes and divide the drivers into them.
+We’ll modify the solution discussed in the [Yelp](../design-a-proximity-service-yelp/design-considerations-of-yelp.md) chapter according to our requirements. We used QuadTrees on Yelp to find the location. QuadTrees help to divide the map into segments. If the number of drivers exceeds a certain limit, for example, 500, then we split that segment into four more child nodes and divide the drivers into them.
 
 Each leaf node in QuadTrees contains segments that can’t be divided further. We can use the same QuadTrees for finding the drivers. The most significant difference we have now is that our QuadTree wasn’t designed with regular upgrades in consideration. So, we have the following issues with our dynamic segment solution.
 
@@ -24,7 +24,7 @@ We must update our data structures to point out that all active drivers update t
 
 To overcome the above problem, we can use a hash table to store the latest position of the drivers and update our QuadTree occasionally, say after 10–15 seconds. We can update the driver’s location in the QuadTree around every 15 seconds instead of four seconds, and we use a hash table that updates every four seconds and reflects the drivers’ latest location. By doing this, we use fewer resources and time.
 
-Updating driver's location
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 7.07.00 PM.png" alt=""><figcaption></figcaption></figure>
 
 #### Request vehicle <a href="#request-vehicle-0" id="request-vehicle-0"></a>
 
@@ -47,13 +47,13 @@ The **ETA service** deals with the estimated time of arrival. It shows riders th
 
 The whole road network is represented as a graph. Intersections are represented by nodes, while edges represent road segments. The graph also depicts one-way streets, turn limitations, and speed limits.
 
-Graph representation
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 7.07.19 PM (1).png" alt=""><figcaption></figcaption></figure>
 
 To identify the shortest path between source and destination, we can utilize routing algorithms such as Dijkstra’s algorithm. However, Dijkstra, or any other algorithm that operates on top of an unprocessed graph, is quite slow for such a system. Therefore, this method is impractical at the scale at which these ride-hailing platforms operate.
 
 To resolve these issues, we can split the whole graph into partitions. We preprocess the optimum path inside partitions using **contraction hierarchies** and deal with just the partition boundaries. This strategy can considerably reduce the time complexity since it partitions the graph into layers of tiny cells that are largely independent of one another. The preprocessing stage is executed in parallel in the partitions when necessary to increase speed. In the illustration below, all the partitions process the best route in parallel. For example, if each partition takes one second to find the path, we can have the complete path in one second since all partitions work in parallel.
 
-Partitioning the graph
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 7.08.05 PM.png" alt=""><figcaption></figcaption></figure>
 
 Once we determine the best route, we calculate the expected time to travel the road segment while accounting for traffic. The traffic data will be the edge weights between the nodes.
 
@@ -63,7 +63,7 @@ We use a machine learning component named **DeepETA** to deliver an immediate im
 
 We also use a routing engine that uses real-time traffic information and map data to predict an ETA to traverse the best path between the source and the destination. We use a post-processing ML model that considers spatial and temporal parameters, such as the source, destination, time of the request, and knowledge about real-time traffic, to forecast the ETA residual.
 
-DeepETA
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 7.08.21 PM.png" alt=""><figcaption></figcaption></figure>
 
 #### Database <a href="#database-0" id="database-0"></a>
 
@@ -85,9 +85,13 @@ Points to Ponder
 
 Why haven’t we used only the MySQL database?
 
-Show Answer
+As the data becomes massive with the passage of time, it reduces our system’s performance. Also, it won’t be easy to scale the MySQL database.
 
-**1 of 2**
+**Question 2**
+
+Why haven’t we used only the Cassandra database?
+
+The data we store for each trip is highly relational, it’s spread over multiple tables, and it must be identical among all tables. MySQL helps to store this relational data and keep it consistent across tables.
 
 **Storage schema**
 
@@ -100,19 +104,19 @@ On a basic level in the Uber application, we need the following tables:
 
 The following illustration visualizes the data model:
 
-The storage schema
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 7.09.02 PM.png" alt=""><figcaption></figcaption></figure>
 
 #### Fault tolerance <a href="#fault-tolerance-0" id="fault-tolerance-0"></a>
 
 For availability, we need to have replicas of our database. We use the primary-secondary replication model. We have one primary database and a few secondary databases. We synchronously replicate data from primary to secondary databases. Whenever our primary database is down, we can use a secondary database as a primary one.
 
-Point to Ponder
-
 **Question**
 
 How will we handle a driver’s slow and disconnecting network?
 
-Show Answer
+We can use the driver’s phone as local storage and save the state of a trip every few seconds there. All requests and the last recorded state are stored on a local disk, which ensures that they’re preserved even if the application is restarted. Suppose the driver exits the application while there are a few requests waiting to be synchronized with the server. The requests and last known state are loaded from the local disk upon relaunch. When the driver relaunches the application, they remain in the same situation as before. The requests are queued in order to keep the server up to date.
+
+\---------------------
 
 #### Load balancers <a href="#load-balancers-0" id="load-balancers-0"></a>
 

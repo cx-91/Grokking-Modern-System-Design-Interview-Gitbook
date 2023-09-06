@@ -4,7 +4,7 @@
 
 Let’s begin with the high-level design of our Twitter system. We’ll initially highlight and discuss the building blocks, as well as other components, in the context of the Twitter problem briefly. Later on, we’ll dive deep into a few components in this chapter.
 
-Twitter components
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-05 at 11.37.17 PM.png" alt=""><figcaption></figcaption></figure>
 
 * **Users** post Tweets delivered to the server through the load balancer. Then, the system stores it in persistent storage.
 * **DNS** provides the specified IP address to the end user to start communication with the requested service.
@@ -13,7 +13,7 @@ Twitter components
 * **Storage system** represents the various types of storage (SQL-based and NoSQL-based) in the above illustration. We’ll discuss significant storage systems later in this chapter.
 * **Application servers** provide various services and have business logic to orchestrate between different components to meet our functional requirements.
 
-We have detailed chapters on [DNS](https://www.educative.io/collection/page/10370001/4941429335392256/5728619204182016), [CDN](https://www.educative.io/collection/page/10370001/4941429335392256/6624266925899776), specified storage systems ([Databases](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872), [Key-value store](https://www.educative.io/collection/page/10370001/4941429335392256/4747701493432320), [Blob store](https://www.educative.io/collection/page/10370001/4941429335392256/4862646238576640)), and [Load balancers](https://www.educative.io/collection/page/10370001/4941429335392256/4521972679049216) in our building blocks section. We’ll focus on further details specific to the Twitter service in the coming lessons. Let’s first understand the service API.
+We have detailed chapters on [DNS](../domain-name-system/introduction-to-domain-name-system-dns.md), [CDN](../content-delivery-network-cdn/system-design-the-content-delivery-network-cdn.md), specified storage systems ([Databases](../databases/introduction-to-databases.md), [Key-value store](../key-value-store/system-design-the-key-value-store.md), [Blob store](../blob-store/system-design-a-blob-store.md)), and [Load balancers](../load-balancers/introduction-to-load-balancers.md) in our building blocks section. We’ll focus on further details specific to the Twitter service in the coming lessons. Let’s first understand the service API.
 
 ### API design <a href="#api-design-0" id="api-design-0"></a>
 
@@ -50,17 +50,23 @@ Let’s discuss a few of the parameters:
 
 The rest of the parameters are self-explanatory.
 
-> **Note:** Twitter uses the **Snowflake** service to generate unique IDs for Tweets. We have a detailed chapter ([Sequencer](https://www.educative.io/collection/page/10370001/4941429335392256/6499939719053312)) that explains this service.
-
-Points to Ponder
+> **Note:** Twitter uses the **Snowflake** service to generate unique IDs for Tweets. We have a detailed chapter ([Sequencer](../sequencer/system-design-sequencer.md)) that explains this service.
 
 **Question 1**
 
 At most, how many hashtags can a Tweet have?
 
-Show Answer
+The text limit is 280 characters in a Tweet. So, users can use the hashtag(s) such that text length (including plain text, any links, and hashtags) does not exceed the limit of 280 characters.
 
-**1 of 2**
+**Question 2**
+
+What is the need for the `list_of_tagged_people` in the `/postTweet` API?
+
+Hide Answer
+
+The system has to notify the people tagged in the Tweet.
+
+\------------------------
 
 #### Like or dislike Tweet <a href="#like-or-dislike-tweet-0" id="like-or-dislike-tweet-0"></a>
 
@@ -136,13 +142,13 @@ In the `/viewUser_timeline` API, we’ll exclude the `user_location` to get the 
 
 The `max_rsult` parameter determines the number of tweets a client application can show the user. The server sends the `max_result` number of tweets in each response. Further, the server will also send a paginated `list_of_followers` to reduce the client latency.
 
-Point to Ponder
-
 **Question**
 
 Which parameter in the `viewHome_timeline` method is the most relevant when deciding which promoted ads (Tweets) to be returned in response?
 
-Show Answer
+The decision to send specified promoted ads is made on the `user_location` parameter. For example, the user belongs to the `NewYork` city, so most probably it gets promoted ads associated or originated in that region.
+
+\---------------------
 
 #### Follow the account <a href="#follow-the-account-0" id="follow-the-account-0"></a>
 

@@ -116,17 +116,17 @@ On a basic level, we need the following tables:
 * **Photos**: This stores all photo-related information such as ID, location, caption, time of creation, and so on. We also need to keep the user ID to determine which photo belongs to which user. The user ID is a foreign key from the users table.
 * **Videos**: This stores all video-related information such as ID, location, caption, time of creation, and so on. We also need to keep the user ID to determine which video belongs to which user. The user ID is a foreign key from the users table.
 
-Point to Ponder
-
 **Question**
 
-Where should we store the photos and videos?
+**Where should we store the photos and videos?**
 
-Show Answer
+**We’ll store the photos and videos in a blob store (like S3) and save the path of the photo or video in the table as it is efficient to save larger data in a distributed storage.**
+
+\---------------------
 
 The following illustration visualizes the data model:
 
-The Data model of Instagram
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.44.33 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Data estimation <a href="#data-estimation-0" id="data-estimation-0"></a>
 

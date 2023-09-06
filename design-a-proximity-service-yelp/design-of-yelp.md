@@ -14,8 +14,6 @@ We need to implement the `search` function. The API call for searching based on 
 search(category, user_location, radius)
 ```
 
-###
-
 | **Parameter**   | **Description**                                                                                             |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
 | `category`      | This is the type of search the user makes—for example, a search for restaurants, cinemas, cafes, and so on. |
@@ -30,8 +28,6 @@ The API call for searching based on the name of a place like “Burger Hut” wi
 search(name_of_place, user_location, radius)
 ```
 
-###
-
 | **Parameter**   | **Description**                                                        |
 | --------------- | ---------------------------------------------------------------------- |
 | `name_of_place` | This contains the name of the place that the user wants to search for. |
@@ -45,8 +41,6 @@ The API call for adding a place is below:
 ```txt
 add_place(name_of_place, description_of_place, category, latitude, longitude, photo}
 ```
-
-###
 
 | **Parameter**          | **Description**                                                                                 |
 | ---------------------- | ----------------------------------------------------------------------------------------------- |
@@ -66,8 +60,6 @@ The API call for adding a place is below:
 ```txt
 add_review(place_ID, user_ID, review_description, rating)
 ```
-
-###
 
 | **Parameter**        | **Description**                                                                         |
 | -------------------- | --------------------------------------------------------------------------------------- |
@@ -134,7 +126,7 @@ Size = 8 + 256 = 264 bytes 
 
 > **Note:** The `INT` in the following schema contains an 8-Byte ID that we generate using the unique ID generator.
 
-Storage schema
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.14.23 PM.png" alt=""><figcaption></figcaption></figure>
 
 ### Design <a href="#design-0" id="design-0"></a>
 
@@ -154,7 +146,7 @@ These are the components of our system:
   * **Key-value stores**: We’ll need to fetch the places in a segment efficiently. For that, we store the list of places against a segment ID in a key-value store to minimize searching time. We also save the QuadTree information in the key-value store, by storing the QuadTree data against a unique ID.
 * **Load balancer**: A load balancer distributes users’ incoming requests to all the servers uniformly.
 
-Yelp design
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.15.05 PM.png" alt=""><figcaption></figcaption></figure>
 
 #### Workflow <a href="#workflow-0" id="workflow-0"></a>
 

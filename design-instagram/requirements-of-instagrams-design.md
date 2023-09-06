@@ -48,7 +48,7 @@ The total space required for a year:
 
 5430 TB/day \* 365 (days a year) = 1981950 TB = 1981.95 PetaBytes
 
-Total storage required by the Instagram storage system for a year
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.41.32 AM.png" alt=""><figcaption></figcaption></figure>
 
 Besides photos and videos, we have ignored comments, status sharing data, and so on. Moreover, we also have to store users’ information and post metadata, for example, userID, photo, and so on. So, to be precise, we need more than 5430 TB/day, but to keep our design simple, let’s stick to the 5430 TB/day.
 
@@ -64,7 +64,7 @@ Incoming bandwidth \~= 502.8 Gbps
 
 Required outgoing bandwidth \~= 100 \* 502.8 Gbps \~= 50.28 Tbps
 
-Total bandwidth required
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.42.13 AM.png" alt=""><figcaption></figcaption></figure>
 
 Outgoing bandwidth is fairly high. We can use compression to reduce the media size substantially. Moreover, we’ll place content close to the users via CDN and other caches in IXP and ISPs to serve the content at high speed and low latency.
 
@@ -76,11 +76,7 @@ Requests by each user per day = 20 Queries handled by a server per second = 100
 
 Queries handled by a server per day = 100 \* 60 \* 60 \* 24 = 8640000
 
-������ �� ������ �����∗�������� �� ���ℎ ���� ��� ���������� ℎ������ ��� ������ � ���=1157 ������� ������Queries handled per server a dayNumber of active users∗Requests by each user per day​=1157 servers approx
-
-This calculation shows that we need 1157 servers to handle queries in our Instagram system.
-
-Number of servers required for the Instagram system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.42.42 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Try it yourself <a href="#try-it-yourself-0" id="try-it-yourself-0"></a>
 
@@ -104,7 +100,7 @@ Let’s analyze how the number of photos per day affects the storage and bandwid
 
 In the next lesson, we’ll focus on the high-level design of Instagram. The design will utilize many building blocks that have been discussed in the initial chapters also. We’ll use the following building blocks in our design:
 
-Building blocks used in Instagram design
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.43.08 AM.png" alt=""><figcaption></figcaption></figure>
 
 * A [**load balancer**](../load-balancers/introduction-to-load-balancers.md) at various layers will ensure smooth requests distribution among available servers.
 * A [**database**](../databases/introduction-to-databases.md) is used to store the user and accounts metadata and relationship among them.

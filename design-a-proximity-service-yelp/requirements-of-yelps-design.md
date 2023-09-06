@@ -14,7 +14,7 @@ The functional requirements of our systems are below:
 * **Search**: The users should be able to search for nearby places or places of interest based on their GPS location (longitude, latitude) and/or the name of a place.
 * **Feedback**: The users should be able to add a review about a place. The review can consist of images, text, and a rating.
 
-Functional requirements
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.10.20 PM.png" alt=""><figcaption></figcaption></figure>
 
 #### Non-functional requirements <a href="#non-functional-requirements-0" id="non-functional-requirements-0"></a>
 
@@ -35,18 +35,9 @@ Let’s assume that we have:
 
 #### Number of servers estimation <a href="#number-of-servers-estimation-2" id="number-of-servers-estimation-2"></a>
 
-We need to handle concurrent requests coming from 60 million daily active users. As we did in our discussion in the [back-of-the-envelope](https://www.educative.io/collection/page/10370001/4941429335392256/5711642666467328) lessons, we assume an RPS of 8,000.
+We need to handle concurrent requests coming from 60 million daily active users. As we did in our discussion in the [back-of-the-envelope](../back-of-the-envelope-calculations/put-back-of-the-envelope-numbers-in-perspective.md) lessons, we assume an RPS of 8,000.
 
-������ �� ����� ������ �������� �� � ������=60 �������8000=7500 ������� RPS of a serverNumber of daily active users​=800060 million​=7500 servers&#x20;
-
-**Estimating the Number of Servers**
-
-| Number of Daily Active Users (in Millions) | 60    |
-| ------------------------------------------ | ----- |
-| RPS of a Server                            | 8000  |
-| Number of Servers Required                 | f7500 |
-
-The number of servers required for Yelp
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.11.18 PM.png" alt=""><figcaption></figcaption></figure>
 
 #### Storage estimation <a href="#storage-estimation-0" id="storage-estimation-0"></a>
 
@@ -75,7 +66,7 @@ The following calculater computes the total storage we need:
 | User                   | 264                                   | 178                 | f46.99              |
 | Total Storage Required |                                       |                     | f835.53             |
 
-The total amount of storage required by Yelp
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.11.52 PM.png" alt=""><figcaption></figcaption></figure>
 
 #### Bandwidth estimation <a href="#bandwidth-estimation-0" id="bandwidth-estimation-0"></a>
 
@@ -125,21 +116,11 @@ Considering that there are 60 million active daily users, we come to the followi
 | Total Outgoing Bandwidth Required (Kbps)                 | f331200000 |
 | Total Outgoing Bandwidth Required (Gbps)                 | f331.2     |
 
-We need a total of approximately 51 ����51 Kbps of incoming traffic and approximately 331 ����331 Gbps of outgoing, assuming that the uploaded content is not compressed.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.12.43 PM.png" alt=""><figcaption></figcaption></figure>
 
-Total bandwidth requirements = 51 ����+331 ����≈331 ����51 Kbps+331 Gbps≈331 Gbps.
+* [**Caching**](../distributed-cache/system-design-the-distributed-cache.md): We’ll use the cache to store information about popular places.
+* [**Load balancer**](../load-balancers/introduction-to-load-balancers.md): We’ll use the load balancer to manage the large amount of requests.
+* [**Blob storage**](../blob-store/system-design-a-blob-store.md): We’ll store images in the blob storage.
+* [**Database**](../databases/introduction-to-databases.md): We’ll store information about places and users in the database.
 
-The total bandwidth required by Yelp
-
-### Building blocks we will use <a href="#building-blocks-we-will-use-0" id="building-blocks-we-will-use-0"></a>
-
-The design process of Yelp utilizes many building blocks that have already been discussed in the initial chapters of the course. We’ll consider the following concepts while designing Yelp:
-
-Building blocks in the high-level design of Yelp
-
-* [**Caching**](https://www.educative.io/collection/page/10370001/4941429335392256/5053577315221504): We’ll use the cache to store information about popular places.
-* [**Load balancer**](https://www.educative.io/collection/page/10370001/4941429335392256/4521972679049216): We’ll use the load balancer to manage the large amount of requests.
-* [**Blob storage**](https://www.educative.io/collection/page/10370001/4941429335392256/4862646238576640): We’ll store images in the blob storage.
-* [**Database**](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872): We’ll store information about places and users in the database.
-
-We’ll also rely on [**Google Maps**](https://www.educative.io/collection/page/10370001/4941429335392256/5138720050642944) to understand the feature of searching for places within a particular radius.
+We’ll also rely on [**Google Maps**](../design-google-maps/system-design-google-maps.md) to understand the feature of searching for places within a particular radius.

@@ -9,7 +9,7 @@ Let’s add a few more components to our design:
 * **Relational database**: To store our data.
 * **Blob storage**: To store the photos and videos uploaded by the users.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjgxIiBoZWlnaHQ9IjMxMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Adding components to design
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.45.42 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Upload, view, and search a photo <a href="#upload-view-and-search-a-photo-0" id="upload-view-and-search-a-photo-0"></a>
 
@@ -23,7 +23,7 @@ We also need to cache the data to handle millions of reads. It improves the user
 
 The updated design is as follows:
 
-Various operations on photos
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.45.56 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Generate a timeline <a href="#generate-a-timeline-0" id="generate-a-timeline-0"></a>
 
@@ -35,15 +35,19 @@ When a user opens their Instagram, we send a request for timeline generation. Fi
 
 We can substantially reduce user-perceived latency by generating the timeline offline. For example, we define a service that fetches the relevant data for the user before, and as the person opens Instagram, it displays the timeline. This decreases the latency rate to show the timeline. Let’s take a look at the slides below to understand the problem and its solution.
 
-A user opens Instagram**1** of 5
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.46.56 AM.png" alt=""><figcaption></figcaption></figure>
 
-Point to Ponder
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.47.55 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.47.21 AM (1).png" alt=""><figcaption></figcaption></figure>
 
 **Question**
 
 What are the shortcomings of the pull approach?
 
-Show Answer
+Instagram is a read-heavy system. Many people don’t post any photos and instead just view others’ posts. So, the calls we make to fetch the recent posts from every follower will usually return nothing. Hence, we should keep in mind that it is not a write-heavy system and should develop a possible solution to cater to it.
+
+\-----------------
 
 #### The push approach <a href="#the-push-approach-0" id="the-push-approach-0"></a>
 
@@ -51,15 +55,15 @@ In a **push approach**, every user is responsible for pushing the content they p
 
 Now we only need to fetch the data that is pushed towards that particular user to generate the timeline. The push approach has stopped a lot of requests that return empty results when followed users have no post in a specified time.
 
-Push-based approach
-
-Point to Ponder
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.48.46 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Question**
 
 What are the shortcomings of the push approach?
 
-Show Answer
+Consider an account that belongs to a celebrity, like Cristiano Ronaldo, who has over 400 million followers. So if he posts a photo or a video, we will push the links of the photo/video to 400 million+ users, which is inefficient.
+
+\-------------
 
 #### Hybrid approach <a href="#hybrid-approach-0" id="hybrid-approach-0"></a>
 
@@ -70,19 +74,19 @@ Let’s split our users into two categories:
 
 The timeline service pulls the data from pull-based followers and adds it to the user’s timeline. The push-based users push their posts to the timeline service of their followers so the timeline service can add to the user’s timeline.
 
-Hybrid approach
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.49.15 AM.png" alt=""><figcaption></figcaption></figure>
 
 We have used the method which generates the timeline, but where do we store the timeline? We store a user’s timeline against a `userID` in a key-value store. Upon request, we fetch the data from the key-value store and show it to the user. The key is `userID`, while the value is timeline content (links to photos and videos). Because the storage size of the value is often limited to a few MegaBytes, we can store the timeline data in a blob and put the link to the blob in the value of the key as we approach the size limit.
 
-We can add a new feature called story to our Instagram. In the story feature, the users can add a photo that stays available for others to view for 24 hours only. We can do this by maintaining an option in the table where we can store a story’s duration. We can set it to 24 hours, and the [task scheduler](https://www.educative.io/collection/page/10370001/4941429335392256/6152021643624448) deletes the entries whose time exceeds the 24 hours limit.
+We can add a new feature called story to our Instagram. In the story feature, the users can add a photo that stays available for others to view for 24 hours only. We can do this by maintaining an option in the table where we can store a story’s duration. We can set it to 24 hours, and the [task scheduler](../distributed-task-scheduler/system-design-the-distributed-task-scheduler.md) deletes the entries whose time exceeds the 24 hours limit.
 
 ### Finalized design <a href="#finalized-design-0" id="finalized-design-0"></a>
 
-We’ll also use **CDN (content delivery network)** in our design. We can keep images and videos of celebrities in CDN which make it easier for the followers to fetch them. The load balancer first routes the read request to the nearest CDN, if the requested content is not available there, then it forwards the request to the particular read application server (see the “[load balancing chapter](https://www.educative.io/collection/page/10370001/4941429335392256/4521972679049216)” for the details). The CDN helps our system to be available to millions of concurrent users and minimizes latency.
+We’ll also use **CDN (content delivery network)** in our design. We can keep images and videos of celebrities in CDN which make it easier for the followers to fetch them. The load balancer first routes the read request to the nearest CDN, if the requested content is not available there, then it forwards the request to the particular read application server (see the “[load balancing chapter](../load-balancers/introduction-to-load-balancers.md)” for the details). The CDN helps our system to be available to millions of concurrent users and minimizes latency.
 
 The final design is given below:
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzcxIiBoZWlnaHQ9IjUwMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)The final design of Instagram
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.49.56 AM.png" alt=""><figcaption></figcaption></figure>
 
 Point to Ponder
 
@@ -90,7 +94,9 @@ Point to Ponder
 
 How can we count millions of interactions (like or view) on a celebrity post?
 
-Show Answer
+We can use [sharded counters](../sharded-counters/high-level-design-of-sharded-counters.md) to count the number of multiple interactions for a particular user. Each counter has a number of shards distributed across various edge servers to reduce the load on the application server and latency. Users nearest to the edge server get the updated count frequently on a specific post compared to those in distant regions.
+
+\--------------
 
 ### Ensure non-functional requirements <a href="#ensure-non-functional-requirements-0" id="ensure-non-functional-requirements-0"></a>
 
@@ -101,7 +107,7 @@ We evaluate the Instagram design with respect to its non-functional requirements
 * **Availability**: We have made the system available to the users by using the storage and databases that are replicated across the globe.
 * **Durability:** We have persistent storage that maintains the backup of the data so any uploaded content (photos and videos) never gets lost.
 * **Consistency**: We have used storage like blob stores and databases to keep our data consistent globally.
-* **Reliability**: Our databases handle [replication](https://www.educative.io/collection/page/10370001/4941429335392256/5241733675220992) and redundancy, so our system stays reliable and data is not lost. The load balancing layer routes requests around failed servers.
+* **Reliability**: Our databases handle [replication](../databases/data-replication/) and redundancy, so our system stays reliable and data is not lost. The load balancing layer routes requests around failed servers.
 
 ### Conclusion <a href="#conclusion-1" id="conclusion-1"></a>
 

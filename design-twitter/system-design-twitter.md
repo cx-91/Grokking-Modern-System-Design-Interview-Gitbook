@@ -4,11 +4,11 @@
 
 Twitter is a free microblogging social network where registered users post messages called “Tweets”. Users can also like, reply to, and retweet public tweets. Twitter has about 397 million users as of 2021 that is proliferating with time. One of the main reasons for its popularity is the vast sharing of the breaking news on the platform. Another important reason is that Twitter allows us to engage with and learn from people belonging to different communities and cultures.
 
-A user performs various operation on Twitter
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 7.14.12 PM.png" alt=""><figcaption></figcaption></figure>
 
 The illustration below shows the country-wise userbase of Twitter as of January 2022 (source: Statista), where the US is taking the lead. Such statistics are important when we design our infrastructure because it allows us to allocate more capacity to the users of a specific region, and traffic served from near specific users.
 
-Country wise userbase on Twitter
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 7.14.27 PM.png" alt=""><figcaption></figcaption></figure>
 
 ### How will we design Twitter? <a href="#how-will-we-design-twitter-0" id="how-will-we-design-twitter-0"></a>
 

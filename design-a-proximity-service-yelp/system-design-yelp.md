@@ -8,7 +8,13 @@ The user provides the name of a place or its GPS location, and the system finds 
 
 Services based on **proximity servers** are helpful in finding nearby attractions such as restaurants, theaters, or recreational sites. Designing such a system is challenging because we have to efficiently find all the possible places in a given radius with minimum latency. This means that we have to narrow down all the locations in the world, which could be in the billions, and only pinpoint the relevant ones.
 
-The user can search for a specific place near them**1** of 6
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 12.05.44 PM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 12.05.59 PM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 12.06.18 PM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 12.06.28 PM.png>)
 
 ### How will we design Yelp? <a href="#how-will-we-design-yelp-0" id="how-will-we-design-yelp-0"></a>
 

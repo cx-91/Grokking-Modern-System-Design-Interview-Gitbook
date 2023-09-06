@@ -26,7 +26,7 @@ We store the following information for each segment:
 
 * The road network inside the segment in the form of a `graph`.
 
-Storage schema
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.01.42 PM.png" alt=""><figcaption></figcaption></figure>
 
 **Relational DB**
 
@@ -42,7 +42,7 @@ We store the information to determine whether, at a particular hour of the day, 
 
 The following illustration consists of two workflows. One adds segments to the map and hosts them on the severs, while the other shows how the user request to find a path between two points is processed.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgwIiBoZWlnaHQ9IjQ4MSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Workflow 1) Adding segments (in yellow), and workflow 2) Processing user requests (in blue)
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.02.06 PM.png" alt=""><figcaption></figcaption></figure>
 
 **Add segment**
 
@@ -67,7 +67,7 @@ This section describes how we can improve the ETA estimation accuracy using live
 * **WebSocket** is a communication protocol that allows users and servers to have a two-way, interactive communication session. This helps in the real-time transfer of data between user and server.
 * The **load balancer** balances the connection load between different servers since there is a limit on the number of WebSocket connections per server. It connects some devices to server 1, some to server 2, and so on.
 
-Performing analytics on the live location data to keep the map up-to-date and also improve ETA estimations
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 12.02.27 PM.png" alt=""><figcaption></figcaption></figure>
 
 *   A **pub-sub** system collects the location data streams (device, time, location) from all servers. The location data from pub-sub is read by a **data analytics engine** like Apache Spark. The data analytics engine uses data science techniques—such as machine learning, clustering, and so on—to measure and predict traffic on the roads, identify gatherings, hotspots, events, find out new roads, and so on. These analytics help our system improve ETAs.
 
@@ -75,13 +75,13 @@ Performing analytics on the live location data to keep the map up-to-date and al
 * The data analytics engine publishes the analytics data to a new **pub-sub topic**.
 * The **map update service** listens to the updates from the pub-sub topic for the analytics. It updates the segment graphs if there is a new road identified or if there is a change in the weight (`average speed (traffic, road condition)`) on the edges of the graph. Depending on the location, we know which segment the update belongs to. We find the **routing server** on which that segment is placed from the key-value store and update the graph on that server.
 
-Point to Ponder
-
 **Question**
 
 Many traffic conditions are transitory (like stopping at a signal), so updating the graph very often wouldn’t scale well because it requires excessive processing. What could be the solution to this problem?
 
-Show Answer
+To detect transitory and normal conditions, we keep two copies of all relevant data (weights): one for normal conditions and the other for transitory conditions. That way, we won’t have to do excessive processing.
+
+\----------------
 
 * The **graph preprocessing service** recalculates the new paths on the updated segment graph. We’ve seen how the paths are updated continuously in the background based on the live data.
 

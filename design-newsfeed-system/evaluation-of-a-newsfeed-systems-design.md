@@ -13,29 +13,13 @@ Our non-functional requirements for the proposed newsfeed system design are scal
 
 ### Quiz on the newsfeed system’s design <a href="#quiz-on-the-newsfeed-systems-design-0" id="quiz-on-the-newsfeed-systems-design-0"></a>
 
-Test your understanding of the concepts related to the design of the newsfeed system with a quiz.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.28.07 AM.png" alt=""><figcaption></figcaption></figure>
 
-1
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.27.35 AM.png" alt=""><figcaption></figcaption></figure>
 
-Which component is responsible for storing relationships between users, their friends, and followers?
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.28.40 AM.png" alt=""><figcaption></figcaption></figure>
 
-A)
-
-The users database
-
-B)
-
-The graph database
-
-C)
-
-The posts database
-
-D)
-
-None of the above
-
-Reset QuizQuestion 1 of 40 attemptedSubmit Answer
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.29.30 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Summary <a href="#summary-0" id="summary-0"></a>
 

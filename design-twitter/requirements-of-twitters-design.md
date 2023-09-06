@@ -25,7 +25,7 @@ The following are the functional requirements of Twitter:
 * **Reliability**: All Tweets remain on Twitter. This means that Twitter never deletes its content. So there should be a promising strategy to prevent the loss or damage of the uploaded content.
 * **Consistency**: There’s a possibility that a user on the east coast of the US does not get an immediate status (like, reply, and so on.) update on the Tweet, which is liked or Retweeted by a user on the west coast of the US. However, the user on the west coast of the US needs an immediate status update on his like or reply. An effective technique is needed to offer rapid feedback to the user (who liked someone’s post), then to other specified users in the same region, and finally to all worldwide users linked to the Tweet.
 
-Non-functional requirements of Twitter
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 7.15.22 PM.png" alt=""><figcaption></figcaption></figure>
 
 Furthermore, we must identify which essential resources must be estimated in the Twitter design. We used Twitter as an example in our [Back-of-the-Envelope](https://www.educative.io/collection/page/10370001/4941429335392256/5711642666467328) chapter, so we won’t repeat that exercise here.
 
@@ -33,7 +33,7 @@ Furthermore, we must identify which essential resources must be estimated in the
 
 Twitter’s design utilizes the following building blocks that we discussed in the initial chapters.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTM2IiBoZWlnaHQ9IjE2OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Building blocks used in Twitter design
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 7.15.32 PM.png" alt=""><figcaption></figcaption></figure>
 
 * [**DNS**](../domain-name-system/introduction-to-domain-name-system-dns.md) is the service that maps human-friendly Twitter domain names to machine-readable IP addresses.
 * [**Load balancers**](../load-balancers/introduction-to-load-balancers.md) distribute the read/write requests among the respective services.

@@ -11,7 +11,7 @@ Primarily, the newsfeed system is responsible for the following two tasks:
 
 Let’s move to the high-level design of our newsfeed system. It consists of the above two essential parts, shown in the following figure:
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODUxIiBoZWlnaHQ9IjQ2MSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)High-level design of the Newsfeed system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.17.16 AM.png" alt=""><figcaption></figcaption></figure>
 
 Let’s discuss the main components shown in the high-level design:
 
@@ -73,7 +73,7 @@ The database relations for the newsfeed system are as follows:
 * **Feed\_item:** The data about posts created by users is stored in this relation.
 * **Media:** The information about the media content is stored in this relation.
 
-The database schema for the newsfeed system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.18.23 AM.png" alt=""><figcaption></figcaption></figure>
 
 We use a graph database to store relationships between users, friends, and followers. For this purpose, we follow the property graph model. We can think of a graph database consisting of two relational tables:
 
@@ -84,11 +84,11 @@ Therefore, we follow a relational schema for the graph store, as shown in the fo
 
 An alternative representation of a **User** can be shown in the graph database below. Where the `Users_ID` remains the same and attributes are stored in a JSON file format.
 
-Schema of the graph database to hold relationships between users
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.18.56 AM.png" alt=""><figcaption></figcaption></figure>
 
 The following figure demonstrates how graph can be represented using the relational schema:
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTQxIiBoZWlnaHQ9IjMyOSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)A graph between two users consisting of two vertices and an edge
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.19.58 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Detailed design <a href="#detailed-design-0" id="detailed-design-0"></a>
 
@@ -116,15 +116,17 @@ The following steps are performed in sequence to generate a newsfeed for Alice:
 
 The process is illustrated in the following figure:
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODExIiBoZWlnaHQ9IjQzMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)Working of the newsfeed generation service
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.20.28 AM.png" alt=""><figcaption></figcaption></figure>
 
-Point to Ponder
+**Question**
 
 **Question**
 
 The creation and storage of newsfeeds for each user in the cache requires an enormous amount of memory (step 5 in the above section). Is there any way to reduce this memory consumption?
 
-Show Answer
+A memory-efficient way would be to store just the mapping between users and their corresponding posts in a table in the cache, that is., `< Post_ID, User_ID>`. During the feed publishing phase, the system will retrieve posts from the post database and generate the newsfeed for a user who follows another user with `User_ID`.
+
+\----------------
 
 #### The newsfeed publishing service <a href="#the-newsfeed-publishing-service-0" id="the-newsfeed-publishing-service-0"></a>
 
@@ -136,15 +138,21 @@ The **newsfeed publishing service** fetches a list of post IDs from the newsfeed
 
 In the last step, the fully constructed newsfeed is sent to the client (Alice) using one of the fan-out approaches. The popular newsfeed and media content are also stored in CDN for fast retrieval.
 
-What is the problem with generating a newsfeed upon a user's request (also called live updates)?![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODExIiBoZWlnaHQ9IjM5MSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)The newsfeed publishing service in action
+What is the problem with generating a newsfeed upon a user's request (also called live updates)?
 
-Point to Ponder
+Suppose if our service receives billions of requests at once and the system starts generating live newsfeeds. This situation would put an enormous number of users on hold and could crash servers. To avoid this, we can assign dedicated servers that will continuously rank and generate newsfeeds and store them in the newsfeed database and memory. Therefore, upon a request for new posts from a user, our system will provide the pre-generated feeds.
+
+\----------------
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.22.20 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Question**
 
 How is the newsfeed of the friends and followers updated when a user creates a new post?
 
-Show Answer
+When a user, say Bob, creates a new post, it is stored in the post database and cache. In the next step, the **newsfeed generation service** generates a newsfeed for Bob’s friends and followers, and the newsfeed cache is updated. The updated newsfeed is delivered to the corresponding users on the next page/screen refresh event.
+
+\---------------
 
 #### The newsfeed ranking service <a href="#the-newsfeed-ranking-service-0" id="the-newsfeed-ranking-service-0"></a>
 
@@ -159,7 +167,7 @@ In our design, the **newsfeed ranking service** consists of these algorithms wor
 
 The ranking system considers all the above points to predict relevant and important posts for a user.
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODExIiBoZWlnaHQ9IjUxNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)The ranked newsfeeds are stored in the cache servers
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.23.17 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Posts ranking and newsfeed construction <a href="#posts-ranking-and-newsfeed-construction-0" id="posts-ranking-and-newsfeed-construction-0"></a>
 
@@ -173,7 +181,7 @@ The post database contains posts published by different users. Assume that there
 
 The following figure shows the top 4 posts published on Bob’s timeline:
 
-A newsfeed consisting of top 4 posts based on the relevance scores
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.24.40 AM.png" alt=""><figcaption></figcaption></figure>
 
 Newsfeed ranking with various machine learning and ranking algorithms is a computationally intensive task. In our design, the **ranking service** ranks posts and constructs newsfeeds. This service consists of big-data processing systems that might utilize specialized hardware like graphics processing units (GPUs) and tensor processing units (TPUs).
 
@@ -187,6 +195,6 @@ Newsfeed ranking with various machine learning and ranking algorithms is a compu
 
 The following figure combines all the services related to the detailed design of the newsfeed system:
 
-![](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTQxIiBoZWlnaHQ9IjYwMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4=)The detailed design of newsfeed system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.25.30 AM.png" alt=""><figcaption></figcaption></figure>
 
 In this lesson, we discussed the design of the newsfeed system, its database schema, and the newsfeed ranking system. In the next lesson, we’ll evaluate our system’s requirements.

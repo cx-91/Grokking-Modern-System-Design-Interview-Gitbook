@@ -24,9 +24,9 @@ We discussed the design, building blocks, components, and the entire workflow of
 
 From Google Maps, we were able to connect segments and meet the scalability challenge to process a large graph efficiently. The graph of the world had numerous nodes and vertices, and traversing them was time-consuming. Therefore, we divided the whole world into smaller segments/subgraphs to process and query them simultaneously. The segmentation helps us improve the scalability of the system.
 
-Each segment will be of the size 5×5 �����5×5 miles and will contain a list of places that exist within it. We only search a few segments to locate destinations that are close by. We can use a given location and defined radius to find all the nearby segments and identify sites that are close.
+Each segment will be of the size 5×5 miles and will contain a list of places that exist within it. We only search a few segments to locate destinations that are close by. We can use a given location and defined radius to find all the nearby segments and identify sites that are close.
 
-Partitioning the globe into small segments, where each segment has four coordinates (lat, long) and all segments hold the coordinates of different places
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.46.17 PM.png" alt=""><figcaption></figcaption></figure>
 
 Points to Ponder
 
@@ -34,9 +34,15 @@ Points to Ponder
 
 How will we find nearby places if we create a table for storing all places?
 
-Show Answer
+We can make a table of places that have `Place_ID` as a unique ID and store each place in it. The longitude and latitude columns help us specify the exact location. Indexing both of these columns can help us fetch data efficiently. We can specify each location as a pair of latitude (`M`) and longitude (`N`). We can also search for a place within a given radius of `R` by finding all the places between the latitude `M-R` and `M+R` and the longitude `N-R` and `N+R`. We can apply Dijkstra’s algorithm to find the distance between two points.
 
-**1 of 2**
+**Question 2**
+
+How efficient will our searching be when based on the table?
+
+We can have multiple lists of places within (`M-R`, `M+R`) and (`N-R`, `N+R`). It’ll be a challenge to handle concurrent requests. When queries that are used to fetch the places will be coming at a high rate for different segments, the response time and performance will be affected.
+
+\------------------
 
 We can store all the places in a table and uniquely identify a segment by having a `segment_ID`. We can index each segment in the database. Now, we have limited the number of segments we need to search, so the query will be optimized and return results quickly.
 
@@ -63,19 +69,19 @@ Let’s calculate how much memory we need.
 
 #### Search using segments <a href="#search-using-segments-0" id="search-using-segments-0"></a>
 
-A user may select a radius for searching places that aren’t present in a single segment. So, we need to combine multiple segments by [connecting the segments](https://www.educative.io/courses/grokking-modern-system-design-interview-for-engineers-managers/qZnBWyw9k9y#Connect-two-segments) to find locations within the specified radius—say, five miles.
+A user may select a radius for searching places that aren’t present in a single segment. So, we need to combine multiple segments by [connecting the segments](../design-google-maps/challenges-of-google-maps-design.md) to find locations within the specified radius—say, five miles.
 
 First, we constrain the number of segments. This reduces the graph size and makes the searching process optimizable. Then, we identify all the relevant locations, compute the distance from the searching point, and show it to the user.
 
-Searching for locations using segments
-
-Points to Ponder
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.49.16 PM.png" alt=""><figcaption></figcaption></figure>
 
 **Question**
 
 Can you identify a problem with the current approach?
 
-Show Answer
+Our locations are not evenly distributed across segments, and this approach may still take a long time to run on segments with a lot of places. For example, in a city like New York, we can have lots of places even within a small radius because it is a densely-populated area. And for less populated areas, the same radius might not have enough places, and we might need to expand our radius to find more.
+
+\---------------
 
 ### Dynamic segments <a href="#dynamic-segments-0" id="dynamic-segments-0"></a>
 
@@ -84,39 +90,43 @@ We solve the problem of uneven distribution of places in a segment by dynamicall
 1. How will we map the segments?
 2. How will we connect to other segments?
 
-We use a **QuadTree** to manage our segments. Each node contains the information of a segment. If the number of places exceeds 500, then we split that segment into four more child nodes and divide the places between them. In this way, the leaf nodes will be those segments that can’t be broken down any further. Each leaf node will have a list of places in it too.
+We use a **QuadTree(**_A QuadTree is a tree data structure in which each internal node has exactly four children. QuadTrees are the two-dimensional analog of octrees and are most often used to partition a two-dimensional space by recursively subdividing it into four quadrants or regions. The data associated with a leaf cell varies by application, but the leaf cell represents a “unit of interesting spatial information”. Source: Wikipedia_**)** to manage our segments. Each node contains the information of a segment. If the number of places exceeds 500, then we split that segment into four more child nodes and divide the places between them. In this way, the leaf nodes will be those segments that can’t be broken down any further. Each leaf node will have a list of places in it too.
 
 #### Search using a QuadTree <a href="#search-using-a-quadtree-1" id="search-using-a-quadtree-1"></a>
 
 We start searching from the root node and continue to visit the nodes to find our desired segment. We check every node to see if it has more child nodes. If a node has no more children, then we stop our search because that node is the required one. We also connect each child node with its neighboring nodes with a doubly-linked list. All the child nodes of all the parents nodes are connected through the doubly-linked list. This list allows us to find the neighboring segments when we can move forward and backward as per our requirement. After identifying the segments, we have the required `PlaceID` values of the places and we can search our database to find more details on them.
 
-Point to Ponder
-
 **Question**
 
 Is there an alternative approach to find the neighboring segments?
 
-Show Answer
+We can use the pointers of parent nodes to find the neighboring segments. In each node, we can keep a pointer that points towards the parent node. Every parent node has pointers to its children nodes, so we can use those to find the adjacent leaf nodes. We can extend our search by going up through the parent pointers.
+
+In the following illustration, node `F` can find its neighboring node, `G`, by first going to the parent node, `B`, and then to `G`.
+
+![](<../.gitbook/assets/Screenshot 2023-09-03 at 5.51.14 PM.png>)
+
+\----------------
 
 The following slides show how the process of searching for a place works. If a node has the places we need, we stop there. Otherwise, we explore more nodes until we reach our search radius. After finding the node, we query the database for information related to the places and return the desired ones.
 
-All the leaf nodes in the QuadTree are linked, just like in a doubly-linked list**1** of 4
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.51.38 PM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.52.03 PM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.52.27 PM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.52.45 PM.png" alt=""><figcaption></figcaption></figure>
 
 #### Storage space estimation for QuadTrees <a href="#storage-space-estimation-for-quadtrees-0" id="storage-space-estimation-for-quadtrees-0"></a>
 
 Let’s calculate the storage we need for keeping QuadTrees:
 
-* We store the `PlaceID`, `Latitude`, and `Longitude` for each place in the node. Each of these values is of the size 8 Bytes. For 500 million places, we need the following amount of storage for all places:
-  * (8+8+8)×106×500=12��(8+8+8)×106×500=12GB
-* We’ll have 500 places in a single node. So, for 500 million places, we’ll need 500�500=1�500500M​=1M leaf nodes.
-* The QuadTree with 1 million leaf nodes has approximately 1/3rd of the leaf nodes of the internal nodes (all the nodes up the leaf level), and each internal node has four pointers to its child nodes. If we’ll assume 8 Bytes for each pointer, then we’ll need 1�∗1/3∗4∗8=10.67��1M∗1/3∗4∗8=10.67MB of space for the internal nodes.
-* We can get the total space needed to store all the internal nodes by adding 12��12GB and 10.67��10.67MB, that is, 12.01��12.01GB approximately.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.53.18 PM.png" alt=""><figcaption></figcaption></figure>
 
 We can easily store a QuadTree on a server.
 
 Let’s try the following calculator to calculate the storage needed for a QuadTree:
-
-
 
 | PlaceID, Latitude, and Longitude (Bytes)     | 24     |
 | -------------------------------------------- | ------ |
@@ -144,13 +154,13 @@ So, we’ll opt for partitioning on the basis of places. Moreover, we’ll also 
 
 Consider a scenario where multiple people in the same radius place a search request. If we have a single QuadTree, it’ll affect the availability of the users. So, we can’t rely on a single QuadTree. To cater to this problem, we replicate our QuadTrees on multiple servers to ensure availability. This allows us to distribute the read traffic and decrease the response time. QuadTrees are built on a server, so we can use the server ID as a key to identify the server on which the QuadTree is present. The value is the list of places that the QuadTree holds. The key-value store eases the rebuilding of the QuadTree in case we lose it.
 
-Point to Ponder
-
 **Question**
 
 How will the leader-follower approach help us in replication?
 
-Show Answer
+We’ll have a single leader and two followers. The leader will have the QuadTree and it’ll handle all the write requests. It’ll update the followers about any change made to the QuadTrees synchronously, so there’ll be a chance of delay. The followers will handle all the read requests. In case a follower dies, we’ll choose another follower and replicate the data to it. If the leader is down, we‘ll choose any of the followers to step in as the leader. This way, we’ll be able to replicate our QuadTrees onto three servers.
+
+\--------------
 
 #### Insert a new place <a href="#insert-a-new-place-0" id="insert-a-new-place-0"></a>
 
@@ -168,7 +178,7 @@ We added a few new components to our design. We introduced caches to store popul
 
 The updated design of our system is shown below:
 
-Updated Yelp design
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 5.53.59 PM.png" alt=""><figcaption></figcaption></figure>
 
 ### Evaluation <a href="#evaluation-0" id="evaluation-0"></a>
 

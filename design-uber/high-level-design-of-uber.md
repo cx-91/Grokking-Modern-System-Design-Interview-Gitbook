@@ -13,13 +13,13 @@ Before diving deep into the design, let’s understand how our application works
    * The driver accepts the request, and status information is modified on both the rider’s and the driver’s applications. The rider finds that they have successfully matched and obtains the driver’s information.
    * The driver refuses the ride request. The rider restarts from step 2 and rematches to another driver.
 
-The rider is yet to open the application. The driver constantly updates their location**1** of 7
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 7.05.06 PM.png" alt=""><figcaption></figcaption></figure>
 
 ### High-level design of Uber <a href="#high-level-design-of-uber-0" id="high-level-design-of-uber-0"></a>
 
 At a high level, our system should be able to take requests for a ride from the rider and return the matched driver information and trip information to the rider. It also regularly takes the driver’s location. Additionally, it returns the trip and rider information to the driver when the driver is matched to a rider.
 
-High-level design
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 7.05.23 PM.png" alt=""><figcaption></figcaption></figure>
 
 ### API design <a href="#api-design-0" id="api-design-0"></a>
 
@@ -32,8 +32,6 @@ We won’t repeat the description of repeating parameters in the following APIs.
 ```
 updateDriverLocation(driverID, oldlat, oldlong, newlat, newlong )
 ```
-
-###
 
 | Parameter  | Description                          |
 | ---------- | ------------------------------------ |
@@ -51,8 +49,6 @@ The `updateDriverLocation` API is used to send the driver’s coordinates to the
 findNearbyDrivers(riderID, lat, long)
 ```
 
-###
-
 | Parameter | Description                |
 | --------- | -------------------------- |
 | `riderID` | The ID of the rider        |
@@ -66,8 +62,6 @@ The `findNearbyDrivers` API is used to send the location of the rider for whom w
 ```
 requestRide(riderID, lat, long, dropOfflat,dropOfflong, typeOfVehicle)
 ```
-
-###
 
 | Parameter       | Description                                                                          |
 | --------------- | ------------------------------------------------------------------------------------ |
@@ -85,8 +79,6 @@ The `requestRide` API is used to send the location of the rider and the type of 
 showETA(driverID, eta)
 ```
 
-###
-
 | Parameter | Description                                 |
 | --------- | ------------------------------------------- |
 | `eta`     | The estimated time of arrival of the driver |
@@ -99,8 +91,6 @@ The `showEta` API is used to show the estimated time of arrival to the rider.
 confirmPickup(driverID, riderID, timestamp)
 ```
 
-###
-
 | Parameter   | Description                                      |
 | ----------- | ------------------------------------------------ |
 | `timestamp` | The time at which the driver picked up the rider |
@@ -112,8 +102,6 @@ The `confirmPickup` API is used to determine when the driver has picked up the r
 ```
 showTripUpdates(tripID, riderID, driverID, driverlat, driverlong, time_elapsed, time_remaining)
 ```
-
-###
 
 | Parameter        | Description                                                                         |
 | ---------------- | ----------------------------------------------------------------------------------- |

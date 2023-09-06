@@ -4,11 +4,11 @@
 
 **Uber** is an application that provides ride-hailing services to its users. Anyone who needs a ride can register and book a vehicle to travel from source to destination. Anyone who has a vehicle can register as a driver and take riders to their destination. Drivers and riders can communicate through the Uber app on their smartphones.
 
-Car en route to get a rider**1** of 7
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 6.55.29 PM.png" alt=""><figcaption></figcaption></figure>
 
 The illustration below shows the number of active users of Uber from the start of 2017 to 2020 (source: Statista):
 
-Monthly number of Uber's active users worldwide from 2017 to 2020(by quarter)
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 6.55.46 PM.png" alt=""><figcaption></figcaption></figure>
 
 ### How will we design Uber? <a href="#how-will-we-design-uber-0" id="how-will-we-design-uber-0"></a>
 

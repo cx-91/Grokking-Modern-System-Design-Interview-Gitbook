@@ -14,7 +14,7 @@ The functional requirements of our system are as follows.
 * **Recommend the fastest route**: Given the source and destination (place names in text), the system should recommend the optimal route by distance and time, depending on the type of transportation.
 * **Give directions**: Once the user has chosen the route, the system should list directions in text format, where each item in the list guides the user to turn or continue in a specific direction to reach the destination.
 
-Google Maps functional requirements
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 11.42.29 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Non-functional requirements <a href="#non-functional-requirements-0" id="non-functional-requirements-0"></a>
 
@@ -25,7 +25,7 @@ The non-functional requirements of our system are as follows.
 * **Less response time**: It shouldn’t take more than two or three seconds to calculate the ETA and the route, given the source and the destination points.
 * **Accuracy**: The ETA we predict should not deviate too much from the actual travel time.
 
-Non-functional requirements of Google maps
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 11.42.54 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Note:** We’re not getting into the details of how we get the data on roads and layout. Government agencies provide maps, and in some places, Google itself drives mapping vehicles to find roads and their intersection points. Road networks are modeled with a graph data structure, where intersection points are the **vertices**, and the roads between intersections are the **weighted edges**.
 
@@ -39,7 +39,7 @@ A graph spanning the whole world network
 
 * **ETA computation**: In an ideal situation with empty roads, it’s straightforward to compute ETA using the distance and the speed of the vehicle we want to ride on. However, we cannot ignore factors like the amount of traffic on the roads and road conditions, which affect the ETA directly. For example, a road under construction, collisions, and rush hours all might slow down traffic. Quantifying the factors above to design our system is not trivial. Therefore, we’ll, categorize the factors above in terms of traffic load to complete our design.
 
-Factors affecting the ETA computation
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 11.43.09 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Resource estimation <a href="#resource-estimation-0" id="resource-estimation-0"></a>
 
@@ -54,9 +54,7 @@ To estimate the number of servers, we need to know how many daily active users a
 
 The number of servers required has been calculated using the below formula:
 
-������ �� ������ ������������� ℎ������ ��� ������=4� �������requests handled per serverNumber of active users​=4K servers
-
-Number of servers required for Google Maps
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 11.43.42 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Storage estimation <a href="#storage-estimation-0" id="storage-estimation-0"></a>
 
@@ -66,9 +64,7 @@ Google Maps is essentially a system with a one-time storage requirement. The roa
 
 As a standard practice, we have to estimate the bandwidth required for the incoming and outgoing traffic of our system. Most of the bandwidth requirements for Google Maps are due to requests sent by users. Therefore, we’ve devised the following formula to calculate bandwidth:
 
-�������������ℎ=�������������\_������×����������\_����Totalbandwidth​=Totalrequests\_second​×Totalquery\_size​
-
-The �������������\_������Totalrequests\_second​ represents the number of requests per second, whereas the ����������\_����Totalquery\_size​ represents the size of each request.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 11.44.16 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Incoming traffic**
 
@@ -79,7 +75,7 @@ To estimate the incoming query traffic bandwidth, we assume the following number
 
 Using the assumptions above, we can estimate the total number of requests per second on Google Maps using the following formula:
 
-�������������\_������=����� ������ �����×�����������\_����24×60×60=18,518 �������� ��� ������.Totalrequests\_second​=24×60×60Daily active users×Requestsper\_user​​=18,518 requests per second.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 11.44.45 AM.png" alt=""><figcaption></figcaption></figure>
 
 We can calculate the incoming query traffic bandwidth required by Google Maps by inserting the request per second calculated above and the size of each request in the aforementioned bandwidth formula.
 
@@ -108,16 +104,18 @@ We can calculate the bandwidth required for outgoing traffic using the same form
 
 Show Detailed CalculationsSummarizing the bandwidth requirements for Google Maps
 
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 11.45.36 AM (1).png" alt=""><figcaption></figcaption></figure>
+
 ### Building blocks we will use <a href="#building-blocks-we-will-use-0" id="building-blocks-we-will-use-0"></a>
 
 Now that we’ve completed our estimates of resources required, let’s identify the building blocks that will be an integral part of our design for the Google Maps system. Below, we have the key building blocks:
 
-Building blocks used in the high-level and detailed design
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-03 at 11.46.46 AM.png" alt=""><figcaption></figcaption></figure>
 
-* [**Load balancers**](https://www.educative.io/collection/page/10370001/4941429335392256/4521972679049216) are necessary to distribute user requests among different servers and services.
-* [**Databases**](https://www.educative.io/collection/page/10370001/4941429335392256/4901035478351872) are required to store data in the form of a graph along with metadata information.
-* [**Distributed search**](https://www.educative.io/collection/page/10370001/4941429335392256/5400897294696448) is needed to search different places on the map.
-* [**A pub-sub system**](https://www.educative.io/collection/page/10370001/4941429335392256/4996814243889152) is required for generating and responding to important events during navigation and notifying the corresponding services.
-* [**A key-value store**](https://www.educative.io/collection/page/10370001/4941429335392256/4747701493432320) is also used to store some metadata information.
+* [**Load balancers**](../load-balancers/introduction-to-load-balancers.md) are necessary to distribute user requests among different servers and services.
+* [**Databases**](../databases/introduction-to-databases.md) are required to store data in the form of a graph along with metadata information.
+* [**Distributed search**](../distributed-search/system-design-the-distributed-search.md) is needed to search different places on the map.
+* [**A pub-sub system**](../pub-sub/system-design-the-pub-sub-abstraction.md) is required for generating and responding to important events during navigation and notifying the corresponding services.
+* [**A key-value store**](../key-value-store/system-design-the-key-value-store.md) is also used to store some metadata information.
 
 Besides the building blocks mentioned above, other components will also be required for designing our maps system. These components will be discussed in the design lessons. We are now ready to explore the system and API design of Google Maps.

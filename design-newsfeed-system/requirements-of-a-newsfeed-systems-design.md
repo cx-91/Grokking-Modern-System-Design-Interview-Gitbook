@@ -25,15 +25,13 @@ Let’s assume the platform for which the newsfeed system is designed has 1 bill
 
 Let’s assume that each daily active user opens the application (or social media page) 10 times a day. The total number of requests per day would be:
 
-500�×10=5500M×10=5 billions request per day ≈58�≈58K requests per second.
-
-Traffic estimation for the newsfeed system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.13.51 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Storage estimation <a href="#storage-estimation-0" id="storage-estimation-0"></a>
 
 Let’s assume that the feed will be generated offline and rendered upon a request. Also, we’ll precompute the top 200 posts for each user. Let’s calculate storage estimates for users’ metadata, posts containing text, and media content.
 
-1.  **Users’ metadata storage estimation:** Suppose the storage required for one user’s metadata is 50 KB. For 1 billion users, we would need 1�×50��=50��1B×50KB=50TB.
+1.  **Users’ metadata storage estimation:** Suppose the storage required for one user’s metadata is 50 KB. For 1 billion users, we would need 1B×50KB=50TB.
 
     We can tweak the estimated numbers and calculate the storage for our desired numbers in the following calculator:
 
@@ -46,16 +44,9 @@ Let’s assume that the feed will be generated offline and rendered upon a reque
 
 2.  **Textual post’s storage estimation:** All posts could contain some text, we assume it’s 50KB on average. The storage estimation for the top 200 posts for 500 million users would be:
 
-    200×500�×50��=5��200×500M×50KB=5PB
-3.  **Media content storage estimate:** Along with text, a post can also contain media content. Therefore, we assume that 1/5�ℎ1/5th posts have videos and 4/5�ℎ4/5th include images. The assumed average image size is 200KB and the video size is 2MB.
+    200×500M×50KB=5PB
 
-    Storage estimate for 200 posts of one user: (200×2��×15)+(200×200��×45)=80��+32��=112��(200×2MB×51​)+(200×200KB×54​)=80MB+32MB=112MB
-
-    Total storage required for 500 million users’ posts: 112��×500�=56��112MB×500M=56PB
-
-    So we’ll need at least 56PB of blob storage to store the media content.
-
-Storage required for 500 million active users per day (each with approx. 200 posts) by newsfeed system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.15.01 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Storage Estimation of Posts Containing Text and Media Content.**
 
@@ -68,11 +59,9 @@ Storage required for 500 million active users per day (each with approx. 200 pos
 
 #### Number of servers estimation <a href="#number-of-servers-estimation-0" id="number-of-servers-estimation-0"></a>
 
-Considering the above traffic and storage estimation, let’s estimate the required number of servers for smooth operations. Recall that a single typical server can serve 8000 requests per second (RPS). Since our system will have approximately 500 million daily active users (DAU). Therefore, according to estimation in [Back-of-the-Envelope Calculations](https://www.educative.io/collection/page/10370001/4941429335392256/4766860129599488) chapter, the number of servers we would require is:
+Considering the above traffic and storage estimation, let’s estimate the required number of servers for smooth operations. Recall that a single typical server can serve 8000 requests per second (RPS). Since our system will have approximately 500 million daily active users (DAU). Therefore, according to estimation in [Back-of-the-Envelope Calculations](../back-of-the-envelope-calculations/page-2.md) chapter, the number of servers we would require is:
 
-������������ServerRPSDAU​ =500�8000=62500=8000500M​=62500 servers.
-
-Number of servers required for the newsfeed system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.15.52 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Servers Estimation**
 
@@ -85,7 +74,7 @@ Number of servers required for the newsfeed system
 
 The design of newsfeed system utilizes the following building blocks:
 
-The building blocks to design a newsfeed system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 12.16.14 AM.png" alt=""><figcaption></figcaption></figure>
 
 * [**Database(s)**](../databases/introduction-to-databases.md) is required to store the posts from different entities and the generated personalized newsfeed. It is also used to store users’ metadata and their relationships with other entities, such as friends and followers.
 * [**Cache**](../distributed-cache/system-design-the-distributed-cache.md) is an important building block to keep the frequently accessed data, whether posts and newsfeeds or users’ metadata.
