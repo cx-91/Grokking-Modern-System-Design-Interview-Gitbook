@@ -22,7 +22,7 @@ Most modern services are designed in such a way that failures are contained, and
 * **Communication medium failure**: Such failures occur when one component or service of a system can’t reach the other internal or external entities.
 * **Secondary storage failure**: In such failures, the secondary storage or replicas are down. The data in these nodes becomes inaccessible, so primary nodes need to generate another replica to ensure reliability and fault tolerance.
 
-Types of failure in a distributed system
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.42.30 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Vantage points <a href="#vantage-points-0" id="vantage-points-0"></a>
 
@@ -38,6 +38,6 @@ With the emergence of a handful of service providers over the last decade, criti
 
 > **Note:** The broader concept here is to use independent failure domains. A **failure domain** is a concept where anything failing inside a domain or network shouldn’t affect other components and services in other domains. At times, we say that two domains are independent if they’re outside the blast radius of each other.
 
-Importance of independent service
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.42.47 AM.png" alt=""><figcaption></figcaption></figure>
 
 In the following lessons, we’ll discuss the failures of well-known services by giant companies, the causes of failures, and what mitigation techniques can be used to avoid these failures. Although failures are a great way to learn what went wrong and what the original designers could do to avoid such failures, we’d like to prevent them from occurring at all.

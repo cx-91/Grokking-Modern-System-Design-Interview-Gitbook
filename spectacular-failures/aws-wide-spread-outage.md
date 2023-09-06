@@ -21,7 +21,19 @@ Outages like the one above remind us of famous Lamport’s quip: “A distribute
 
 The following slides show the series of events that led to the outage.
 
-The high-level infrastructure of Amazon. The main AWS network connects the internal network using networking device**1** of 7
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 2.48.19 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 2.48.30 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 2.48.40 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 2.48.50 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 2.49.00 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 2.49.09 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 2.49.19 AM.png>)
 
 ### Analysis <a href="#analysis-0" id="analysis-0"></a>
 
@@ -38,10 +50,12 @@ The high-level infrastructure of Amazon. The main AWS network connects the inter
 * **Multiple cloud computing providers**: Organizations can replicate their operations among many cloud computing providers so that no single failure knocks them out of action. However, this is easier said than done. An alternative approach is to employ different regions of the same provider for various purposes.
 * **Testing**: Carrying out proper testing and identifying the potential bugs are both essential. In this case, overwhelming the network devices resulted in communication delays between these networks.
 
-Point to Ponder
-
 **Question**
 
 What can we do to safeguard against the series of faults experienced by Amazon?
 
-Show Answer
+We suggest the following solutions:
+
+* End-to-end transparency at each layer gives the information required to run the sites and services properly.
+* Building an application across multiple clouds or AWS regions would have made it easier for the affected customers to recover quickly.
+* There’s a need to uncouple services to an extreme extent to eliminate cross-dependency issues.

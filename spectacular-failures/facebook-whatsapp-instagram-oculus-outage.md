@@ -18,7 +18,15 @@ The following sequence of events led to the outage of Facebook and its accompani
 
 The slides below depict the events in pictorial form.
 
-Facebook’s high-level architecture**1** of 5
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 2.44.41 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 2.44.53 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 2.45.05 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 2.45.15 AM.png>)
+
+![](<../.gitbook/assets/Screenshot 2023-09-06 at 2.45.23 AM.png>)
 
 ### Analysis <a href="#analysis-0" id="analysis-0"></a>
 
@@ -45,4 +53,9 @@ Point to Ponder
 
 What can we do to safeguard against the kinds of faults experienced by Facebook?
 
-Show Answer
+Some possible solutions can look like the following:
+
+* Network verification has recently gained momentum and has shown promise in catching bugs early on. Such tools use an abstract model of the infrastructure.
+* There can be more than one layer of auditing. Second layers might use a simulator to make sure that after the configuration changes, critical network infrastructures remain available from multiple global vantage points.
+* Every effort should be taken to reduce the scope of a configuration change to avoid cascading effects.
+* Critical infrastructure might be programmed in such a way that if something bad happens, it could return to the last known good state. This is easier said than done owing to the sheer number of components.

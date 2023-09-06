@@ -16,17 +16,38 @@ We’ve utilized the following set of components to complete our design:
 
 The illustration below provides a depiction of how different components and building blocks coordinate to provide the service.
 
-A detailed design of the collaborative document editing service
-
-Quiz
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.33.43 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Question 1**
 
 Why should we use WebSockets instead of HTTP methods? Why are WebSockets optimal for this kind of communication?
 
-Show Answer
+WebSockets offer us the following characteristics:
 
-**1 of 3**
+* They have a long-lasting connection between clients and servers.
+* They enable full-duplex communication. That is, we can simultaneously communicate from client to server and vice versa.
+* There’s no overhead of HTTP request or response headers.
+
+The lightweight nature of WebSockets reduces the latency and allows the server to push changes to clients as soon as they are available.
+
+**Question 2**
+
+The design above depicts a microservices architecture instead of a monolithic one. Why is that suitable here?
+
+Microservices are preferred for the following reasons:
+
+* Development is simpler and faster.
+* Each service within the architecture is isolated. That is, failure of one service doesn’t produce a cascading effect.
+* Different components may have different programming language requirements for various reasons. Microservices give the freedom of using different programming languages for different components.
+* Because of microservices’ modular nature, it’s easy to scale and update services individually.
+
+**Question 3**
+
+What queuing algorithm is best suited for the operations queue in the design above?
+
+First in, first out (FIFO) with strict ordering is best suited for the operations queue so that operations are performed in the order requested by the users.
+
+\--------------------
 
 #### Workflow <a href="#workflow-0" id="workflow-0"></a>
 
@@ -40,11 +61,19 @@ In the following steps, we’ll explain how different requests will get entertai
 
 > **Note:** Our use of WebSockets speeds up the overall performance and enables us to facilitate chatting between users who are collaborating on the same document. If we combine WebSockets with a Redis-like cache, it’s possible to develop an effective chatting feature.
 
-Quiz
-
 **Question 1**
 
 We’re implementing view counters through an asynchronous method, which means that the number of views of a document may be outdated. Could we use sharded counters or Redis counters to get effective results?
 
-Show Answer
+Both solutions (sharded counters or Redis counters) will work, though they seem excessive for counting views on documents.
+
+To provide near real-time view counting, we can use a streaming pub-sub system, such as Kafka, where a topic can be based on a document identifier.
+
+**Question 2**
+
+The detailed design above doesn’t depict where the view counter data is saved. What would be suitable storage for the view counter, and what design changes will have to be made?
+
+For scalability purposes, it’s suitable to store the view counter data in NoSQL because the read/write latency of NoSQL is generally lower.
+
+To complete the design, we’ll have to connect the view counter with the NoSQL database.
 

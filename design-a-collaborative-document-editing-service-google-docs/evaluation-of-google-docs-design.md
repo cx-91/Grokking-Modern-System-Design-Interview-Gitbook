@@ -8,13 +8,15 @@ We’ve looked at how we’ll achieve strong consistency for conflict resolution
 
 We’re also interested in keeping the document state consistent across different servers in a data center. To replicate an updated state of a document within the same data center at the same time, we can use peer-to-peer protocols like Gossip protocol. Not only will this strategy improve consistency, it will also improve availability.
 
-Quiz
-
 **Question**
 
 Why should we use strong consistency instead of eventual consistency for conflict resolution in a collaborative document editing service?
 
-Show Answer
+From Amazon’s Dynamo system, we learn that if we use eventual consistency for conflict resolution, we might have multiple versions of a document that are eventually reconciled, either automatically or manually. In the case of automatic reconciliation, the document might update abruptly, which defeats the purpose of collaboration. The second case, manual resolution, is tedious labor that we want to avoid.
+
+Therefore, we use strong consistency for conflict resolution, and the logically centralized server provides the final order of events to all clients. We use a replicated operations queue so that even if our ordering service dies, it can easily restart on a new server and resume where it left off. Clients might encounter short service unavailability while the failed component is being respawned.
+
+\---------------------
 
 ### Latency <a href="#latency-0" id="latency-0"></a>
 

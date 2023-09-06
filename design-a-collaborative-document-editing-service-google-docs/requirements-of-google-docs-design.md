@@ -16,7 +16,7 @@ The activities a user will be able to perform using our collaborative document e
 
 A real-world document editor also has to have functions like document creation, deletion, and managing user access. We focus on the core functionalities listed above, but we also discuss the possibility of other functionalities in the lessons ahead.
 
-Functional and non-functional requirements of collaborative editing service
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.29.57 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Non-functional Requirements <a href="#non-functional-requirements-0" id="non-functional-requirements-0"></a>
 
@@ -55,9 +55,9 @@ Considering that each user is able to create one document a day, there are a tot
 | Storage required for video content per day   | f4.8  | TB      |
 | Total storage required per day               | f32   | TB      |
 
-See Detailed CalculationsStorage required by online collaborative document editing service per day
+See Detailed Calculations
 
-Total storage required for one day is as follows: 8+19.2+4.8=32 ���8+19.2+4.8=32 TBs per day
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.30.32 AM.png" alt=""><figcaption></figcaption></figure>
 
 > **Note:** Although our functional requirements state that we should keep a history of documents, we didn’t include storage requirements for historical data for the sake of brevity.
 
@@ -65,7 +65,7 @@ Total storage required for one day is as follows: 8+19.2+4.8=32 ���8+19.2+
 
 **Incoming traffic**: Assuming that 32 TB of data are uploaded per day to the network of a collaborative editing service, the network requirement for incoming traffic will be the following:
 
-32 ��86400×8=3����8640032 TB​×8=3Gbps approximately
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.31.11 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Outgoing traffic**: To estimate outgoing traffic bandwidth, we’ll assume the number of documents viewed by a user each day. Let’s consider that a typical user views five documents per day. Then, the following calculations apply:
 
@@ -83,15 +83,15 @@ Total storage required for one day is as follows: 8+19.2+4.8=32 ���8+19.2+
 | Bandwidth for video content per second            | f2.22  | Gbps                      |
 | Total outgoing bandwidth required                 | f14.81 | Gbps                      |
 
-See Detailed CalculationsSummarizing the bandwidth requirement
+See Detailed Calculations
 
-> **Note:** The total bandwidth required is equal to the sum of incoming and outgoing traffic. =3+14.7≈18����=3+14.7≈18Gbps approximately.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.31.44 AM.png" alt=""><figcaption></figcaption></figure>
 
 #### Number of servers estimation <a href="#number-of-servers-estimation-0" id="number-of-servers-estimation-0"></a>
 
 Let’s assume that one user is able to generate 100 requests per day. Keeping in mind the number of daily active users, the number of requests per second (RPS) will be the following:
 
-100×80�=8000�86400=92.6 �ℎ�������/���100×80M=864008000M​=92.6 thousands/sec.
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.31.59 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Number of RPS**
 
@@ -104,11 +104,7 @@ We discussed in the [Back of the Envelope lesson](../back-of-the-envelope-calcul
 
 To estimate the number of servers required to fulfill the requests of 80 million users, we simply divide the number of users by the number of requests a server can handle. In the “Back of the Envelope” lesson, we discussed that our reference server can handle 8,000 requests per second. So, we see the following:
 
-������ �� ����� ������ ������������ ℎ������ ��� ������=80�8000=10,000Queries handled per secondNumber of daily active users​=800080M​=10,000
-
-Informally, the equation above assumes that one server can handle 8,000 users.
-
-Number of servers required
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.32.53 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Building blocks we will use <a href="#building-blocks-we-will-use-0" id="building-blocks-we-will-use-0"></a>
 

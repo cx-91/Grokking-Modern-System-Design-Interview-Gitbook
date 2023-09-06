@@ -2,6 +2,8 @@
 
 **Amazon Kinesis** allows us to aggregate, process, and analyze real-time streaming data to get timely insights and react quickly to the information it provides. It continuously captures gigabytes of data from hundreds of thousands of sources per second. The Kinesis service’s frontend handles authentication, throttling, and distributes workloads to its back-end “workhorse” cluster via database sharding. On November 25, 2020, the Amazon Kinesis service was disrupted in the US-East-1 (Northern Virginia) region, affecting thousands of other third-party services. The failure was significant enough to take out a large portion of Internet services.
 
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.45.55 AM.png" alt=""><figcaption></figcaption></figure>
+
 ### Sequence of events <a href="#sequence-of-events-0" id="sequence-of-events-0"></a>
 
 * According to Amazon, the event was triggered by adding a small capacity to the AWS front-end fleet of servers, scheduled from 2:44 a.m. PST to 3:47 a.m. PST.
@@ -11,7 +13,7 @@
   * Kinesis Data Streams is used by Amazon Cognito to gather and analyze API usage patterns. Because of the long-running issue with Kinesis Data Streams, a hidden error in the buffering code—which is required for Cognito services—caused the Cognito web servers to start blocking on the backlogged Kinesis Data Stream buffers. As a result, Cognito customers witnessed an increase in API failures and latencies for Cognito user pools and identity pools, making it impossible for external users to authenticate or receive temporary AWS credentials.
   * CloudWatch uses Kinesis Data Streams to process metrics and log data. The `PutMetricData` and `PutLogEvents` APIs in CloudWatch encountered higher error rates and latencies, and alerts were set to `INSUFFICIENT DATA`. The great majority of metrics were unable to be processed due to higher error rates and latencies. When CloudWatch was experiencing these greater issues, internal and external clients couldn’t persist all metric data to the CloudWatch service.
 
-Sequence of events
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.46.11 AM.png" alt=""><figcaption></figcaption></figure>
 
 * Due to the problems with CloudWatch metrics, two services were also impacted. First, AutoScaling policies that rely on CloudWatch measurements suffered delays. Second, Lambda experienced the effect. Currently, posting metric data to CloudWatch is required as a part of Lambda function invocation. If CloudWatch is unavailable, Lambda metric agents are meant to buffer metric data locally for a period of time. The metric data buffering became so large that it generated memory congestion on the underlying service hosts utilized for Lambda function invocations, leading to higher error rates.
 * Increased API failures and event processing delays plagued CloudWatch Events and EventBridge. EventBridge is used by Elastic Container Service (ECS) and Elastic Kubernetes Service (EKS) to drive internal processes for managing client clusters and jobs. This has an impact on new cluster provisioning, existing cluster scaling, and task deprovisioning.​​
@@ -35,12 +37,16 @@ Sequence of events
 * **Front-end fleet changes**: Several changes are required to radically improve the cold start time for the front-end fleet. Moreover, the front-end server cache needs to be moved to a dedicated fleet.
 * **Avoiding recurrent failures**: To avoid recurrent failures in the future, extensive AWS services, like CloudWatch and others, must be moved to a separate, partitioned front-end fleet.
 
-Lessons learned during the Kinesis outage
-
-Point to Ponder
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.47.10 AM.png" alt=""><figcaption></figcaption></figure>
 
 **Question**
 
 What possible measures should Amazon have adopted to safeguard against the kind of failures they faced in Kinesis Data Streams?
 
-Show Answer
+#### Possible solutions
+
+* Dividing the region into independent failure domains would have reduced the blast radius of the event and made it possible for the production team to quickly recover from the problem.
+* They should have a system like Facebook’s Resource Allowance System for capacity reservation at the time of planned and unplanned events.
+* Building an application across multiple clouds or AWS regions would have made it easier for the affected customers to recover quickly.
+* There’s a need to uncouple services to an extreme extent to eliminate cross-dependency issues.
+* Failures in a complex system are inevitable. However, some important services like the status dashboard should be hosted on different servers, either inside the service or in some third-party’s infrastructure.

@@ -10,7 +10,7 @@ A **document** is a composition of characters in a specific order. Each characte
 
 The job of the text or document editor is to perform operations like `insert()`, `delete()`, `edit()`, and more on the characters within the document. A depiction of a document and how the editor will perform these operations is below.
 
-How a document editor performs different operations
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.36.04 AM.png" alt=""><figcaption></figcaption></figure>
 
 ### Concurrency issues <a href="#concurrency-issues-0" id="concurrency-issues-0"></a>
 
@@ -20,7 +20,7 @@ Collaboration on the same document by different users can lead to concurrency is
 
 Let’s consider a scenario where two users want to add some characters at the same positional index. Below, we’ve depicted how two users modifying the same sentence can lead to conflicting results:
 
-How two users modifying the same text can lead to concurrency issues
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.36.28 AM.png" alt=""><figcaption></figcaption></figure>
 
 As shown above, two users are trying to modify the same sentence, “Educative by developers.” Both users are performing `insert()` at index `10`. The two possibilities are as follows:
 
@@ -33,7 +33,7 @@ This example shows that operations applied in a different order don’t hold the
 
 Let’s look at another simple example where two users are trying to delete the same character from a word. Let’s use the word “EEDUCATIVE.” Because the word has an extra “E,” both the users would want to remove the extra character. Below, we see how an unexpected result can occur:
 
-How deleting the same character can lead to unexpected changes
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.36.57 AM.png" alt=""><figcaption></figcaption></figure>
 
 This second example shows that different users applying the same operation won’t be idempotent. So, conflict resolution is necessary where multiple collaborators are editing the same portion of the document at the same time.
 
@@ -54,7 +54,9 @@ Let’s discuss two leading technologies that are used for conflict resolution i
 
 OT performs operations using the positional index method to resolve conflicts, such as the ones we discussed above. OT resolves the problems above by holding commutativity and idempotency.
 
-Ensuring commutativity**1** of 2
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.39.33 AM.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.39.51 AM.png" alt=""><figcaption></figcaption></figure>
 
 Collaborative editors based on OT are consistent if they have the following two properties:
 
@@ -63,7 +65,20 @@ Collaborative editors based on OT are consistent if they have the following two 
 
 The properties above are a part of the **CC consistency model**, which is a model for consistency maintenance in collaborative editing.
 
+\--------------------
+
 Consistency Models in OT
+
+The research community has proposed various consistency models over the years. Some of them are specific to collaborative editing, while others are specific to OT algorithms. The key consistency models are the following:
+
+* CC model: As we defined above, this includes causality preservation and convergence.
+* CCI model: This includes causality preservation, convergence, and intention preservation.
+
+Other models include the CSM (**c**ausality, **s**ingle-operation effects, and **m**ulti-operation effects) model and the CA (**c**ausality and **a**dmissibility) model.
+
+Various consistency models are suggested, and usually, the newer ones are supersets of the earlier ones. Because there are so many proposed algorithms, discussing them is beyond the scope of our lesson. Interested readers can find more details [here](https://dl.acm.org/doi/pdf/10.1145/289444.289469).
+
+\------------------
 
 OT has two disadvantages:
 
@@ -92,7 +107,7 @@ The `SiteID` uniquely identifies a user’s site requesting an operation with a 
 
 The example below depicts that a user from site ID `123e4567-e89b-12d3` is inserting a character with a value of `A` at a `PositionalIndex` of `1.5`. Although a new character is added, the positional indexes of existing characters are preserved using fractional indices. Therefore, the order dependency between operations is avoided. As shown below, an `insert()` between `O` and `T` didn’t affect the position of `T`.
 
-Preventing order dependency between operations
+<figure><img src="../.gitbook/assets/Screenshot 2023-09-06 at 2.41.02 AM.png" alt=""><figcaption></figcaption></figure>
 
 CRDTs ensure strong consistency between users. Even if some users are offline, the local replicas at end users will converge when they come back online.
 
@@ -100,14 +115,18 @@ Although well-known online editing platforms like Google Docs, Etherpad, and Fir
 
 > **Note:** OT and CRDTs are good solutions for conflict resolution in collaborative editing, but our use of WebSockets makes it possible to highlight a collaborator’s cursor. Other users will anticipate the position of a collaborator’s next operation and naturally avoid conflict.
 
-Quiz
-
 **Question 1**
 
 Why can’t we use locks to synchronize between users?
 
-Show Answer
+Locks require us to segment documents into small sections where users could lock a portion and edit it. This will help developers come up with an easy solution and avoid complexities like OT and CRDTs. However, this also leads to poor user experience. For example, two users may want to add characters to the same section of the document, but their operations may not necessarily conflict.
 
-**1 of 2**
+A lock is a good choice for services like Google Sheets. This is because the document is divided into equal sizes of small cells, and only one user can add or edit the contents of a specific cell.
+
+**Question 2**
+
+What happens if there are two users collaborating on a document and they have different Internet speeds? Which technology, OT or CRDT, is better suited for conflict resolution in such a case?
+
+With a varied Internet connection speed, the order of operations between users can lead to problems. However, operations are order dependent in OT, whereas operations in CRDTs are order independent. This is why CRDTs are a suitable solution to such a problem.
 
 \
